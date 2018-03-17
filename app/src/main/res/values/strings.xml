@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Rubi Delivery App</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_order_history">Order History</string>
+    <string name="nav_about_us">About Us</string>
+    <string name="nav_terms_conditions">Terms and Conditions</string>
+    <string name="nav_log_out">Log Out</string>\
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>@string/nav_home</item>
+        <item>@string/nav_profile</item>
+        <item>@string/nav_notifications</item>
+        <item>@string/nav_order_history</item>
+    </string-array>
+
+    <!-- Titles for separate activities -->
+    <string name="activity_title_about_us">@string/nav_about_us</string>
+    <string name="activity_title_terms_conditions">@string/nav_terms_conditions</string>
+
+    <!-- Titles for toolbar menu -->
+    <string name="action_clear_all">Clear All</string>
+    <string name="action_proceed_order">Proceed to Order</string>
+    <string name="action_mark_all_read">Mark All as Read</string>
+    <string name="terms_conditions">@string/nav_terms_conditions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Image view descriptions -->
+    <string name="profile_image_description">This is the profile image</string>
+    <string name="close_menu_description">This closes the sliding menu</string>
+
+    <!-- Placeholders -->
+    <string name="name_placeholder">Your Name</string>
+    <string name="location_placeholder">Your Location</string>
+</resources>

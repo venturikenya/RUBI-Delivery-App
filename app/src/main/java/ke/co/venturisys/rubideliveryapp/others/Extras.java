@@ -1,6 +1,7 @@
 package ke.co.venturisys.rubideliveryapp.others;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -63,7 +64,7 @@ public class Extras {
     }
 
     /*
-     * Method to successfully load image to view with right scale
+     * Method to successfully load image to given image view with right scale
      */
     public static void loadPictureToImageView(@NonNull HashMap<String, Object> source,
                                 int placeholder,
@@ -112,5 +113,15 @@ public class Extras {
             Log.e("PICTURES ERROR", "Something went wrong");
             ex.printStackTrace();
         }
+    }
+
+    /*
+     * Method redirects to main activity while popping every other activity off stack
+     */
+    public static void exitToMainActivity(AppCompatActivity activity, Class class_) {
+        Intent intent = new Intent(activity, class_);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+        activity.finish();
     }
 }

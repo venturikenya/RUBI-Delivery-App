@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import ke.co.venturisys.rubideliveryapp.R;
 
+import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToMainActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
 
 public class AboutUsActivity extends AppCompatActivity {
@@ -15,5 +16,11 @@ public class AboutUsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about_us);
 
         setUpActionBar(getString(R.string.activity_title_about_us), this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        exitToMainActivity(this, MainActivity.class);
+        super.onBackPressed();
     }
 }

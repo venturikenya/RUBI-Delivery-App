@@ -338,7 +338,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
 
         // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 3) {
+        if (navItemIndex == 2) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
         return true;

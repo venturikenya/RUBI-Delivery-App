@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.fragments.GeneralFragment;
@@ -30,12 +29,13 @@ import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
-import ke.co.venturisys.rubideliveryapp.others.CircleTransform;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_NOTIFICATIONS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTORY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_PROFILE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
 
@@ -201,17 +201,9 @@ public class MainActivity extends AppCompatActivity
         tvMenuLocation.setText(getString(R.string.location_placeholder));
 
         // load profile image
-        try {
-            Picasso.get()
-                    .load(urlProfileImg)
-                    .placeholder(R.mipmap.ic_box)
-                    .error(android.R.drawable.ic_delete)
-                    .transform(new CircleTransform())
-                    .into(imgProfile);
-        } catch (Exception ex) {
-            Log.e("PICTURES ERROR", "Something went wrong");
-            ex.printStackTrace();
-        }
+        HashMap<String, Object> src = new HashMap<>();
+        src.put(URL, urlProfileImg);
+        loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false, false);
 
         // showing dot next to notifications label
         navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);

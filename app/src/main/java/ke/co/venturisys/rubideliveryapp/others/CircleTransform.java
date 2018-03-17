@@ -10,6 +10,7 @@ import com.squareup.picasso.Transformation;
 /**
  * Created by victor on 3/16/18.
  * This class transforms an image view into a circular image view
+ * Courtesy of: https://androidmads.blogspot.co.ke/2017/06/circle-image-view-using-glide-and.html
  */
 
 public class CircleTransform implements Transformation {

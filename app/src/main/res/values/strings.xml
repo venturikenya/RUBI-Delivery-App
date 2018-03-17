@@ -29,7 +29,7 @@
 
     <!-- Titles for toolbar menu -->
     <string name="action_clear_all">Clear All</string>
-    <string name="action_proceed_order">Proceed to Order</string>
+    <string name="action_proceed_order">Edit</string>
     <string name="action_mark_all_read">Mark All as Read</string>
     <string name="terms_conditions">@string/nav_terms_conditions</string>
 
@@ -39,6 +39,7 @@
     <!-- Image view descriptions -->
     <string name="profile_image_description">This is the profile image</string>
     <string name="close_menu_description">This closes the sliding menu</string>
+    <string name="edit_order_description">This redirects to option to edit order(s)</string>
 
     <!-- Placeholders -->
     <string name="name_placeholder">Your Name</string>

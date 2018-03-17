@@ -1,6 +1,7 @@
 package ke.co.venturisys.rubideliveryapp.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -36,8 +37,14 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTOR
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_PROFILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
+
+/**
+ * Sliding menu: https://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
+ * Hamburger icon: http://codetheory.in/android-navigation-drawer/
+ */
 
 public class MainActivity extends AppCompatActivity
         implements GeneralFragment.OnFragmentInteractionListener {
@@ -205,8 +212,16 @@ public class MainActivity extends AppCompatActivity
         src.put(URL, urlProfileImg);
         loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false, false);
 
-        // showing dot next to notifications label
-        navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
+        // set count of notifications on bell
+        int notifications = 1;
+        // LayerDrawable is a Drawable that manages an array of other Drawables
+        LayerDrawable icon = (LayerDrawable) navigationView.getMenu().
+                findItem(R.id.nav_notifications).getIcon();
+        setBadgeCount(this, icon, String.valueOf(notifications), R.id.ic_notifications_badge);
+
+        // showing dot next to notifications label if notifications present
+        //noinspection ConstantConditions
+        if (notifications > 0) navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
     }
 
     private void selectNavMenu() {
@@ -336,6 +351,18 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        View view = menu.findItem(R.id.action_proceed_order).getActionView();
+        // obtain drawable of shopping bag to place badge on top of it
+        TextView textView = view.findViewById(R.id.editOrderTextView);
+        LayerDrawable icon = (LayerDrawable) textView.getCompoundDrawables()[0];
+        setBadgeCount(this, icon, String.valueOf(2), R.id.ic_shopping_badge);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Proceed to order", Toast.LENGTH_LONG).show();
+            }
+        });
 
         // when fragment is notifications, load the menu created for notifications
         if (navItemIndex == 2) {
@@ -350,11 +377,6 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id == R.id.action_proceed_order) {
-            Toast.makeText(this, "Proceed to order", Toast.LENGTH_LONG).show();
-            return true;
-        }
 
         // user is in notifications fragment
         // and selected 'Mark all as Read'

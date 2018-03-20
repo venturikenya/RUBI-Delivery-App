@@ -43,6 +43,7 @@
     <string name="edit_order_description">This redirects to option to edit order(s)</string>
     <string name="landing_card_image_description">Image on landing page card view</string>
     <string name="today_s_offer_image_description">Image of today\'s offers</string>
+    <string name="overflow_description">Contains overflow menu for landing page</string>
     
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>
@@ -52,5 +53,6 @@
     <string name="location_placeholder">Your Location</string>
     <string name="landing_page_card_text_placeholder">Food</string>
     <string name="today_s_offers">Today\'s Offers</string>
-    <string name="favorites">Favorites</string>
+    <string name="favorites">Favourites</string>
+    <string name="err_msg_search">Please enter search query</string>
 </resources>

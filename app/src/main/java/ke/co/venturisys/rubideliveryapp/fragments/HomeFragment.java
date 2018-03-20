@@ -15,10 +15,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +33,6 @@ import ke.co.venturisys.rubideliveryapp.others.LandingPageGridAdapter;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
 
 public class HomeFragment extends GeneralFragment {
 
@@ -38,14 +40,14 @@ public class HomeFragment extends GeneralFragment {
     RecyclerView recyclerView;
     LandingPageGridAdapter adapter; // adapter to communicate with recycler view
     ImageView landingBg, searchBtn;
+    ImageButton overflowBtn;
     Button offerBtn;
     TextView recyclerTitle;
     TextInputLayout inputLayoutSearch;
     EditText inputSearch;
     List<LandingPageFood> foods;
 
-    public HomeFragment() {
-    }
+    public HomeFragment() {}
 
     public static HomeFragment newInstance() {
 
@@ -78,14 +80,15 @@ public class HomeFragment extends GeneralFragment {
         searchBtn = view.findViewById(R.id.search_image_view);
         offerBtn = view.findViewById(R.id.offerBtn);
         recyclerTitle = view.findViewById(R.id.landing_card_recycler_title);
-        // set drawable to text view
-        //recyclerTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_overflow_dots, 0);
+        overflowBtn = view.findViewById(R.id.landing_page_overflow_button);
         inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputSearch = view.findViewById(R.id.input_search);
 
-        // set colors of drawables of text view and edit text
-        setTextViewDrawableColor(recyclerTitle, R.color.colorApp, getActivity());
+        // set colors to overflow and search buttons
         if (getActivity() != null) {
+            overflowBtn.getDrawable().setColorFilter(
+                    new PorterDuffColorFilter(ContextCompat.getColor(getActivity(), R.color.colorApp),
+                            PorterDuff.Mode.SRC_IN));
             searchBtn.getDrawable().setColorFilter(
                     new PorterDuffColorFilter(ContextCompat.getColor(getActivity(), R.color.colorApp),
                             PorterDuff.Mode.SRC_IN));
@@ -96,9 +99,35 @@ public class HomeFragment extends GeneralFragment {
         src.put(RES_ID, R.drawable.ic_beef_specials);
         loadPictureToImageView(src, R.drawable.bg_circle, landingBg, false, false, false);
 
+        // on clicking search button
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateSearch()) {
+                    Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         prepareFoodItems();
 
         return view;
+    }
+
+    // checks if user has entered search query when (s)he has pressed search button
+    // and raises error if not
+    private boolean validateSearch() {
+
+        if (inputSearch.getText().toString().trim().isEmpty()) {
+            inputLayoutSearch.setError(getString(R.string.err_msg_search));
+            // requestFocus(inputSearch);
+            return false;
+        } else {
+            inputLayoutSearch.setErrorEnabled(false);
+        }
+
+        return true;
+
     }
 
     private void prepareFoodItems() {

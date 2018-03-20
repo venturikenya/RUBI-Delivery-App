@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context=".activities.MainActivity">
 
     <LinearLayout
         android:id="@+id/input_linear_layout_search"
@@ -86,6 +87,7 @@
                         android:contentDescription="@string/today_s_offer_image_description"
                         android:fitsSystemWindows="true"
                         android:scaleType="centerCrop"
+                        android:adjustViewBounds="true"
                         app:layout_collapseMode="parallax" />
 
                     <Button
@@ -110,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_offset"
-            android:background="@color/viewBg"
+            android:background="@android:color/white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layout_editor_absoluteY="441dp">
 
@@ -118,22 +120,43 @@
                 android:id="@+id/landing_card_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:background="@color/viewBg"
+                android:layout_marginTop="34dp"
+                android:background="@android:color/white"
                 android:clipToPadding="false" />
 
-            <TextView
-                android:id="@+id/landing_card_recycler_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_offset"
+                android:layout_marginEnd="@dimen/item_offset"
+                android:layout_marginStart="@dimen/item_offset"
                 android:background="@android:color/white"
-                android:gravity="center"
-                android:paddingEnd="@dimen/item_offset"
-                android:paddingStart="@dimen/item_offset"
-                android:text="@string/favorites"
-                android:textColor="@color/colorApp"
-                android:textSize="16sp" />
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/general_padding">
+
+                <TextView
+                    android:id="@+id/landing_card_recycler_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/item_offset"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_weight="9"
+                    android:background="@android:color/white"
+                    android:gravity="center"
+                    android:text="@string/favorites"
+                    android:textColor="@color/colorApp"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/landing_page_overflow_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:contentDescription="@string/overflow_description"
+                    android:src="@drawable/ic_overflow_dots" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 

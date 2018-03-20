@@ -14,4 +14,13 @@
     <dimen name="text_views_separations">6dp</dimen>
     <dimen name="general_padding">5dp</dimen>
     <dimen name="badge_text_size">16sp</dimen>
+
+    <!-- Card view dimens -->
+    <dimen name="card_margin">5dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="detail_backdrop_height">250dp</dimen>
+    <dimen name="item_offset">10dp</dimen>
+    <dimen name="card_landing_image_height">200dp</dimen>
+    <dimen name="card_landing_image_margin">5dp</dimen>
+    <dimen name="card_landing_text_margin">10dp</dimen>
 </resources>

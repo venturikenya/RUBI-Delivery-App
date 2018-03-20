@@ -31,4 +31,9 @@
         <item name="android:tint">@color/colorApp</item>
     </style>
 
+    <!-- Set color of floating hint -->
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorApp</item>
+    </style>
+
 </resources>

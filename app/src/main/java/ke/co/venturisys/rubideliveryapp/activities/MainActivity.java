@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity
         // navigation view header
         navHeader = navigationView.getHeaderView(0);
         tvMenuLocation = navHeader.findViewById(R.id.locationTextView);
+        // set drawable to text view
+        tvMenuLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_location_pointer, 0, 0, 0);
         tvNameLocation = navHeader.findViewById(R.id.nameTextView);
         imgProfile = navHeader.findViewById(R.id.img_profile);
         imgCloseMenu = navHeader.findViewById(R.id.img_close_menu);
@@ -179,7 +181,7 @@ public class MainActivity extends AppCompatActivity
      * Returns the appropriate Fragment depending on the nav menu item user selected
      */
     private Fragment getHomeFragment() {
-        
+
         switch (navItemIndex) {
             case 0:
                 // home
@@ -196,7 +198,7 @@ public class MainActivity extends AppCompatActivity
             default:
                 return new HomeFragment();
         }
-        
+
     }
 
     /*
@@ -354,8 +356,13 @@ public class MainActivity extends AppCompatActivity
         View view = menu.findItem(R.id.action_proceed_order).getActionView();
         // obtain drawable of shopping bag to place badge on top of it
         TextView textView = view.findViewById(R.id.editOrderTextView);
+        // set shopping bag icon
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_bag, 0, 0, 0);
+        // add badge showing no. of orders
         LayerDrawable icon = (LayerDrawable) textView.getCompoundDrawables()[0];
         setBadgeCount(this, icon, String.valueOf(2), R.id.ic_shopping_badge);
+        // set colour of shopping bag
+        setTextViewDrawableColor(textView, R.color.colorApp, this);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,5 +409,6 @@ public class MainActivity extends AppCompatActivity
 
     // Comes from fragment class. Must be here
     @Override
-    public void onFragmentInteraction(Uri uri) {}
+    public void onFragmentInteraction(Uri uri) {
+    }
 }

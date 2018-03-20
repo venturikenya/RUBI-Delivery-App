@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -41,12 +42,10 @@ public class Extras {
      */
     public static void setTextViewDrawableColor(TextView textView, int color,
                                                 Activity activity) {
-        if (textView != null && activity != null) {
-            for (Drawable drawable : textView.getCompoundDrawables()) {
-                if (drawable != null) {
-                    drawable.setColorFilter(new PorterDuffColorFilter(
-                            activity.getResources().getColor(color), PorterDuff.Mode.SRC_IN));
-                }
+        for (Drawable drawable : textView.getCompoundDrawables()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(
+                        ContextCompat.getColor(activity, color), PorterDuff.Mode.SRC_IN));
             }
         }
     }

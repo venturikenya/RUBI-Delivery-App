@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,15 +7,13 @@
         android:id="@+id/editOrderTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/general_padding"
-        android:paddingEnd="@dimen/general_padding"
         android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:text="@string/action_proceed_order"
-        android:drawableLeft="@drawable/ic_menu_bag"
         android:drawablePadding="35dp"
+        android:gravity="center"
+        android:paddingEnd="@dimen/general_padding"
+        android:paddingStart="@dimen/general_padding"
+        android:text="@string/action_proceed_order"
         android:textColor="@color/colorApp"
-        android:textSize="16sp"
-        tools:ignore="RtlHardcoded" />
+        android:textSize="16sp" />
 
 </LinearLayout>

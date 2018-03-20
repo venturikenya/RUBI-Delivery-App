@@ -119,7 +119,6 @@ public class HomeFragment extends GeneralFragment {
 
         if (inputSearch.getText().toString().trim().isEmpty()) {
             inputLayoutSearch.setError(getString(R.string.err_msg_search));
-            // requestFocus(inputSearch);
             return false;
         } else {
             inputLayoutSearch.setErrorEnabled(false);

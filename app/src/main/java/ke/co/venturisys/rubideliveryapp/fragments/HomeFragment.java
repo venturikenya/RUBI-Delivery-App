@@ -1,5 +1,6 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
@@ -11,8 +12,11 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -108,6 +112,14 @@ public class HomeFragment extends GeneralFragment {
             }
         });
 
+        // on clicking overflow(3-dots) button
+        overflowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
+
         prepareFoodItems();
 
         return view;
@@ -196,5 +208,42 @@ public class HomeFragment extends GeneralFragment {
                 }
             }
         });
+    }
+
+    /**
+     * Showing popup menu when tapping on 3 dots
+     */
+    private void showPopupMenu(View view) {
+        // inflate menu
+        assert getContext() != null;
+        PopupMenu popup = new PopupMenu(getContext(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.landing_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(getContext()));
+        popup.show();
+    }
+
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
+
+        Context mContext;
+
+        MyMenuItemClickListener(@NonNull Context context) { this.mContext = context; }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_select_favourites:
+                    recyclerTitle.setText(getString(R.string.action_select_favourites));
+                    return true;
+                case R.id.action_select_categories:
+                    recyclerTitle.setText(getString(R.string.action_select_categories));
+                    return true;
+                default:
+            }
+            return false;
+        }
     }
 }

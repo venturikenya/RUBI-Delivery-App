@@ -1,13 +1,27 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- Renders recycler view for notifications page -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context="ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/notifications_page_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/item_offset"
+        android:gravity="center"
+        android:padding="@dimen/general_padding"
+        android:text="@string/nav_notifications"
+        android:textColor="@color/colorApp"
+        android:textSize="18sp" />
+
+    <include
+        layout="@layout/general_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_below="@id/notifications_page_title" />
 
-</FrameLayout>
+</RelativeLayout>

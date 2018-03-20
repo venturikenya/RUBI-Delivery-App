@@ -44,7 +44,7 @@
     <string name="landing_card_image_description">Image on landing page card view</string>
     <string name="today_s_offer_image_description">Image of today\'s offers</string>
     <string name="overflow_description">Contains overflow menu for landing page</string>
-    
+
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>
 
@@ -56,4 +56,7 @@
     <string name="action_select_favourites">Favourites</string>
     <string name="action_select_categories">Categories</string>
     <string name="err_msg_search">Please enter search query</string>
+    <string name="notification_title">Notification Title</string>
+    <string name="notification_time">Time</string>
+    <string name="notification_details">These are the details of the notification</string>
 </resources>

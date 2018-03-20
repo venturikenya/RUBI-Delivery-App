@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Main menu -->
+<?xml version="1.0" encoding="utf-8"?><!-- Main menu -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_proceed_order"
         android:orderInCategory="99"
-        app:actionLayout="@layout/action_view_details_layout"
         android:title="@string/action_proceed_order"
+        app:actionLayout="@layout/action_view_details_layout"
         app:showAsAction="always" />
 
 </menu>

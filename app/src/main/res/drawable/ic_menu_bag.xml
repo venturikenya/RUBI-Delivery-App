@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- layer drawable to display menu item with a badge on top of it. Used in main menu file -->
+<?xml version="1.0" encoding="utf-8"?><!-- layer drawable to display menu item with a badge on top of it. Used in main menu file -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/ic_shopping_bag"

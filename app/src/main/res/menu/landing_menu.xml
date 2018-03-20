@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Appear as popup menu on tapping dots icon of landing page -->
+<?xml version="1.0" encoding="utf-8"?><!-- Appear as popup menu on tapping dots icon of landing page -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item

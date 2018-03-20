@@ -11,7 +11,8 @@ import ke.co.venturisys.rubideliveryapp.R;
 
 public class ProfileFragment extends GeneralFragment {
 
-    public ProfileFragment() {}
+    public ProfileFragment() {
+    }
 
     public static ProfileFragment newInstance() {
 

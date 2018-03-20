@@ -15,5 +15,5 @@ public class Constants {
     public static final String RES_ID = "RESOURCE ID";
     static final String FILE = "FILE";
     static final String URI = "URI";
-    
+
 }

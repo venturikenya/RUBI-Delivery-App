@@ -42,6 +42,7 @@ public class HomeFragment extends GeneralFragment {
     GridLayoutManager layoutManager; // lays out children in a grid format
     RecyclerView recyclerView;
     LandingPageGridAdapter adapter; // adapter to communicate with recycler view
+
     ImageView landingBg, searchBtn;
     ImageButton overflowBtn;
     Button offerBtn;
@@ -50,7 +51,8 @@ public class HomeFragment extends GeneralFragment {
     EditText inputSearch;
     List<LandingPageFood> foods;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     public static HomeFragment newInstance() {
 
@@ -230,7 +232,9 @@ public class HomeFragment extends GeneralFragment {
 
         Context mContext;
 
-        MyMenuItemClickListener(@NonNull Context context) { this.mContext = context; }
+        MyMenuItemClickListener(@NonNull Context context) {
+            this.mContext = context;
+        }
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {

@@ -56,7 +56,7 @@ public class Extras {
     public static void setUpActionBar(String title, AppCompatActivity activity) {
         if (activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(
-                    Html.fromHtml("<font color='#1976D2'>"+ title
+                    Html.fromHtml("<font color='#1976D2'>" + title
                             + "</font>"));
             final Drawable upArrow = activity.getResources().getDrawable(R.drawable.ic_chevron_left_small);
             upArrow.setColorFilter(activity.getResources().getColor(R.color.colorApp), PorterDuff.Mode.SRC_IN);
@@ -68,11 +68,11 @@ public class Extras {
      * Method to successfully load image to given image view with right scale
      */
     public static void loadPictureToImageView(@NonNull HashMap<String, Object> source,
-                                int placeholder,
-                                @NonNull ImageView imageView,
-                                boolean toTransform,
-                                boolean fit,
-                                boolean centerInside) {
+                                              int placeholder,
+                                              @NonNull ImageView imageView,
+                                              boolean toTransform,
+                                              boolean fit,
+                                              boolean centerInside) {
 
         Picasso picasso;
         RequestCreator creator = null;

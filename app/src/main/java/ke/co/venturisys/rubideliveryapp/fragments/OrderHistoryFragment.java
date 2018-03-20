@@ -11,7 +11,8 @@ import ke.co.venturisys.rubideliveryapp.R;
 
 public class OrderHistoryFragment extends GeneralFragment {
 
-    public OrderHistoryFragment() {}
+    public OrderHistoryFragment() {
+    }
 
     public static OrderHistoryFragment newInstance() {
 

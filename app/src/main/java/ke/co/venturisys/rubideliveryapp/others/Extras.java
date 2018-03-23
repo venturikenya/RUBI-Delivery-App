@@ -8,7 +8,10 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -144,5 +147,32 @@ public class Extras {
         badge.setCount(count);
         icon.mutate();
         icon.setDrawableByLayerId(res, badge);
+    }
+
+    /*
+     * This method provides for changing of fragments based on choice selected
+     * either on navigation menu or within the fragments
+     */
+    public static void changeFragment(final Fragment homeFragment, Handler mHandler,
+                                final String CURRENT_TAG, final AppCompatActivity activity) {
+        // Sometimes, when fragment has huge data, screen seems hanging
+        // when switching between navigation menus
+        // So using runnable, the fragment is loaded with cross fade effect
+        // This effect can be seen in GMail app
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                // result in 'shaking' appearance when the fragments transition
+//                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+//                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.frame, homeFragment, CURRENT_TAG);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        };
+
+        // If mPendingRunnable is not null, then add to the message queue
+        mHandler.post(mPendingRunnable);
     }
 }

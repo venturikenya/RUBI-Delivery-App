@@ -44,9 +44,13 @@
     <string name="landing_card_image_description">Image on landing page card view</string>
     <string name="today_s_offer_image_description">Image of today\'s offers</string>
     <string name="overflow_description">Contains overflow menu for landing page</string>
+    <string name="city_description">Image of Nairobi city</string>
+    <string name="add_btn_description">This button increases the amount</string>
+    <string name="minus_btn_description">This button decreases the amount</string>
 
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>
+    <string name="hint_edit_meal_amount">Here, you can edit the number of selected meal to be ordered</string>
 
     <!-- Placeholders -->
     <string name="name_placeholder">Your Name</string>
@@ -59,4 +63,16 @@
     <string name="notification_title">Notification Title</string>
     <string name="notification_time">Time</string>
     <string name="notification_details">These are the details of the notification</string>
+    <string name="cart_placeholder">My Cart</string>
+    <string name="item_number">Number of items</string>
+    <string name="total_price">Total:Ksh Amount</string>
+    <string name="cart_order_name">Order Name</string>
+    <string name="cart_order_details">Order Details</string>
+    <string name="cart_order_price">Order Price</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="item">item</string>
+    <string name="proceed_to_checkout">Proceed to checkout</string>
+    <string name="kenyan_currency">Ksh</string>
+    <string name="nothing_placeholder">Nothing to show</string>
 </resources>

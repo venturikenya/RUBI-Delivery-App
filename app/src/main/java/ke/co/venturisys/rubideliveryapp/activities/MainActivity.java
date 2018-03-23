@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,17 +24,20 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.fragments.CartFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.GeneralFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_NOTIFICATIONS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTORY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_PROFILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
@@ -147,25 +149,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        // Sometimes, when fragment has huge data, screen seems hanging
-        // when switching between navigation menus
-        // So using runnable, the fragment is loaded with cross fade effect
-        // This effect can be seen in GMail app
-        Runnable mPendingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // update the main content by replacing fragments
-                Fragment fragment = getHomeFragment();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                        android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
-                fragmentTransaction.commitAllowingStateLoss();
-            }
-        };
-
-        // If mPendingRunnable is not null, then add to the message queue
-        mHandler.post(mPendingRunnable);
+        changeFragment(getHomeFragment(), mHandler, CURRENT_TAG, this);
 
         // show or hide the fab button
         toggleFab();
@@ -196,7 +180,7 @@ public class MainActivity extends AppCompatActivity
                 // order history
                 return OrderHistoryFragment.newInstance();
             default:
-                return new HomeFragment();
+                return HomeFragment.newInstance();
         }
 
     }
@@ -368,6 +352,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "Proceed to order", Toast.LENGTH_LONG).show();
+                fab.hide();
+                changeFragment(CartFragment.newInstance(), mHandler, TAG_CART, MainActivity.this);
             }
         });
 

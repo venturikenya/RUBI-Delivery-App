@@ -11,6 +11,7 @@ public class Constants {
     public static final String TAG_PROFILE = "profile";
     public static final String TAG_NOTIFICATIONS = "notifications";
     public static final String TAG_ORDER_HISTORY = "order_history";
+    public static final String TAG_CART = "cart";
     public static final String URL = "URL";
     public static final String RES_ID = "RESOURCE ID";
     static final String FILE = "FILE";

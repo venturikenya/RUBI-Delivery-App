@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Holds card for notification page recycler view items -->
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/item_offset"
+    android:layout_marginStart="@dimen/item_offset"
+    android:background="@drawable/background_selector">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cart_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_margin"
+        card:cardCornerRadius="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:padding="@dimen/item_offset">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/order_meal_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_marginTop="@dimen/general_padding"
+                    android:text="@string/cart_order_name"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorApp"/>
+
+                <TextView
+                    android:id="@+id/order_meal_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_meal_name"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_marginTop="@dimen/item_offset"
+                    android:text="@string/cart_order_details"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorApp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/item_offset"
+                    android:layout_below="@id/order_meal_details"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/order_meal_edit_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/edit"
+                        android:textColor="@color/colorApp"
+                        android:textSize="16sp"
+                        style="?android:attr/buttonBarButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/order_meal_delete_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/delete"
+                        android:textColor="@color/colorApp"
+                        android:textSize="16sp"
+                        style="?android:attr/buttonBarButtonStyle"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/item_offset"
+                android:paddingStart="@dimen/general_padding"
+                android:paddingEnd="@dimen/general_padding">
+
+                <LinearLayout
+                    android:id="@+id/order_meal_amount_linear_layout"
+                    android:layout_width="120dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:orientation="horizontal"
+                    android:background="@drawable/rounded_rectangle_edges">
+
+                    <ImageButton
+                        android:id="@+id/order_meal_add_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/add_btn_description"
+                        android:src="@drawable/ic_add"
+                        style="?android:attr/buttonBarButtonStyle"/>
+
+                    <EditText
+                        android:id="@+id/order_meal_edit_amount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:inputType="numberDecimal"
+                        android:hint="@string/hint_edit_meal_amount"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textSize="18sp"/>
+
+                    <ImageButton
+                        android:id="@+id/order_meal_minus_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/minus_btn_description"
+                        android:src="@drawable/ic_minus"
+                        style="?android:attr/buttonBarButtonStyle"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/order_meal_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_meal_amount_linear_layout"
+                    android:text="@string/cart_order_price"
+                    android:gravity="center"
+                    android:layout_marginTop="35dp"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.design.widget.CoordinatorLayout>

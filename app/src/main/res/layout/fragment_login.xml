@@ -1,8 +1,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/login_parent_layout"
     android:background="@android:color/white"
     tools:context="ke.co.venturisys.rubideliveryapp.fragments.LoginFragment">
 
@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/city_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:contentDescription="@string/city_description"
-        android:src="@drawable/ic_nairobi" />
+        <ImageView
+            android:id="@+id/city_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:contentDescription="@string/city_description"
+            android:src="@drawable/ic_nairobi" />
 
     </RelativeLayout>
 

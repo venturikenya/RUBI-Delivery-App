@@ -27,16 +27,19 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
 
     private Activity activity;
     private List<Meal> meals;
-    public boolean deleted = false;
 
     public CartLinearAdapter(Activity activity, List<Meal> meals) {
         this.activity = activity;
         this.meals = meals;
     }
 
+    public int getMeals() {
+        return meals.size();
+    }
+
     /*
-     * Create a holder with inflated layout as view
-     */
+         * Create a holder with inflated layout as view
+         */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,7 +59,7 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
 
         // set values of widgets
         myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
-                .concat(" ".concat(""+String.format(Locale.US, "%1$.2f",
+                .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
                         Double.parseDouble(meal.getPrice())))));
         myHolder.mealDetails.setText(meal.getDetails());
         myHolder.mealNumber.setText(meal.getAmount());
@@ -71,7 +74,7 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
                 myHolder.mealNumber.setText(String.valueOf(
                         amount + 1));
                 myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
-                        .concat(" ".concat(""+String.format(Locale.US, "%1$.2f",
+                        .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
                                 Double.parseDouble(meal.getPrice()) * (amount + 1)))));
             }
         });
@@ -84,7 +87,7 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
                 myHolder.mealNumber.setText(String.valueOf(
                         amount - 1));
                 myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
-                        .concat(" ".concat(""+String.format(Locale.US, "%1$.2f",
+                        .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
                                 Double.parseDouble(meal.getPrice()) * (amount - 1)))));
             }
         });
@@ -94,7 +97,6 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
             public void onClick(View v) {
                 // remove meal at given position
                 removeAt(myHolder.getAdapterPosition());
-                deleted = true;
             }
         });
 

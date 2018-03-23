@@ -154,7 +154,7 @@ public class Extras {
      * either on navigation menu or within the fragments
      */
     public static void changeFragment(final Fragment homeFragment, Handler mHandler,
-                                final String CURRENT_TAG, final AppCompatActivity activity) {
+                                      final String CURRENT_TAG, final AppCompatActivity activity) {
         // Sometimes, when fragment has huge data, screen seems hanging
         // when switching between navigation menus
         // So using runnable, the fragment is loaded with cross fade effect

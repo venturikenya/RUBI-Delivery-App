@@ -347,15 +347,22 @@ public class MainActivity extends AppCompatActivity
         setBadgeCount(this, icon, String.valueOf(2), R.id.ic_shopping_badge);
         // set colour of shopping bag
         setTextViewDrawableColor(textView, R.color.colorApp, this);
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Proceed to order", Toast.LENGTH_LONG).show();
                 fab.hide();
-                changeFragment(CartFragment.newInstance(), mHandler, TAG_CART, MainActivity.this);
+                if (!(fragment instanceof CartFragment)) {
+                    changeFragment(CartFragment.newInstance(), mHandler, TAG_CART,
+                            MainActivity.this);
+                }
             }
         });
+
+        if (fragment instanceof CartFragment) {
+            view.setClickable(false);
+        }
 
         // when fragment is notifications, load the menu created for notifications
         if (navItemIndex == 2) {

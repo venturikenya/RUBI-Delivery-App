@@ -17,6 +17,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
@@ -34,6 +36,7 @@ public class CartFragment extends GeneralFragment {
     TextView cartAmount;
     TextView cartPrice;
     Button btnProceedCheckout;
+    Timer timer;
 
     public CartFragment() {
     }
@@ -72,27 +75,36 @@ public class CartFragment extends GeneralFragment {
 
         reviewCart();
 
-        updateTextViews(meals.size(), 0);
-
-        if (adapter.deleted) {
-            updateTextViews(meals.size() - 1, -1);
-            adapter.deleted = false;
-        }
+        updateTextViews(meals.size());
+        final Handler handler = new Handler();
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateTextViews(adapter.getMeals());
+                    }
+                });
+            }
+        };
+        timer.scheduleAtFixedRate(task, 0, 500);
 
         return view;
     }
 
-    private void updateTextViews(int number, int limit) {
+    private void updateTextViews(int number) {
         // set no of meals ordered to text view
         cartAmount.setText("".concat(number + " " + getString(R.string.item)));
         if (number > 1) cartAmount.setText(cartAmount.getText().toString().concat("s"));
 
         // set total price of order to text view
         String price_prefix = getString(R.string.total_price).split(" ")[0]; // get currency of amount
-        cartPrice.setText(price_prefix.concat(" ".concat(""+String.format(Locale.US, "%1$.2f",1050.00))));
+        cartPrice.setText(price_prefix.concat(" ".concat("" + String.format(Locale.US, "%1$.2f", 1050.00))));
 
         // what if there are no orders
-        if (number <= limit) {
+        if (number <= 0) {
             cartAmount.setText(getString(R.string.nothing_placeholder));
             cartPrice.setText(price_prefix.concat(" ".concat("0.00")));
             btnProceedCheckout.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
@@ -113,6 +125,12 @@ public class CartFragment extends GeneralFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (timer != null) timer.cancel();
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();
@@ -124,7 +142,7 @@ public class CartFragment extends GeneralFragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                 // detect if back button is pressed
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
 
                     // redirect to landing page
                     Intent intent = new Intent(getContext(), MainActivity.class);

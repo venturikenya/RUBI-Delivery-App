@@ -23,8 +23,8 @@
                 android:id="@+id/notification_card_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/general_padding"
                 android:layout_marginBottom="2dp"
+                android:layout_marginStart="@dimen/general_padding"
                 android:paddingEnd="@dimen/card_notifications_margin"
                 android:paddingStart="@dimen/card_notifications_margin"
                 android:paddingTop="@dimen/card_notifications_margin">
@@ -56,13 +56,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/notification_card_linear_layout"
                 android:layout_marginStart="@dimen/general_padding"
-                android:gravity="start"
-                android:textColor="@color/colorNotificationDetails"
                 android:layout_marginTop="2dp"
+                android:gravity="start"
                 android:paddingBottom="@dimen/card_notifications_margin"
                 android:paddingEnd="@dimen/card_notifications_margin"
                 android:paddingStart="@dimen/card_notifications_margin"
-                android:text="@string/notification_details" />
+                android:text="@string/notification_details"
+                android:textColor="@color/colorNotificationDetails" />
 
         </RelativeLayout>
 

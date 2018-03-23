@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Rounded rectangular background with shadow -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/shadow"
+        android:left="2dp"
+        android:top="3dp" />
+    <item
+        android:bottom="3dp"
+        android:drawable="@drawable/rounded_rectangle_edges_white"
+        android:right="2dp" />
+
+</layer-list>

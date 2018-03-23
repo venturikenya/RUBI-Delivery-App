@@ -60,14 +60,14 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="40dp"
-        android:textAllCaps="false"
-        android:textSize="20sp"
-        android:paddingTop="@dimen/item_offset"
-        android:paddingBottom="@dimen/item_offset"
-        android:paddingStart="40dp"
-        android:paddingEnd="40dp"
         android:background="@drawable/rounded_rectangle_edges"
+        android:paddingBottom="@dimen/item_offset"
+        android:paddingEnd="40dp"
+        android:paddingStart="40dp"
+        android:paddingTop="@dimen/item_offset"
         android:text="@string/proceed_to_checkout"
-        android:textColor="@android:color/white"/>
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
 
 </RelativeLayout>

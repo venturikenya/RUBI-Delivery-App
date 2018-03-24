@@ -8,4 +8,7 @@
     <color name="viewBg">#f1f5f8</color>
     <color name="grey_ivory">#FFFFF0</color>
     <color name="colorNotificationDetails">#64B5F6</color>
+    <color name="black">#111</color>
+    <color name="blackDarker">#000</color>
+    <color name="colorSnackbarActionText">#F50057</color>
 </resources>

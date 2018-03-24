@@ -58,7 +58,8 @@ public class LandingPageGridAdapter extends RecyclerViewAdapter {
         myHolder.tvLandingPage.setText(food.getName());
         HashMap<String, Object> src = new HashMap<>();
         src.put(RES_ID, food.getIcon());
-        loadPictureToImageView(src, R.mipmap.ic_box, myHolder.imLandingPage, true, true, true);
+        loadPictureToImageView(src, R.mipmap.ic_box, myHolder.imLandingPage, true, true,
+                true, false);
     }
 
     /*
@@ -76,6 +77,10 @@ public class LandingPageGridAdapter extends RecyclerViewAdapter {
 
         ImageView imLandingPage;
         TextView tvLandingPage;
+
+        public TextView getTvLandingPage() {
+            return tvLandingPage;
+        }
 
         Holder(View itemView) {
             super(itemView);

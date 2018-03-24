@@ -11,6 +11,18 @@
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
     </style>
 
+    <!-- Theme for profile image activity -->
+    <style name="ImageAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/blackDarker</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SplashScreenTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="NavigationDrawerStyle" parent="Base.TextAppearance.AppCompat">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/colorApp</item>

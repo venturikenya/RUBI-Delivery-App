@@ -2,7 +2,6 @@ package ke.co.venturisys.rubideliveryapp.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +25,11 @@ import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.fragments.CartFragment;
-import ke.co.venturisys.rubideliveryapp.fragments.GeneralFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
+import ke.co.venturisys.rubideliveryapp.others.OnFragmentInteractionListener;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
@@ -41,6 +41,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
+import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
 
 /**
@@ -49,7 +50,7 @@ import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements GeneralFragment.OnFragmentInteractionListener {
+        implements OnFragmentInteractionListener {
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
@@ -60,8 +61,12 @@ public class MainActivity extends AppCompatActivity
     // flag to load home fragment when user presses back key
     boolean shouldLoadHomeFragOnBackPress = true;
     Handler mHandler;
+    // details for categories in landing page recyclerview
+    String categoryName;
+    int categoryIcon;
 
     // widgets
+    LinearLayout headerLayout;
     TextView tvMenuLocation, tvNameLocation;
     NavigationView navigationView;
     DrawerLayout drawerLayout;
@@ -69,6 +74,15 @@ public class MainActivity extends AppCompatActivity
     ImageView imgProfile, imgCloseMenu;
     FloatingActionButton fab;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    Fragment fragment;
+
+    public static void setNavItemIndex(int navItemIndex) {
+        MainActivity.navItemIndex = navItemIndex;
+    }
+
+    public static void setCurrentTag(String currentTag) {
+        CURRENT_TAG = currentTag;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +102,22 @@ public class MainActivity extends AppCompatActivity
         // navigation view header
         navHeader = navigationView.getHeaderView(0);
         tvMenuLocation = navHeader.findViewById(R.id.locationTextView);
+        tvMenuLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToProfile();
+            }
+        });
         // set drawable to text view
         tvMenuLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_location_pointer, 0, 0, 0);
         tvNameLocation = navHeader.findViewById(R.id.nameTextView);
+        tvNameLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToProfile();
+            }
+        });
+        headerLayout = navHeader.findViewById(R.id.navHeaderLayout);
         imgProfile = navHeader.findViewById(R.id.img_profile);
         imgCloseMenu = navHeader.findViewById(R.id.img_close_menu);
 
@@ -127,12 +154,49 @@ public class MainActivity extends AppCompatActivity
 
         // set color of location text view drawable in navigation menu
         setTextViewDrawableColor(tvMenuLocation, R.color.colorApp, this);
+
+        fragment = getSupportFragmentManager().findFragmentById(R.id.frame);
+        if (fragment instanceof CartFragment) {
+            fab.hide();
+        }
+
+        // wait for connection to be confirmed then show fab (maybe) if successful
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    // check if connected!
+                    while (!isNetworkAvailable(MainActivity.this)) {
+                        //Wait to connect
+                        fab.hide();
+                    }
+
+                    toggleFab();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t.start();
     }
 
     /*
-     *  Loads the fragment returned from getHomeFragment() function into FrameLayout. 
-     *  It also takes care of other things like changing the toolbar title, 
-     *  hiding / showing fab and 
+     * Serves to redirect user to profile page when user select the navigation header
+     */
+    private void goToProfile() {
+        setNavItemIndex(1);
+        setCurrentTag(TAG_PROFILE);
+        changeFragment(ProfileFragment.newInstance(), mHandler, TAG_PROFILE, this);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawers();
+        fab.hide();
+    }
+
+    /*
+     *  Loads the fragment returned from getHomeFragment() function into FrameLayout.
+     *  It also takes care of other things like changing the toolbar title,
+     *  hiding / showing fab and
      *  invalidating the options menu so that new menu can be loaded for different fragment.
      */
     private void loadHomeFragment() {
@@ -196,7 +260,26 @@ public class MainActivity extends AppCompatActivity
         // load profile image
         HashMap<String, Object> src = new HashMap<>();
         src.put(URL, urlProfileImg);
-        loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false, false);
+        loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false,
+                false, false);
+
+        // if nav header is selected
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToProfile();
+            }
+        });
+
+
+        // if user clicks on profile image, blow it up to full scale
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ProfileImageActivity.newIntent(MainActivity.this, urlProfileImg);
+                startActivity(intent);
+            }
+        });
 
         // set count of notifications on bell
         int notifications = 1;
@@ -304,10 +387,8 @@ public class MainActivity extends AppCompatActivity
 
     // show or hide the fab
     private void toggleFab() {
-        if (navItemIndex == 0)
-            fab.show();
-        else
-            fab.hide();
+        if (navItemIndex == 0 && isNetworkAvailable(this)) fab.show();
+        else fab.hide();
     }
 
     @Override
@@ -347,7 +428,6 @@ public class MainActivity extends AppCompatActivity
         setBadgeCount(this, icon, String.valueOf(2), R.id.ic_shopping_badge);
         // set colour of shopping bag
         setTextViewDrawableColor(textView, R.color.colorApp, this);
-        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -400,8 +480,23 @@ public class MainActivity extends AppCompatActivity
         actionBarDrawerToggle.syncState();
     }
 
-    // Comes from fragment class. Must be here
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    @Override
+    public void setCategoryName(String name) {
+        this.categoryName = name;
+    }
+
+    @Override
+    public int getCategoryIcon() {
+        return categoryIcon;
+    }
+
+    @Override
+    public void setCategoryIcon(int icon) {
+        this.categoryIcon = icon;
     }
 }

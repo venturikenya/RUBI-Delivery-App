@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import ke.co.venturisys.rubideliveryapp.R;
 
-import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToMainActivity;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
 
 public class AboutUsActivity extends AppCompatActivity {
@@ -20,7 +20,7 @@ public class AboutUsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        exitToMainActivity(this, MainActivity.class);
+        exitToTargetActivity(this, MainActivity.class);
         super.onBackPressed();
     }
 }

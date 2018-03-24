@@ -1,9 +1,12 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +24,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ke.co.venturisys.rubideliveryapp.R;
-import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 import ke.co.venturisys.rubideliveryapp.others.CartLinearAdapter;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
+
+import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
+import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 
 public class CartFragment extends GeneralFragment {
 
@@ -37,6 +46,7 @@ public class CartFragment extends GeneralFragment {
     TextView cartPrice;
     Button btnProceedCheckout;
     Timer timer;
+    Parcelable mListState; // used to save state of recycler view across rotation
 
     public CartFragment() {
     }
@@ -84,7 +94,7 @@ public class CartFragment extends GeneralFragment {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        updateTextViews(adapter.getMeals());
+                        if (isAdded()) updateTextViews(adapter.getMeals());
                     }
                 });
             }
@@ -118,7 +128,7 @@ public class CartFragment extends GeneralFragment {
         meals.add(meal);
 
         meal = new Meal("Mango juice", "Freshly blended and served cold",
-                "3", "600");
+                "1", "600");
         meals.add(meal);
 
         adapter.notifyDataSetChanged();
@@ -131,9 +141,33 @@ public class CartFragment extends GeneralFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // retrieve contents on screen before rotation
+        if (savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save recycler view state
+        mListState = layoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();
+        assert getActivity() != null;
+
+        // retrieve contents on screen before rotation
+        if (mListState != null) {
+            layoutManager.onRestoreInstanceState(mListState);
+        }
 
         view.setFocusableInTouchMode(true);
         view.requestFocus();
@@ -145,11 +179,16 @@ public class CartFragment extends GeneralFragment {
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
 
                     // redirect to landing page
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    assert getActivity() != null;
-                    getActivity().finish();
+                    setNavItemIndex(0);
+                    setCurrentTag(TAG_HOME);
+                    Fragment fragment = getActivity().getSupportFragmentManager()
+                            .findFragmentByTag(TAG_CART);
+                    if (fragment != null)
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction().remove(fragment).commit();
+
+                    changeFragment(HomeFragment.newInstance(), new Handler(), TAG_HOME,
+                            (AppCompatActivity) getActivity());
 
                     return true;
 

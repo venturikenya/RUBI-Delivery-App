@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -75,7 +77,8 @@ public class Extras {
                                               @NonNull ImageView imageView,
                                               boolean toTransform,
                                               boolean fit,
-                                              boolean centerInside) {
+                                              boolean centerInside,
+                                              boolean border) {
 
         Picasso picasso;
         RequestCreator creator = null;
@@ -93,8 +96,10 @@ public class Extras {
             if (creator != null) {
                 // set up creator with various scenarios
                 creator = creator.placeholder(placeholder)
-                        .error(android.R.drawable.ic_delete);
-                if (toTransform) creator = creator.transform(new CircleTransform());
+                        .error(android.R.drawable.ic_delete)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE);
+                if (toTransform) creator = creator.transform(new CircleTransform(border));
                 if (fit) creator = creator.fit();
                 if (centerInside) creator = creator.centerInside();
 
@@ -120,13 +125,13 @@ public class Extras {
     }
 
     /*
-     * Method redirects to main activity while popping every other activity off stack
+     * Method redirects to target activity while popping every other activity off stack
      */
-    public static void exitToMainActivity(AppCompatActivity activity, Class class_) {
+    public static void exitToTargetActivity(AppCompatActivity activity, Class class_) {
         Intent intent = new Intent(activity, class_);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
-        activity.finish();
+        activity.finish(); // close this activity
     }
 
     /*

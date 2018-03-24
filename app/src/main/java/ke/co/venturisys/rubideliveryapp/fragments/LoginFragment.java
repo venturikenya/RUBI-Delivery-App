@@ -45,7 +45,8 @@ public class LoginFragment extends GeneralFragment {
         // set image of city to login page
         HashMap<String, Object> src = new HashMap<>();
         src.put(RES_ID, R.drawable.ic_nairobi);
-        loadPictureToImageView(src, R.drawable.ic_nairobi, cityImageView, false, false, false);
+        loadPictureToImageView(src, R.drawable.ic_nairobi, cityImageView, false, false,
+                false, false);
 
         return view;
     }

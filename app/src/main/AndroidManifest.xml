@@ -13,18 +13,26 @@
         android:roundIcon="@mipmap/ic_box_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity" />
+        <activity
+            android:name=".activities.TermsConditionsActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.AboutUsActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.ProfileImageActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/ImageAppTheme" />
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".activities.TermsConditionsActivity"
-            android:parentActivityName=".activities.MainActivity">
-        </activity>
-        <activity android:name=".activities.AboutUsActivity"
-            android:parentActivityName=".activities.MainActivity">
         </activity>
     </application>
 

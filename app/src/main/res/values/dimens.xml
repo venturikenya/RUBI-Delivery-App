@@ -24,4 +24,13 @@
     <dimen name="card_landing_image_margin">5dp</dimen>
     <dimen name="card_landing_text_margin">10dp</dimen>
     <dimen name="card_notifications_margin">15dp</dimen>
+
+    <!-- internet chooser dialog dimens -->
+    <dimen name="dialog_internet_text_size">16sp</dimen>
+    <dimen name="dialog_internet_title_text_size">20sp</dimen>
+    <dimen name="dialog_internet_button_text_size">18sp</dimen>
+    <dimen name="dialog_internet_text_padding">16dp</dimen>
+    <dimen name="dialog_internet_drawable_spacing">4dp</dimen>
+    <dimen name="dialog_internet_button_width">0dp</dimen>
+    <dimen name="profile_texts_spacing">14dp</dimen>
 </resources>

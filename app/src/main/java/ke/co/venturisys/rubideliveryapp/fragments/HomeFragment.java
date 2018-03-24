@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -34,6 +36,7 @@ import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageFood;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageGridAdapter;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
@@ -50,6 +53,8 @@ public class HomeFragment extends GeneralFragment {
     TextInputLayout inputLayoutSearch;
     EditText inputSearch;
     List<LandingPageFood> foods;
+    CoordinatorLayout mainContent;
+    Parcelable mListState; // used to save state of recycler view across rotation
 
     public HomeFragment() {
     }
@@ -80,6 +85,19 @@ public class HomeFragment extends GeneralFragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
+        // redirect to order page
+//        adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+//                LandingPageGridAdapter.Holder myHolder = (LandingPageGridAdapter.Holder) holder;
+//                String title = myHolder.getTvLandingPage().getText().toString();
+//                int icon = foods.get(position).getIcon();
+//                mListener.setCategoryName(title);
+//                mListener.setCategoryIcon(icon);
+//            }
+//        });
+
         // initialise widgets
         landingBg = view.findViewById(R.id.backdrop);
         searchBtn = view.findViewById(R.id.search_image_view);
@@ -88,6 +106,9 @@ public class HomeFragment extends GeneralFragment {
         overflowBtn = view.findViewById(R.id.landing_page_overflow_button);
         inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputSearch = view.findViewById(R.id.input_search);
+        mainContent = view.findViewById(R.id.main_content);
+
+        requestInternetAccess(mainContent);
 
         // set colors to overflow and search buttons
         if (getActivity() != null) {
@@ -102,7 +123,8 @@ public class HomeFragment extends GeneralFragment {
         // set image(s) of today's offers to background
         HashMap<String, Object> src = new HashMap<>();
         src.put(RES_ID, R.drawable.ic_beef_specials);
-        loadPictureToImageView(src, R.drawable.bg_circle, landingBg, false, false, false);
+        loadPictureToImageView(src, R.drawable.bg_circle, landingBg, false, false,
+                false, false);
 
         // on clicking search button
         searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +245,33 @@ public class HomeFragment extends GeneralFragment {
         inflater.inflate(R.menu.landing_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new MyMenuItemClickListener(getContext()));
         popup.show();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // retrieve contents on screen before rotation
+        if (savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save recycler view state
+        mListState = layoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            layoutManager.onRestoreInstanceState(mListState);
+        }
     }
 
     /**

@@ -1,0 +1,170 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/profile_relative_layout1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorApp"
+            android:paddingEnd="@dimen/item_offset"
+            android:paddingStart="@dimen/item_offset">
+
+            <ImageView
+                android:id="@+id/img_profile_page"
+                android:layout_width="@dimen/nav_header_height"
+                android:layout_height="@dimen/nav_header_height"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/profile_image_description"
+                android:cropToPadding="true"
+                android:padding="5dp"
+                app:srcCompat="@android:drawable/sym_def_app_icon" />
+
+            <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:contentDescription="@string/edit_profile_image_description"-->
+            <!--android:src="@drawable/ic_add_circle_outline" />-->
+
+            <ImageView
+                android:id="@+id/btnProfileHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="15dp"
+                android:contentDescription="@string/redirect_home_description"
+                android:padding="@dimen/general_padding"
+                android:src="@drawable/ic_chevron_left"
+                android:tint="#fff" />
+
+            <ImageView
+                android:id="@+id/btnProfileEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="15dp"
+                android:contentDescription="@string/edit_profile_description"
+                android:src="@drawable/ic_add_circle_outline" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/profile_linear_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="@dimen/profile_texts_spacing"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/general_padding"
+                    android:text="@string/name_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvProfileDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="@dimen/profile_texts_spacing"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/general_padding"
+                    android:text="@string/details_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvProfileLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="@dimen/profile_texts_spacing"
+                    android:layout_weight="1"
+                    android:drawablePadding="35dp"
+                    android:drawableStart="@drawable/ic_pin"
+                    android:gravity="start"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="35dp"
+                    android:text="@string/location_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvProfileContacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="@dimen/profile_texts_spacing"
+                    android:layout_weight="1"
+                    android:drawablePadding="45dp"
+                    android:drawableStart="@drawable/ic_phone"
+                    android:gravity="start"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="35dp"
+                    android:text="@string/phone_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvProfileEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="@dimen/profile_texts_spacing"
+                    android:layout_weight="1"
+                    android:drawablePadding="35dp"
+                    android:drawableStart="@drawable/ic_envelope"
+                    android:gravity="start"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="45dp"
+                    android:text="@string/email_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:background="@drawable/rounded_button_with_shadow"
+        android:paddingBottom="@dimen/item_offset"
+        android:paddingEnd="40dp"
+        android:paddingStart="40dp"
+        android:paddingTop="@dimen/item_offset"
+        android:text="@string/order_history"
+        android:textAllCaps="false"
+        android:textColor="@color/colorApp"
+        android:textSize="16sp"
+        app:layout_anchor="@id/profile_relative_layout1"
+        app:layout_anchorGravity="bottom|center" />
+
+</android.support.design.widget.CoordinatorLayout>

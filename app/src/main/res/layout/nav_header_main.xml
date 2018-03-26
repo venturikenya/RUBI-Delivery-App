@@ -40,38 +40,38 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="19"
             android:layout_gravity="center"
+            android:layout_weight="19"
             android:padding="@dimen/general_padding">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <TextView
-                android:id="@+id/nameTextView"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/text_views_separations"
-                android:paddingEnd="0dp"
-                android:paddingStart="@dimen/general_padding"
-                android:text="@string/name_placeholder"
-                android:textColor="@color/colorApp"
-                android:textSize="18sp" />
+                android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/locationTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/nameTextView"
-                android:layout_marginTop="@dimen/text_views_separations"
-                android:drawablePadding="@dimen/general_padding"
-                android:text="@string/location_placeholder"
-                android:textColor="@color/colorApp"
-                android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/text_views_separations"
+                    android:paddingEnd="0dp"
+                    android:paddingStart="@dimen/general_padding"
+                    android:text="@string/name_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="18sp" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/locationTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/nameTextView"
+                    android:layout_marginTop="@dimen/text_views_separations"
+                    android:drawablePadding="@dimen/general_padding"
+                    android:text="@string/location_placeholder"
+                    android:textColor="@color/colorApp"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
 
         </ScrollView>
 

@@ -16,12 +16,18 @@ public class Constants {
     public static final String TAG_CART = "cart";
     public static final String URL = "URL";
     public static final String RES_ID = "RESOURCE ID";
-    public static final String EXTRA_PROFILE_IMAGE_URL = "ke.co.venturisys.profile_image";
+    // extra used to pass data to activities
+    public static final String EXTRA_PROFILE_IMAGE_URL = "ke.co.venturisys.rubideliveryapp.profile_image";
     public static final String LIST_STATE_KEY = "LIST_STATE_KEY";
-    public static final String BORDER_STATE_KEY = "BORDER_STATE_KEY";
     // time for splash screen to last in milliseconds
     public static final long SPLASH_TIME = 3000;
     public static final String INTERNET_PICKER = "INTERNET_PICKER";
+    // arg used to pass data to fragments
+    public static final String ARG_TITLE = "title";
+    public static final String ARG_ICON = "icon";
+    public static final String EXTRA_USER_MEALS = "ke.co.venturisys.rubideliveryapp.meals";
+    public static final String EXTRA_USER_BACKDROP_TITLE = "ke.co.venturisys.rubideliveryapp.category_title";
+    public static final String EXTRA_USER_BACKDROP_ICON = "ke.co.venturisys.rubideliveryapp.category_icon";
     static final String FILE = "FILE";
     static final String URI = "URI";
     static final int BORDER_COLOR = Color.WHITE;

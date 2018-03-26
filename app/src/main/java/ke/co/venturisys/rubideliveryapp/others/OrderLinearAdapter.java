@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,22 +21,18 @@ import java.util.Locale;
 import ke.co.venturisys.rubideliveryapp.R;
 
 /**
- * Created by victor on 3/22/18.
- * This class handles arrangement of views in a linear layout for cart page
+ * Created by victor on 3/25/18.
+ * This class handles arrangement of views in a linear layout for order page
  */
 
-public class CartLinearAdapter extends RecyclerViewAdapter {
+public class OrderLinearAdapter extends RecyclerViewAdapter {
 
     private Activity activity;
     private List<Meal> meals;
 
-    public CartLinearAdapter(Activity activity, List<Meal> meals) {
+    public OrderLinearAdapter(Activity activity, List<Meal> meals) {
         this.activity = activity;
         this.meals = meals;
-    }
-
-    public int getMeals() {
-        return meals.size();
     }
 
     /*
@@ -47,7 +42,7 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(activity)
-                .inflate(R.layout.cart_page_card, parent, false);
+                .inflate(R.layout.order_page_card, parent, false);
 
         return new Holder(view);
     }
@@ -139,19 +134,11 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
             }
         });
 
-        myHolder.mealDeleteBtn.setOnClickListener(new View.OnClickListener() {
+        myHolder.mealAddCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // remove meal at given position
-                removeAt(myHolder.getAdapterPosition());
-            }
-        });
-
-        myHolder.mealEditBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // save changes to amount of meal
-                Toast.makeText(activity, "Changes saved", Toast.LENGTH_SHORT).show();
+                // add meal to cart
+                Toast.makeText(activity, "Added to cart", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -164,35 +151,25 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
         return meals.size();
     }
 
-    private void removeAt(int position) {
-        meals.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, meals.size());
-        notifyDataSetChanged();
-    }
-
     /*
      * Inflate widgets in layout passed
      */
     public class Holder extends RecycleViewHolder {
 
-        LinearLayout linearLayoutOrderAmount;
         TextView mealTitle, mealDetails, mealPrice;
-        EditText mealNumber;
-        Button mealEditBtn, mealDeleteBtn;
         ImageButton mealAddBtn, mealMinusBtn;
+        EditText mealNumber;
+        Button mealAddCart;
 
         Holder(View itemView) {
             super(itemView);
-            linearLayoutOrderAmount = itemView.findViewById(R.id.order_meal_amount_linear_layout);
-            mealTitle = itemView.findViewById(R.id.order_meal_name);
-            mealDetails = itemView.findViewById(R.id.order_meal_details);
-            mealNumber = itemView.findViewById(R.id.order_meal_edit_amount);
-            mealPrice = itemView.findViewById(R.id.order_meal_price);
-            mealEditBtn = itemView.findViewById(R.id.order_meal_edit_btn);
-            mealDeleteBtn = itemView.findViewById(R.id.order_meal_delete_btn);
-            mealAddBtn = itemView.findViewById(R.id.order_meal_add_btn);
-            mealMinusBtn = itemView.findViewById(R.id.order_meal_minus_btn);
+            mealTitle = itemView.findViewById(R.id.food_title);
+            mealPrice = itemView.findViewById(R.id.food_price);
+            mealDetails = itemView.findViewById(R.id.food_details);
+            mealAddBtn = itemView.findViewById(R.id.meal_add_btn);
+            mealMinusBtn = itemView.findViewById(R.id.meal_minus_btn);
+            mealNumber = itemView.findViewById(R.id.meal_edit_amount);
+            mealAddCart = itemView.findViewById(R.id.add_to_cart_btn);
         }
     }
 }

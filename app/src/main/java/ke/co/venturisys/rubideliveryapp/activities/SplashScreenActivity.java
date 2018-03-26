@@ -16,10 +16,9 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageV
 
 public class SplashScreenActivity extends AppCompatActivity {
 
+    ImageView imageView;
     // handle delayed execution
     private Handler mHandler = new Handler();
-
-    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

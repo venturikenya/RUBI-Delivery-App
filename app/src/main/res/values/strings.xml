@@ -26,6 +26,7 @@
     <!-- Titles for separate activities -->
     <string name="activity_title_about_us">@string/nav_about_us</string>
     <string name="activity_title_terms_conditions">@string/nav_terms_conditions</string>
+    <string name="activity_title_order">Meals</string>
 
     <!-- Titles for toolbar menu -->
     <string name="action_clear_all">Clear All</string>
@@ -51,10 +52,11 @@
     <string name="redirect_home_description">This button redirects to home page</string>
     <string name="edit_profile_description">This button edit the profile</string>
     <string name="edit_profile_image_description">This button edit the profile image</string>
+    <string name="order_appbar_image_description">Image of category</string>
 
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>
-    <string name="hint_edit_meal_amount">Here, you can edit the number of selected meal to be ordered</string>
+    <string name="hint_edit_meal_amount">1</string>
     <string name="hint_advert">Powered by Venturi Systems</string>
 
     <!-- Placeholders -->
@@ -81,9 +83,15 @@
     <string name="delete">Delete</string>
     <string name="item">item</string>
     <string name="proceed_to_checkout">Proceed to checkout</string>
+    <string name="proceed_to_cart">Proceed to cart</string>
     <string name="kenyan_currency">Ksh</string>
     <string name="nothing_placeholder">Nothing to show</string>
     <string name="order_history">View order history</string>
+    <string name="category_placeholder">Name of category</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="food_name">Food Name</string>
+    <string name="food_price">Food Price</string>
+    <string name="food_details">Food Details</string>
 
     <!-- set up internet chooser dialog -->
     <string name="internet_access_request">This app needs internet access</string>

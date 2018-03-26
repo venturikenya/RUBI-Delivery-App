@@ -66,8 +66,8 @@
                         android:layout_weight="1"
                         android:gravity="start|center_vertical"
                         android:text="@string/edit"
-                        android:textColor="@color/colorApp"
                         android:textAllCaps="false"
+                        android:textColor="@color/colorApp"
                         android:textSize="16sp" />
 
                     <Button
@@ -78,8 +78,8 @@
                         android:layout_weight="1"
                         android:gravity="start|center_vertical"
                         android:text="@string/delete"
-                        android:textColor="@color/colorApp"
                         android:textAllCaps="false"
+                        android:textColor="@color/colorApp"
                         android:textSize="16sp" />
 
                 </LinearLayout>

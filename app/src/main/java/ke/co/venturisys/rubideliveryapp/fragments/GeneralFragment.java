@@ -1,72 +1,52 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import ke.co.venturisys.rubideliveryapp.R;
-import ke.co.venturisys.rubideliveryapp.others.OnFragmentInteractionListener;
 import ke.co.venturisys.rubideliveryapp.others.Permissions.InternetConnectionDialogFragment;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.INTERNET_PICKER;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.inflateCartMenu;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
- * to handle interaction events.
  */
 public class GeneralFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // variable to inflate respective layouts
     View view;
-    OnFragmentInteractionListener mListener;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /*
      * This method creates a snack bar in fragments that require internet
      * so that providing an interface for the user to enable internet connection
      */
-    void requestInternetAccess(CoordinatorLayout coordinatorLayout){
+    void requestInternetAccess(CoordinatorLayout coordinatorLayout) {
         if (!isNetworkAvailable(getContext())) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, getString(R.string.internet_access_request), Snackbar.LENGTH_LONG)
@@ -89,5 +69,19 @@ public class GeneralFragment extends Fragment {
             textView.setTextColor(Color.YELLOW);
             snackbar.show();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final View view = inflateCartMenu(inflater, menu, getActivity());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.setVisibility(View.GONE);
+                changeFragment(CartFragment.newInstance(), new Handler(), TAG_CART,
+                        (AppCompatActivity) getActivity());
+            }
+        });
     }
 }

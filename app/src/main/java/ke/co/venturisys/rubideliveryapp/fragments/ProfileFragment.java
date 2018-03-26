@@ -91,9 +91,9 @@ public class ProfileFragment extends GeneralFragment {
         });
 
         // set drawables to text views
-        textViewLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pin,0,0,0);
-        textViewPhone.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone,0,0,0);
-        textViewEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_envelope,0,0,0);
+        textViewLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pin, 0, 0, 0);
+        textViewPhone.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_phone, 0, 0, 0);
+        textViewEmail.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_envelope, 0, 0, 0);
 
         // set color to text view drawables
         setTextViewDrawableColor(textViewLocation, R.color.colorApp, getActivity());

@@ -11,4 +11,5 @@
     <color name="black">#111</color>
     <color name="blackDarker">#000</color>
     <color name="colorSnackbarActionText">#F50057</color>
+    <color name="colorFab">#AA00FF</color>
 </resources>

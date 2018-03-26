@@ -1,6 +1,7 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,6 +19,8 @@ import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.others.Notification;
 import ke.co.venturisys.rubideliveryapp.others.NotificationsLinearAdapter;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
+
 public class NotificationsFragment extends GeneralFragment {
 
     LinearLayoutManager layoutManager; // lays out children in a linear format
@@ -26,6 +29,7 @@ public class NotificationsFragment extends GeneralFragment {
 
     TextView notificationsTitle;
     List<Notification> notifications;
+    Parcelable mListState; // used to save state of recycler view across rotation
 
     public NotificationsFragment() {
     }
@@ -72,5 +76,32 @@ public class NotificationsFragment extends GeneralFragment {
         notifications.add(notification);
 
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // retrieve contents on screen before rotation
+        if (savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save recycler view state
+        mListState = layoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            layoutManager.onRestoreInstanceState(mListState);
+        }
     }
 }

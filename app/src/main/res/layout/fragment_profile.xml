@@ -1,9 +1,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/profile_coordinator_layout"
     tools:context="ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment">
 
     <LinearLayout
@@ -45,41 +45,41 @@
                         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
                     <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentBottom="true"-->
-                        <!--android:layout_alignParentEnd="true"-->
-                        <!--android:contentDescription="@string/edit_profile_image_description"-->
-                        <!--android:src="@drawable/ic_add_circle_outline" />-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:contentDescription="@string/edit_profile_image_description"-->
+                    <!--android:src="@drawable/ic_add_circle_outline" />-->
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.6"
+                    android:layout_marginBottom="@dimen/item_offset"
                     android:layout_marginTop="@dimen/item_offset"
-                    android:layout_marginBottom="@dimen/item_offset">
+                    android:layout_weight="0.6">
 
-                <TextView
-                    android:id="@+id/tvProfileName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/general_padding"
-                    android:gravity="center"
-                    android:text="@string/name_placeholder"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/tvProfileName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/general_padding"
+                        android:text="@string/name_placeholder"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/tvProfileDetails"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvProfileName"
-                    android:padding="@dimen/general_padding"
-                    android:gravity="center"
-                    android:text="@string/details_placeholder"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/tvProfileDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvProfileName"
+                        android:gravity="center"
+                        android:padding="@dimen/general_padding"
+                        android:text="@string/details_placeholder"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
 
                 </RelativeLayout>
 

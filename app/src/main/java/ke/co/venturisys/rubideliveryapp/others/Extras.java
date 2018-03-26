@@ -16,6 +16,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +33,12 @@ import java.io.File;
 import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
+import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
+import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 
+import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
+import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.FILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URI;
@@ -179,5 +188,49 @@ public class Extras {
 
         // If mPendingRunnable is not null, then add to the message queue
         mHandler.post(mPendingRunnable);
+    }
+
+    /*
+     * Method redirects to home fragment on back button pressed
+     */
+    public static boolean goToTargetFragment(AppCompatActivity activity, int keyCode,
+                                             KeyEvent event, String TAG_SRC, String TAG_TARGET) {
+        // detect if back button is pressed
+        if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+
+            // redirect to landing page
+            if (activity instanceof MainActivity) {
+                setNavItemIndex(0);
+                setCurrentTag(TAG_TARGET);
+                Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG_SRC);
+                if (fragment != null)
+                    activity.getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
+                changeFragment(HomeFragment.newInstance(), new Handler(), TAG_SRC, activity);
+            } else if (activity instanceof OrderActivity) {
+                exitToTargetActivity(activity, MainActivity.class);
+            }
+
+            return true;
+
+        }
+
+        return false;
+    }
+
+    public static View inflateCartMenu(MenuInflater inflater, Menu menu, Activity activity) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.main, menu);
+        View view = menu.findItem(R.id.action_proceed_order).getActionView();
+        // obtain drawable of shopping bag to place badge on top of it
+        TextView textView = view.findViewById(R.id.editOrderTextView);
+        // set shopping bag icon
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_bag, 0, 0, 0);
+        // add badge showing no. of orders
+        LayerDrawable icon = (LayerDrawable) textView.getCompoundDrawables()[0];
+        setBadgeCount(activity, icon, String.valueOf(2), R.id.ic_shopping_badge);
+        // set colour of shopping bag
+        setTextViewDrawableColor(textView, R.color.colorApp, activity);
+        return view;
     }
 }

@@ -1,6 +1,7 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,8 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
+import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageFood;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageGridAdapter;
+import ke.co.venturisys.rubideliveryapp.others.OrderLab;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
@@ -73,6 +78,7 @@ public class HomeFragment extends GeneralFragment {
                              @Nullable Bundle savedInstanceState) {
         // inflate layout
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        assert getActivity() != null;
 
         initCollapsingToolbar();
         foods = new ArrayList<>();
@@ -85,19 +91,6 @@ public class HomeFragment extends GeneralFragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        // redirect to order page
-//        adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-//                LandingPageGridAdapter.Holder myHolder = (LandingPageGridAdapter.Holder) holder;
-//                String title = myHolder.getTvLandingPage().getText().toString();
-//                int icon = foods.get(position).getIcon();
-//                mListener.setCategoryName(title);
-//                mListener.setCategoryIcon(icon);
-//            }
-//        });
-
         // initialise widgets
         landingBg = view.findViewById(R.id.backdrop);
         searchBtn = view.findViewById(R.id.search_image_view);
@@ -107,6 +100,16 @@ public class HomeFragment extends GeneralFragment {
         inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputSearch = view.findViewById(R.id.input_search);
         mainContent = view.findViewById(R.id.main_content);
+
+        // show today's offers
+        offerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = OrderActivity.newIntent(getActivity(),
+                        R.drawable.ruby_small, offerBtn.getText().toString());
+                startActivity(intent);
+            }
+        });
 
         requestInternetAccess(mainContent);
 
@@ -165,41 +168,22 @@ public class HomeFragment extends GeneralFragment {
     }
 
     private void prepareFoodItems() {
-        int[] icons = new int[]{
-                R.drawable.ic_pastries,
-        };
+        OrderLab orderLab = OrderLab.get(getActivity());
+        foods = orderLab.getFoods();
 
-        LandingPageFood food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
-        food = new LandingPageFood("Pastries", icons[0]);
-        foods.add(food);
-
+        adapter = new LandingPageGridAdapter(getActivity(), foods);
+        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        // redirect to order page
+        adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int pos = foods.get(position).getId();
+                Intent intent = OrderPagerActivity.newIntent(getActivity(), pos);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

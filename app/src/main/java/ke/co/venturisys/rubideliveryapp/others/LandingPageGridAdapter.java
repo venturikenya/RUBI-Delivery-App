@@ -78,14 +78,14 @@ public class LandingPageGridAdapter extends RecyclerViewAdapter {
         ImageView imLandingPage;
         TextView tvLandingPage;
 
-        public TextView getTvLandingPage() {
-            return tvLandingPage;
-        }
-
         Holder(View itemView) {
             super(itemView);
             imLandingPage = itemView.findViewById(R.id.landing_page_card_view_image);
             tvLandingPage = itemView.findViewById(R.id.landing_page_card_view_text);
+        }
+
+        public TextView getTvLandingPage() {
+            return tvLandingPage;
         }
     }
 }

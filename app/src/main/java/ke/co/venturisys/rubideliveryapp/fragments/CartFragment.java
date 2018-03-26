@@ -5,17 +5,19 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,11 @@ import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.others.CartLinearAdapter;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
 
-import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
-import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.goToTargetFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.inflateCartMenu;
 
 public class CartFragment extends GeneralFragment {
 
@@ -61,6 +62,12 @@ public class CartFragment extends GeneralFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -86,12 +93,11 @@ public class CartFragment extends GeneralFragment {
         reviewCart();
 
         updateTextViews(meals.size());
-        final Handler handler = new Handler();
         timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                handler.post(new Runnable() {
+                mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (isAdded()) updateTextViews(adapter.getMeals());
@@ -174,27 +180,20 @@ public class CartFragment extends GeneralFragment {
         view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return goToTargetFragment((AppCompatActivity) getActivity(), keyCode, event,
+                        TAG_CART, TAG_HOME);
+            }
+        });
+    }
 
-                // detect if back button is pressed
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        View view = inflateCartMenu(inflater, menu, getActivity());
 
-                    // redirect to landing page
-                    setNavItemIndex(0);
-                    setCurrentTag(TAG_HOME);
-                    Fragment fragment = getActivity().getSupportFragmentManager()
-                            .findFragmentByTag(TAG_CART);
-                    if (fragment != null)
-                        getActivity().getSupportFragmentManager()
-                                .beginTransaction().remove(fragment).commit();
-
-                    changeFragment(HomeFragment.newInstance(), new Handler(), TAG_HOME,
-                            (AppCompatActivity) getActivity());
-
-                    return true;
-
-                }
-
-                return false;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Nothing more here", Toast.LENGTH_SHORT).show();
             }
         });
     }

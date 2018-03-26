@@ -29,9 +29,7 @@ import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
-import ke.co.venturisys.rubideliveryapp.others.OnFragmentInteractionListener;
 
-import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_NOTIFICATIONS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTORY;
@@ -49,8 +47,7 @@ import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
  * Hamburger icon: http://codetheory.in/android-navigation-drawer/
  */
 
-public class MainActivity extends AppCompatActivity
-        implements OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
@@ -61,9 +58,6 @@ public class MainActivity extends AppCompatActivity
     // flag to load home fragment when user presses back key
     boolean shouldLoadHomeFragOnBackPress = true;
     Handler mHandler;
-    // details for categories in landing page recyclerview
-    String categoryName;
-    int categoryIcon;
 
     // widgets
     LinearLayout headerLayout;
@@ -416,38 +410,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        View view = menu.findItem(R.id.action_proceed_order).getActionView();
-        // obtain drawable of shopping bag to place badge on top of it
-        TextView textView = view.findViewById(R.id.editOrderTextView);
-        // set shopping bag icon
-        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_bag, 0, 0, 0);
-        // add badge showing no. of orders
-        LayerDrawable icon = (LayerDrawable) textView.getCompoundDrawables()[0];
-        setBadgeCount(this, icon, String.valueOf(2), R.id.ic_shopping_badge);
-        // set colour of shopping bag
-        setTextViewDrawableColor(textView, R.color.colorApp, this);
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fab.hide();
-                if (!(fragment instanceof CartFragment)) {
-                    changeFragment(CartFragment.newInstance(), mHandler, TAG_CART,
-                            MainActivity.this);
-                }
-            }
-        });
-
-        if (fragment instanceof CartFragment) {
-            view.setClickable(false);
-        }
+        // Inflate the menu(s)
 
         // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 2) {
+        if (navItemIndex == 2 && (fragment == null || !(fragment.isVisible()))) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
+
         return true;
     }
 
@@ -478,25 +447,5 @@ public class MainActivity extends AppCompatActivity
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
-    }
-
-    @Override
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    @Override
-    public void setCategoryName(String name) {
-        this.categoryName = name;
-    }
-
-    @Override
-    public int getCategoryIcon() {
-        return categoryIcon;
-    }
-
-    @Override
-    public void setCategoryIcon(int icon) {
-        this.categoryIcon = icon;
     }
 }

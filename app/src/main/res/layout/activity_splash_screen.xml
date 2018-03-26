@@ -16,14 +16,14 @@
         app:srcCompat="@drawable/ruby" />
 
     <TextView
+        style="?android:buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/hint_advert"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="16sp"
-        android:textStyle="bold|italic" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

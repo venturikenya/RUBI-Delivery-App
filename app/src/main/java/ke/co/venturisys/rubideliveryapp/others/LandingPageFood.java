@@ -9,10 +9,12 @@ public class LandingPageFood {
 
     private String name;
     private int icon;
+    private int id;
 
-    public LandingPageFood(String name, int icon) {
+    LandingPageFood(String name, int icon, int id) {
         this.name = name;
         this.icon = icon;
+        this.id = id;
     }
 
     public String getName() {
@@ -21,5 +23,9 @@ public class LandingPageFood {
 
     public int getIcon() {
         return icon;
+    }
+
+    public int getId() {
+        return id;
     }
 }

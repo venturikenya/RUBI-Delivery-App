@@ -39,6 +39,7 @@
                 android:layout_weight="9"
                 android:padding="@dimen/general_padding"
                 android:textColorHint="@color/colorApp"
+                app:errorTextAppearance="@style/error_appearance"
                 app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
                 <EditText
@@ -49,6 +50,7 @@
                     android:hint="@string/hint_search"
                     android:inputType="text"
                     android:singleLine="true"
+                    android:textColorHint="@color/colorApp"
                     android:textSize="16sp" />
 
             </android.support.design.widget.TextInputLayout>
@@ -72,7 +74,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
-                    app:contentScrim="?attr/colorPrimary"
                     app:expandedTitleMarginEnd="64dp"
                     app:expandedTitleMarginStart="48dp"
                     app:expandedTitleTextAppearance="@android:color/transparent"

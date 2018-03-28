@@ -41,7 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void run() {
                 // Method will run once splash time is over
                 // Start login activity
-                exitToTargetActivity(SplashScreenActivity.this, MainActivity.class);
+                exitToTargetActivity(SplashScreenActivity.this, LoginActivity.class);
             }
         }, SPLASH_TIME);
     }

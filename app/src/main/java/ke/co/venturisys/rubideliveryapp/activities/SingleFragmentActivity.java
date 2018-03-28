@@ -9,7 +9,7 @@ import ke.co.venturisys.rubideliveryapp.R;
 
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
 
-public abstract class SingleFramentActivity extends AppCompatActivity {
+public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     // title of toolbar
     String title;
@@ -22,8 +22,6 @@ public abstract class SingleFramentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
-        // set up toolbar
-        setUpActionBar(title, this);
         // host fragment in this activity
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.frame);
@@ -33,6 +31,13 @@ public abstract class SingleFramentActivity extends AppCompatActivity {
                     .add(R.id.frame, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // set up toolbar
+        setUpActionBar(title, this);
     }
 
     protected abstract Fragment createFragment();

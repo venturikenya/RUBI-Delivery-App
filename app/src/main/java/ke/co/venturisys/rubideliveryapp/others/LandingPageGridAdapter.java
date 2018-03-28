@@ -34,10 +34,10 @@ public class LandingPageGridAdapter extends RecyclerViewAdapter {
     }
 
     /*
-         * Used to create new ViewHolder, along with its returned View to display.
-         * Called until a sufficient number of ViewHolders have been created,
-         * after which the old ViewHolders are recycled, saving space and time
-         */
+     * Used to create new ViewHolder, along with its returned View to display.
+     * Called until a sufficient number of ViewHolders have been created,
+     * after which the old ViewHolders are recycled, saving space and time
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

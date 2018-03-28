@@ -1,14 +1,190 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.RegistrationFragment">
+    android:background="@android:color/white"
+    tools:context=".fragments.LoginFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:scrollbars="none">
 
-</FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/register_app_logo_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_header_height"
+                android:layout_marginTop="30dp">
+
+                <ImageView
+                    android:id="@+id/register_app_logo_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/logo_description"
+                    android:paddingTop="@dimen/item_offset"
+                    app:srcCompat="@drawable/ruby" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/register_linear_layout_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_app_logo_layout"
+                android:layout_marginBottom="@dimen/item_offset"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="@dimen/item_offset"
+                android:background="@color/colorText"
+                android:baselineAligned="false">
+
+                <ImageView
+                    android:id="@+id/username_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_marginTop="7dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/username_image_description"
+                    android:src="@drawable/ic_profile" />
+
+                <EditText
+                    android:id="@+id/register_username"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/item_offset"
+                    android:layout_weight="9"
+                    android:background="@color/colorText"
+                    android:hint="@string/username_placeholder"
+                    android:inputType="textPersonName"
+                    android:padding="@dimen/general_padding"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/register_linear_layout_email_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_linear_layout_username"
+                android:layout_marginBottom="@dimen/item_offset"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="@dimen/item_offset"
+                android:background="@color/colorText"
+                android:baselineAligned="false">
+
+                <ImageView
+                    android:id="@+id/email_address_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_marginTop="7dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/email_address_image_description"
+                    android:src="@drawable/ic_envelope" />
+
+                <EditText
+                    android:id="@+id/register_email_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/item_offset"
+                    android:layout_weight="9"
+                    android:background="@color/colorText"
+                    android:hint="@string/email_address_placeholder"
+                    android:inputType="textEmailAddress"
+                    android:padding="@dimen/general_padding"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/register_linear_layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_linear_layout_email_address"
+                android:layout_marginBottom="@dimen/item_offset"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="@dimen/item_offset"
+                android:background="@color/colorText"
+                android:baselineAligned="false">
+
+                <ImageView
+                    android:id="@+id/password_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_marginTop="7dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/password_image_description"
+                    android:paddingBottom="@dimen/item_offset"
+                    android:src="@drawable/ic_lock_open" />
+
+                <EditText
+                    android:id="@+id/register_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/item_offset"
+                    android:layout_weight="9"
+                    android:background="@color/colorText"
+                    android:hint="@string/password_placeholder"
+                    android:inputType="textPassword"
+                    android:padding="@dimen/general_padding"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/register_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_linear_layout_password"
+                android:layout_marginBottom="@dimen/item_offset"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:background="@color/colorEntry"
+                android:padding="15dp"
+                android:text="@string/create_account"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="24sp" />
+
+            <include
+                android:id="@+id/social_links"
+                layout="@layout/social_media_links"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_button" />
+
+            <ImageView
+                android:id="@+id/city_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/social_links"
+                android:contentDescription="@string/city_description"
+                android:src="@drawable/ic_nairobi" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

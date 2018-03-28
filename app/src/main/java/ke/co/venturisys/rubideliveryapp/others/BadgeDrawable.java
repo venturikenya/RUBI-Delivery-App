@@ -65,7 +65,7 @@ public class BadgeDrawable extends Drawable {
 
         // Position the badge in the top-right quadrant of the icon.
 
-	        /*Using Math.max rather than Math.min */
+        /*Using Math.max rather than Math.min */
 
         float radius = ((Math.max(width, height) / 2)) / 2;
         float centerX = (width - radius - 1) + 5;

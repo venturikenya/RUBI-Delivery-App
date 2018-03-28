@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -33,24 +35,28 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ke.co.venturisys.rubideliveryapp.R;
-import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
+import ke.co.venturisys.rubideliveryapp.others.ImagesViewPagerAdapter;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageFood;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageGridAdapter;
 import ke.co.venturisys.rubideliveryapp.others.OrderLab;
+import me.relex.circleindicator.CircleIndicator;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.backgroundOnClick;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
 public class HomeFragment extends GeneralFragment {
 
+    private static int currentPage = 0; // detects page in image slide carousel
     GridLayoutManager layoutManager; // lays out children in a grid format
     RecyclerView recyclerView;
     LandingPageGridAdapter adapter; // adapter to communicate with recycler view
-
     ImageView landingBg, searchBtn;
     ImageButton overflowBtn;
     Button offerBtn;
@@ -105,11 +111,33 @@ public class HomeFragment extends GeneralFragment {
         offerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OrderActivity.newIntent(getActivity(),
-                        R.drawable.ruby_small, offerBtn.getText().toString());
-                startActivity(intent);
+                backgroundOnClick(getActivity(), offerBtn);
             }
         });
+
+        // set up image carousel for day's offers using viewpager
+        final ViewPager mViewPager = view.findViewById(R.id.offer_view_pager);
+        final ImagesViewPagerAdapter adapter = new ImagesViewPagerAdapter(getActivity(), offerBtn);
+        mViewPager.setAdapter(adapter);
+        // indicator shows current page visible
+        CircleIndicator indicator = view.findViewById(R.id.indicator);
+        indicator.setViewPager(mViewPager);
+
+        // Auto start of viewpager
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                if (currentPage == adapter.getCount()) currentPage = 0;
+                mViewPager.setCurrentItem(currentPage++, true);
+            }
+        };
+        Timer swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(runnable);
+            }
+        }, 2500, 5000);
 
         requestInternetAccess(mainContent);
 

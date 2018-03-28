@@ -13,7 +13,8 @@
     <string name="nav_order_history">Order History</string>
     <string name="nav_about_us">About Us</string>
     <string name="nav_terms_conditions">Terms and Conditions</string>
-    <string name="nav_log_out">Log Out</string>\
+    <string name="nav_log_out">Log Out</string>
+    <string name="nav_login">Login</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">
@@ -53,6 +54,11 @@
     <string name="edit_profile_description">This button edit the profile</string>
     <string name="edit_profile_image_description">This button edit the profile image</string>
     <string name="order_appbar_image_description">Image of category</string>
+    <string name="username_image_description">This is the username input section</string>
+    <string name="email_address_image_description">This is the email input section</string>
+    <string name="password_image_description">This is the password input section</string>
+    <string name="facebook_description">This is the Facebook&#174; button</string>
+    <string name="google_plus_description">This is the Google+ &#174; button</string>
 
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>
@@ -60,6 +66,9 @@
     <string name="hint_advert">Powered by Venturi Systems</string>
 
     <!-- Placeholders -->
+    <string name="username_placeholder">Username</string>
+    <string name="password_placeholder">Password</string>
+    <string name="email_address_placeholder">Email Address</string>
     <string name="name_placeholder">Your Name</string>
     <string name="location_placeholder">Your Location</string>
     <string name="details_placeholder">About You</string>
@@ -92,6 +101,8 @@
     <string name="food_name">Food Name</string>
     <string name="food_price">Food Price</string>
     <string name="food_details">Food Details</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="create_account">Create account</string>
 
     <!-- set up internet chooser dialog -->
     <string name="internet_access_request">This app needs internet access</string>
@@ -100,4 +111,5 @@
     <string name="mobile_network_option">Mobile Networks</string>
     <string name="internet_message">Please select an internet connection</string>
     <string name="close_button">Close</string>
+    <string name="or">or</string>
 </resources>

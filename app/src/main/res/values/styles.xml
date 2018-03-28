@@ -48,4 +48,15 @@
         <item name="android:textColor">@color/colorApp</item>
     </style>
 
+    <!-- Set color of floating hint -->
+    <style name="TextAppearance.App.WhiteTextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <!-- Set custom color for Text Input Layout error -->
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorDot</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

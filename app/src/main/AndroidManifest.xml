@@ -37,8 +37,12 @@
         <activity
             android:name=".activities.OrderActivity"
             android:parentActivityName=".activities.MainActivity" />
-        <activity android:name=".activities.OrderPagerActivity"
+        <activity
+            android:name=".activities.OrderPagerActivity"
             android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:theme="@style/SplashScreenTheme" />
     </application>
 
 </manifest>

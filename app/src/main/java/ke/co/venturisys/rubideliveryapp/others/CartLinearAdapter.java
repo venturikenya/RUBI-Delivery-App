@@ -41,8 +41,8 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
     }
 
     /*
-         * Create a holder with inflated layout as view
-         */
+     * Create a holder with inflated layout as view
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

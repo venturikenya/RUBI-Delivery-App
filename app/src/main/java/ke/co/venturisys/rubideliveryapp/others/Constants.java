@@ -14,6 +14,7 @@ public class Constants {
     public static final String TAG_NOTIFICATIONS = "notifications";
     public static final String TAG_ORDER_HISTORY = "order_history";
     public static final String TAG_CART = "cart";
+    public static final String TAG_REGISTRATION = "registration";
     public static final String URL = "URL";
     public static final String RES_ID = "RESOURCE ID";
     // extra used to pass data to activities

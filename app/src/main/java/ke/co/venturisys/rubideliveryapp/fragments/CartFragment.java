@@ -26,6 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
 import ke.co.venturisys.rubideliveryapp.others.CartLinearAdapter;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
 
@@ -188,13 +189,15 @@ public class CartFragment extends GeneralFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        View view = inflateCartMenu(inflater, menu, getActivity());
+        if (!(getActivity() instanceof OrderPagerActivity)) {
+            View view = inflateCartMenu(inflater, menu, getActivity());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Nothing more here", Toast.LENGTH_SHORT).show();
-            }
-        });
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "Nothing more here", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

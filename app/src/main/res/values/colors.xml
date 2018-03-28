@@ -12,4 +12,7 @@
     <color name="blackDarker">#000</color>
     <color name="colorSnackbarActionText">#F50057</color>
     <color name="colorFab">#AA00FF</color>
+    <color name="colorText">#82B1FF</color>
+    <color name="colorEntry">#6d84b4</color>
+    <color name="colorGoogle">#DB4437</color>
 </resources>

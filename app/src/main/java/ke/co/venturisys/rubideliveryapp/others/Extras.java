@@ -20,6 +20,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
+import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
@@ -207,7 +210,7 @@ public class Extras {
                     activity.getSupportFragmentManager().beginTransaction().remove(fragment).commit();
 
                 changeFragment(HomeFragment.newInstance(), new Handler(), TAG_SRC, activity);
-            } else if (activity instanceof OrderActivity) {
+            } else if (activity instanceof OrderActivity || activity instanceof OrderPagerActivity) {
                 exitToTargetActivity(activity, MainActivity.class);
             }
 
@@ -232,5 +235,21 @@ public class Extras {
         // set colour of shopping bag
         setTextViewDrawableColor(textView, R.color.colorApp, activity);
         return view;
+    }
+
+    /*
+     * Method redirects to order page when you click on offer button or background image view
+     */
+    public static void backgroundOnClick(Context activity, Button offerBtn) {
+        Intent intent = OrderActivity.newIntent(activity,
+                R.drawable.ruby_small, offerBtn.getText().toString());
+        activity.startActivity(intent);
+    }
+
+    /*
+     * Check if length of edit text page is equal to 0, return true if it is
+     */
+    public static boolean isEmpty(EditText editText) {
+        return editText.getText().toString().trim().length() == 0;
     }
 }

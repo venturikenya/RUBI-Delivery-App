@@ -6,6 +6,30 @@
     <string name="openDrawer">open_drawer</string>
     <string name="closeDrawer">close_drawer</string>
 
+    <!-- Intro slider labels -->
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="continue_">Continue</string>
+    <string name="slide1_msg">Welcome</string>
+    <string name="slide2_msg_part1">Your package delivery</string>
+    <string name="slide2_msg_part2">made simple</string>
+    <string name="slide3_msg_part1">Order your favourite</string>
+    <string name="slide3_msg_part2">food</string>
+    <string name="slide4_msg_part1">Track your order</string>
+    <string name="slide4_msg_part2">all the way</string>
+    <string-array name="intro_slider_titles">
+        <item>@string/slide1_msg</item>
+        <item>@string/slide2_msg_part1</item>
+        <item>@string/slide3_msg_part1</item>
+        <item>@string/slide4_msg_part1</item>
+    </string-array>
+    <string-array name="intro_slider_subtitles">
+        <item>None</item>
+        <item>@string/slide2_msg_part2</item>
+        <item>@string/slide3_msg_part2</item>
+        <item>@string/slide4_msg_part2</item>
+    </string-array>
+
     <!-- Navigation Drawer menu labels -->
     <string name="nav_home">Home</string>
     <string name="nav_profile">Profile</string>
@@ -25,8 +49,7 @@
     </string-array>
 
     <!-- Titles for separate activities -->
-    <string name="activity_title_about_us">@string/nav_about_us</string>
-    <string name="activity_title_terms_conditions">@string/nav_terms_conditions</string>
+    <string name="activity_title_browser">Browse | Rubi</string>
     <string name="activity_title_order">Meals</string>
 
     <!-- Titles for toolbar menu -->
@@ -59,6 +82,8 @@
     <string name="password_image_description">This is the password input section</string>
     <string name="facebook_description">This is the Facebook&#174; button</string>
     <string name="google_plus_description">This is the Google+ &#174; button</string>
+    <string name="welcome_image_description">This is an image in the intro slider to the app</string>
+    <string name="welcome_indicator_description">This is an indicator for intro slider pages</string>
 
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>

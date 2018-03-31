@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/welcome_circular_image"
+            android:layout_width="@dimen/welcome_image_size"
+            android:layout_height="@dimen/welcome_image_size"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/welcome_image_description"
+            android:src="@mipmap/ic_launcher" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/welcome_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:text="@string/hint_advert"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/welcome_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/welcome_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/general_padding"
+            android:text="@string/email_address_placeholder"
+            android:textSize="28sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

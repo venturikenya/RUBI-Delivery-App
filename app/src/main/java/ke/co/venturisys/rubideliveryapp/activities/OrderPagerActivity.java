@@ -2,12 +2,12 @@ package ke.co.venturisys.rubideliveryapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
  * This activity enables user to view the different categories
  * by swiping screen left or right
  */
+
 public class OrderPagerActivity extends AppCompatActivity {
 
     ViewPager mViewPager;

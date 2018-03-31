@@ -1,9 +1,9 @@
 package ke.co.venturisys.rubideliveryapp.activities;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import ke.co.venturisys.rubideliveryapp.R;
 
@@ -11,7 +11,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
-    // title of toolbar
+    // activity_title of toolbar
     String title;
 
     public void setTitle(String title) {

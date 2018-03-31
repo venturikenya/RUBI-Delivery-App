@@ -33,4 +33,5 @@
     <dimen name="dialog_internet_drawable_spacing">4dp</dimen>
     <dimen name="dialog_internet_button_width">0dp</dimen>
     <dimen name="profile_texts_spacing">14dp</dimen>
+    <dimen name="welcome_image_size">180dp</dimen>
 </resources>

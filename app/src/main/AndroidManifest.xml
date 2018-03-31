@@ -15,11 +15,21 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.MainActivity" />
         <activity
-            android:name=".activities.TermsConditionsActivity"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity
-            android:name=".activities.AboutUsActivity"
-            android:parentActivityName=".activities.MainActivity" />
+            android:name=".activities.BrowserActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <intent-filter android:label="@string/activity_title_browser">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.venturisys.co.ke/” -->
+                <data
+                    android:host="www.venturisys.co.ke"
+                    android:pathPrefix="/"
+                    android:scheme="http" />
+
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.ProfileImageActivity"
             android:parentActivityName=".activities.MainActivity"
@@ -42,6 +52,9 @@
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LoginActivity"
+            android:theme="@style/SplashScreenTheme" />
+        <activity
+            android:name=".activities.WelcomeActivity"
             android:theme="@style/SplashScreenTheme" />
     </application>
 

@@ -15,4 +15,6 @@
     <color name="colorText">#82B1FF</color>
     <color name="colorEntry">#6d84b4</color>
     <color name="colorGoogle">#DB4437</color>
+    <color name="colorProgressBar">#303F9F</color>
+    <color name="colorWeb">#FF4081</color>
 </resources>

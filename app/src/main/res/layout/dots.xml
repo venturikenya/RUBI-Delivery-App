@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dotsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/dot1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="100dp"
+        android:contentDescription="@string/welcome_indicator_description"
+        android:src="@drawable/fill_circle" />
+
+    <ImageView
+        android:id="@+id/dot2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/dot1"
+        android:contentDescription="@string/welcome_indicator_description"
+        android:src="@drawable/holo_circle" />
+
+    <ImageView
+        android:id="@+id/dot3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/dot2"
+        android:contentDescription="@string/welcome_indicator_description"
+        android:src="@drawable/holo_circle" />
+
+    <ImageView
+        android:id="@+id/dot4"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/dot3"
+        android:contentDescription="@string/welcome_indicator_description"
+        android:src="@drawable/holo_circle" />
+
+</RelativeLayout>

@@ -47,6 +47,7 @@ public class GeneralFragment extends Fragment {
      * so that providing an interface for the user to enable internet connection
      */
     void requestInternetAccess(CoordinatorLayout coordinatorLayout) {
+        assert getContext() != null;
         if (!isNetworkAvailable(getContext())) {
             Snackbar snackbar = Snackbar
                     .make(coordinatorLayout, getString(R.string.internet_access_request), Snackbar.LENGTH_LONG)

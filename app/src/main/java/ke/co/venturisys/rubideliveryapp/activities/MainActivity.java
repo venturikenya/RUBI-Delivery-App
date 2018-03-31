@@ -2,6 +2,7 @@ package ke.co.venturisys.rubideliveryapp.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -12,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +40,10 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageV
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
+import static ke.co.venturisys.rubideliveryapp.others.URLs.urlAboutUs;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
+import static ke.co.venturisys.rubideliveryapp.others.URLs.urlTermsConditions;
+import static ke.co.venturisys.rubideliveryapp.others.URLs.urlVenturi;
 
 /**
  * Sliding menu: https://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
@@ -189,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*
      *  Loads the fragment returned from getHomeFragment() function into FrameLayout.
-     *  It also takes care of other things like changing the toolbar title,
+     *  It also takes care of other things like changing the toolbar activity_title,
      *  hiding / showing fab and
      *  invalidating the options menu so that new menu can be loaded for different fragment.
      */
@@ -328,14 +331,19 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_about_us:
                         // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
+                        startActivity(BrowserActivity.newIntent(MainActivity.this, urlAboutUs));
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.nav_terms_conditions:
                         // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, TermsConditionsActivity.class));
+                        startActivity(BrowserActivity.newIntent(MainActivity.this,
+                                urlTermsConditions));
                         drawerLayout.closeDrawers();
                         return true;
+                    case R.id.nav_creator_link:
+                        // redirect to venturi's website
+                        startActivity(BrowserActivity.newIntent(MainActivity.this, urlVenturi));
+                        drawerLayout.closeDrawers();
                     default:
                         navItemIndex = 0;
                 }

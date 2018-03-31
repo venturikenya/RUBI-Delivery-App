@@ -1,13 +1,14 @@
 package ke.co.venturisys.rubideliveryapp.activities;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.ImageView;
 
 import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.others.PreferencesManager;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.SPLASH_TIME;
@@ -40,8 +41,11 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Method will run once splash time is over
-                // Start login activity
-                exitToTargetActivity(SplashScreenActivity.this, LoginActivity.class);
+                // Start login activity or welcome activity if first launch
+                PreferencesManager pm = new PreferencesManager(SplashScreenActivity.this);
+                if (pm.isFirstTimeLaunch())
+                    exitToTargetActivity(SplashScreenActivity.this, WelcomeActivity.class);
+                else exitToTargetActivity(SplashScreenActivity.this, LoginActivity.class);
             }
         }, SPLASH_TIME);
     }
@@ -50,7 +54,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        //Remove all the callbacks otherwise navigation will execute
+        // Remove all the callbacks otherwise navigation will execute
         // even after activity is killed or closed.
         mHandler.removeCallbacksAndMessages(null);
     }

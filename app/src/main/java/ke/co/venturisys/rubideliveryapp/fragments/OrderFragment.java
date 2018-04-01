@@ -116,6 +116,7 @@ public class OrderFragment extends GeneralFragment {
         transitionsContainer.setClipToPadding(false);
         fabCartButton = view.findViewById(R.id.fabCartBtn);
         tvFabCart = view.findViewById(R.id.fabCartTextView);
+        tvFabCart.setVisibility(View.INVISIBLE);
         inputLayoutSearch = view.findViewById(R.id.order_input_layout_search);
         inputLayoutSearch.setHintAnimationEnabled(false);
         inputSearch = view.findViewById(R.id.order_input_search);

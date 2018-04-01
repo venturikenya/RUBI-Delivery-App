@@ -39,6 +39,7 @@
     <string name="nav_terms_conditions">Terms and Conditions</string>
     <string name="nav_log_out">Log Out</string>
     <string name="nav_login">Login</string>
+    <string name="nav_submit">Submit</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">
@@ -80,6 +81,7 @@
     <string name="username_image_description">This is the username input section</string>
     <string name="email_address_image_description">This is the email input section</string>
     <string name="password_image_description">This is the password input section</string>
+    <string name="location_image_description">This is the location input section</string>
     <string name="facebook_description">This is the Facebook&#174; button</string>
     <string name="google_plus_description">This is the Google+ &#174; button</string>
     <string name="welcome_image_description">This is an image in the intro slider to the app</string>
@@ -91,6 +93,7 @@
     <string name="hint_advert">Powered by Venturi Systems</string>
 
     <!-- Placeholders -->
+    <string name="edit_profile_placeholder">Edit Profile</string>
     <string name="username_placeholder">Username</string>
     <string name="password_placeholder">Password</string>
     <string name="email_address_placeholder">Email Address</string>
@@ -115,6 +118,8 @@
     <string name="cart_order_price">Order Price</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
     <string name="item">item</string>
     <string name="proceed_to_checkout">Proceed to checkout</string>
     <string name="proceed_to_cart">Proceed to cart</string>
@@ -128,6 +133,8 @@
     <string name="food_details">Food Details</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="create_account">Create account</string>
+    <string name="verification_message">We will send a verification code to
+        this number via SMS.</string>
 
     <!-- set up internet chooser dialog -->
     <string name="internet_access_request">This app needs internet access</string>

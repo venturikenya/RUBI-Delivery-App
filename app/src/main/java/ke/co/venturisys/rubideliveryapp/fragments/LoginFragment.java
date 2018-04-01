@@ -70,12 +70,6 @@ public class LoginFragment extends Fragment {
         googleBtn = view.findViewById(R.id.google_plus_btn);
         facebookBtn = view.findViewById(R.id.facebook_btn);
 
-        // set G+ icon to be circular with it's appropriate color
-        HashMap<String, Object> google = new HashMap<>();
-        google.put(RES_ID, R.drawable.ic_google_plus_icon);
-        loadPictureToImageView(google, R.drawable.ic_google_plus_icon, googleBtn, true,
-                false, false, false);
-
         // enter app if successful and show warning if not
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

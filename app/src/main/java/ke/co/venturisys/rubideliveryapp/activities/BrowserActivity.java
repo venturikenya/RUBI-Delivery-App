@@ -22,7 +22,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
 
 public class BrowserActivity extends AppCompatActivity {
 
-    String activity_title = "Browser Activity";
+    String activity_title;
     String postUrl;
     WebView webView;
     float m_downX;

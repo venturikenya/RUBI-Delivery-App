@@ -3,6 +3,7 @@ package ke.co.venturisys.rubideliveryapp.others;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -11,12 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.HashMap;
-
 import ke.co.venturisys.rubideliveryapp.R;
-
-import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
 /**
  * Created by victor on 3/30/18.
@@ -56,10 +52,7 @@ public class IntroViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.welcome_slide, container, false);
         ImageView circularImage = view.findViewById(R.id.welcome_circular_image);
         // set image(s) to intro slider's circular foreground
-        HashMap<String, Object> foreground = new HashMap<>();
-        foreground.put(RES_ID, circles[position]);
-        loadPictureToImageView(foreground, R.drawable.bg_circle, circularImage, false, false,
-                false, false);
+        circularImage.setImageDrawable(ContextCompat.getDrawable(context, circles[position]));
         // set title(s) & subtitle(s) to resp text views
         TextView tvTitle = view.findViewById(R.id.welcome_title),
                 tvSubtitle = view.findViewById(R.id.welcome_subtitle);

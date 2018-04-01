@@ -5,11 +5,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import ke.co.venturisys.rubideliveryapp.R;
-import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_EDIT_PROFILE;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmailValid;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
@@ -71,13 +69,7 @@ public class RegistrationFragment extends Fragment {
         googleBtn = view.findViewById(R.id.google_plus_btn);
         facebookBtn = view.findViewById(R.id.facebook_btn);
 
-        // set G+ icon to be circular with it's appropriate color
-        HashMap<String, Object> google = new HashMap<>();
-        google.put(RES_ID, R.drawable.ic_google_plus_icon);
-        loadPictureToImageView(google, R.drawable.ic_google_plus_icon, googleBtn, true,
-                false, false, false);
-
-        // enter app if successful and show warning if not
+        // redirect to edit profile page if successful and show warning if not
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,23 +82,6 @@ public class RegistrationFragment extends Fragment {
                 (Color.WHITE, PorterDuff.Mode.SRC_IN));
         emailAddressImageView.getDrawable().setColorFilter(new PorterDuffColorFilter
                 (Color.WHITE, PorterDuff.Mode.SRC_IN));
-
-        // check if email is empty or of valid type
-        emailAddress.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (isEmpty(emailAddress)) emailAddress.setError("User name required");
-                else if (isEmailValid(s.toString())) emailAddress.setError("Invalid email entered");
-            }
-        });
 
         // set image of city to login page
         HashMap<String, Object> src = new HashMap<>();
@@ -123,19 +98,7 @@ public class RegistrationFragment extends Fragment {
         else if (!isEmailValid(emailAddress.getText().toString()))
             emailAddress.setError("Invalid email entered");
         else if (isEmpty(passWord)) passWord.setError("Password required");
-        else exitToTargetActivity((AppCompatActivity) getActivity(), MainActivity.class);
-    }
-
-    /**
-     * Method is used for checking valid email id format.
-     *
-     * @param email Address being entered
-     * @return boolean true for valid, false for invalid
-     */
-    private boolean isEmailValid(String email) {
-        String expression = "^[\\w.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        else changeFragment(new EditProfileFragment(), new Handler(),
+                    TAG_EDIT_PROFILE, (AppCompatActivity) getActivity());
     }
 }

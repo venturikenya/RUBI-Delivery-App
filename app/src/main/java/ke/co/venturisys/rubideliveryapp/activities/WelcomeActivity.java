@@ -14,16 +14,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.HashMap;
-
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.others.IntroViewPagerAdapter;
 import ke.co.venturisys.rubideliveryapp.others.PreferencesManager;
 
-import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.bg;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -43,11 +38,16 @@ public class WelcomeActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             addBottomDots(position);
 
+            // intro slider background images
+            int[] bg = new int[]{
+                    R.drawable.intro_screen_01_background,
+                    R.drawable.intro_screen_02_background,
+                    R.drawable.intro_screen_03_background,
+                    R.drawable.intro_screen_04_background
+            };
             // set image(s) to intro slider's background
-            HashMap<String, Object> background = new HashMap<>();
-            background.put(RES_ID, bg[position]);
-            loadPictureToImageView(background, R.drawable.bg_circle, backgroundIv, false, true,
-                    false, false);
+            backgroundIv.setImageDrawable(
+                    ContextCompat.getDrawable(WelcomeActivity.this, bg[position]));
 
             // set background of next btn
             if (position == 0) {

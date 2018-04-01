@@ -22,8 +22,10 @@ public abstract class GeneralDialogFragment extends DialogFragment {
     public Activity activity;
     public int alertDialogLayout;
     ViewGroup viewGroup;
+    AlertDialog.Builder builder;
     AlertDialog alertDialog;
     int alertDialogTitle;
+    CharSequence stringAlertDialogTitle;
 
     @Nullable
     @Override
@@ -42,10 +44,11 @@ public abstract class GeneralDialogFragment extends DialogFragment {
 
         initializeWidgets(view);
 
-        alertDialog = new AlertDialog.Builder(activity)
-                .setView(view)
-                .setTitle(alertDialogTitle)
-                .create();
+        builder = new AlertDialog.Builder(activity)
+                .setView(view);
+        if (stringAlertDialogTitle == null) builder.setTitle(alertDialogTitle);
+        else builder.setTitle(stringAlertDialogTitle);
+        alertDialog = builder.create();
 
         return alertDialog;
     }
@@ -59,5 +62,9 @@ public abstract class GeneralDialogFragment extends DialogFragment {
 
     public void setAlertDialogTitle(int alertDialogTitle) {
         this.alertDialogTitle = alertDialogTitle;
+    }
+
+    public void setAlertDialogTitle(CharSequence stringAlertDialogTitle) {
+        this.stringAlertDialogTitle = stringAlertDialogTitle;
     }
 }

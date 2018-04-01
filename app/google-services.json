@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "648986668209",
+    "firebase_url": "https://rubi-delivery-app.firebaseio.com",
+    "project_id": "rubi-delivery-app",
+    "storage_bucket": "rubi-delivery-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648986668209:android:a42678c1b8ff02c3",
+        "android_client_info": {
+          "package_name": "ke.co.venturisys.rubideliveryapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "648986668209-8hbq9l9vfra6vt6gqb2strrbsf3ucqaj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaus-wmVqkw0qE_EQ7ciXZWIZyWWnzO2c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

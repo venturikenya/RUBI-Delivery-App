@@ -33,6 +33,8 @@ import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
@@ -251,5 +253,18 @@ public class Extras {
      */
     public static boolean isEmpty(EditText editText) {
         return editText.getText().toString().trim().length() == 0;
+    }
+
+    /**
+     * Method is used for checking valid email id format.
+     *
+     * @param email Address being entered
+     * @return boolean true for valid, false for invalid
+     */
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

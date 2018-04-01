@@ -20,6 +20,7 @@ import ke.co.venturisys.rubideliveryapp.activities.ProfileImageActivity;
 
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_EDIT_PROFILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
@@ -29,7 +30,7 @@ import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
 
 public class ProfileFragment extends GeneralFragment {
 
-    TextView textViewLocation, textViewPhone, textViewEmail;
+    TextView textViewLocation, textViewPhone, textViewEmail, textViewName, textViewDetails;
     ImageView imageViewProfile, imageViewHome, imageViewEdit;
     CoordinatorLayout coordinatorLayoutProfile;
 
@@ -57,6 +58,8 @@ public class ProfileFragment extends GeneralFragment {
         textViewLocation = view.findViewById(R.id.tvProfileLocation);
         textViewPhone = view.findViewById(R.id.tvProfileContacts);
         textViewEmail = view.findViewById(R.id.tvProfileEmail);
+        textViewName = view.findViewById(R.id.tvProfileName);
+        textViewDetails = view.findViewById(R.id.tvProfileDetails);
         imageViewProfile = view.findViewById(R.id.img_profile_page);
         imageViewHome = view.findViewById(R.id.btnProfileHome);
         imageViewEdit = view.findViewById(R.id.btnProfileEdit);
@@ -72,6 +75,19 @@ public class ProfileFragment extends GeneralFragment {
                 setCurrentTag(TAG_HOME);
                 changeFragment(HomeFragment.newInstance(), new Handler(), TAG_HOME,
                         (AppCompatActivity) getActivity());
+            }
+        });
+
+        // redirect to edit profile page
+        imageViewEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeFragment(EditProfileFragment.newInstance(true,
+                        textViewName.getText().toString(), textViewDetails.getText().toString(),
+                        textViewEmail.getText().toString(), textViewPhone.getText().toString(),
+                        textViewLocation.getText().toString()),
+                        new Handler(),
+                        TAG_EDIT_PROFILE, (AppCompatActivity) getActivity());
             }
         });
 

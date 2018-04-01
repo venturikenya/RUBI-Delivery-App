@@ -34,4 +34,9 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     // creates circular indicators of view pager image carousel
     implementation 'me.relex:circleindicator:1.2.2@aar'
+    implementation 'net.rimoto:intlphoneinput:1.0.1'
+    // firebase implementation
+    implementation 'com.google.firebase:firebase-core:12.0.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -2,11 +2,10 @@ package ke.co.venturisys.rubideliveryapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -46,10 +45,15 @@ import ke.co.venturisys.rubideliveryapp.others.LandingPageGridAdapter;
 import ke.co.venturisys.rubideliveryapp.others.OrderLab;
 import me.relex.circleindicator.CircleIndicator;
 
+import static android.app.Activity.RESULT_OK;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.backgroundOnClick;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.getSpeechInput;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
+import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 
 public class HomeFragment extends GeneralFragment {
 
@@ -57,7 +61,7 @@ public class HomeFragment extends GeneralFragment {
     GridLayoutManager layoutManager; // lays out children in a grid format
     RecyclerView recyclerView;
     LandingPageGridAdapter adapter; // adapter to communicate with recycler view
-    ImageView landingBg, searchBtn;
+    ImageView landingBg, searchBtn, speechBtn;
     ImageButton overflowBtn;
     Button offerBtn;
     TextView recyclerTitle;
@@ -100,12 +104,30 @@ public class HomeFragment extends GeneralFragment {
         // initialise widgets
         landingBg = view.findViewById(R.id.backdrop);
         searchBtn = view.findViewById(R.id.search_image_view);
+        speechBtn = view.findViewById(R.id.microphone_image_view);
         offerBtn = view.findViewById(R.id.offerBtn);
         recyclerTitle = view.findViewById(R.id.landing_card_recycler_title);
         overflowBtn = view.findViewById(R.id.landing_page_overflow_button);
         inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputSearch = view.findViewById(R.id.input_search);
         mainContent = view.findViewById(R.id.main_content);
+
+        // set colors to overflow, microphone and search buttons
+        if (getActivity() != null) {
+            setImageViewDrawableColor(overflowBtn.getDrawable(), ContextCompat.getColor(getActivity(), R.color.colorApp));
+            setImageViewDrawableColor(searchBtn.getDrawable(), ContextCompat.getColor(getActivity(), R.color.colorApp));
+            setImageViewDrawableColor(speechBtn.getDrawable(), ContextCompat.getColor(getActivity(), R.color.colorApp));
+        }
+
+        // when user clicks on mic
+        speechBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkAvailable(getActivity()))
+                    getSpeechInput(getActivity(), HomeFragment.this);
+                else requestInternetAccess(mainContent);
+            }
+        });
 
         // show today's offers
         offerBtn.setOnClickListener(new View.OnClickListener() {
@@ -140,16 +162,6 @@ public class HomeFragment extends GeneralFragment {
         }, 2500, 5000);
 
         requestInternetAccess(mainContent);
-
-        // set colors to overflow and search buttons
-        if (getActivity() != null) {
-            overflowBtn.getDrawable().setColorFilter(
-                    new PorterDuffColorFilter(ContextCompat.getColor(getActivity(), R.color.colorApp),
-                            PorterDuff.Mode.SRC_IN));
-            searchBtn.getDrawable().setColorFilter(
-                    new PorterDuffColorFilter(ContextCompat.getColor(getActivity(), R.color.colorApp),
-                            PorterDuff.Mode.SRC_IN));
-        }
 
         // set image(s) of today's offers to background
         HashMap<String, Object> src = new HashMap<>();
@@ -266,6 +278,26 @@ public class HomeFragment extends GeneralFragment {
         // retrieve contents on screen before rotation
         if (savedInstanceState != null) {
             mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            // receive data from speech input app
+            case REQUEST_SPEECH:
+                if (resultCode == RESULT_OK && data != null) {
+                    // extract data returned from speech input app
+                    // and assign to array list
+                    ArrayList<String> result = data.getStringArrayListExtra
+                            (RecognizerIntent.EXTRA_RESULTS);
+                    // set text received to search edit text field
+                    inputSearch.setText(result.get(0));
+                }
+
+                break;
         }
     }
 

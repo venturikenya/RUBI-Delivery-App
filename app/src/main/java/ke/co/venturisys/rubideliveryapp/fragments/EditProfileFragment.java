@@ -1,15 +1,21 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +27,11 @@ import android.widget.Toast;
 
 import net.rimoto.intlphoneinput.IntlPhoneInput;
 
+import java.io.File;
+import java.io.IOException;
+
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.others.PictureDialogFragment;
 import ke.co.venturisys.rubideliveryapp.others.SMSVerifyDialogFragment;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_DETAILS;
@@ -30,22 +40,37 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_LOCATION;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_NAME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_PHONE_NUMBER;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_SHOW_FIELDS;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_CAMERA;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_STORAGE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_GALLERY;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_PHOTO;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.SELECT_PICTURE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.VERIFY_SMS;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmailValid;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
+import static ke.co.venturisys.rubideliveryapp.others.FileUtilities.createSystemDirs;
+import static ke.co.venturisys.rubideliveryapp.others.Permissions.checkPermission;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getImageUri;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getRealPathFromURI;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.recogniseFace;
 
 public class EditProfileFragment extends Fragment {
 
+    public static Uri imageForUpload;
     View view;
     RelativeLayout nameLayout, emailLayout;
     TextInputLayout phoneInputLayout;
     IntlPhoneInput phoneInputView;
     EditText editLocation, editDetails, editName, editEmail;
-    ImageView locationImage, detailsImage, emailImage;
+    ImageView imageViewProfile, locationImage, detailsImage, emailImage;
     Button submitButton;
     String myInternationalNumber = "";
     boolean showEmailAndNameFields;
-    String name, details, location, email;
+    File directory;
+    String name, details, location, email, mCurrentPath;
+    Bitmap photo = null;
 
     public static EditProfileFragment newInstance(boolean showEmailAndNameFields,
                                                   String name, String details, String email,
@@ -68,6 +93,20 @@ public class EditProfileFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
+        assert getActivity() != null;
+
+        // request writing permission
+        checkPermission(getActivity(), getActivity(), PERMISSION_STORAGE);
+
+        // check if device has external storage memory
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // if no external memory, log error
+            Log.e("FOLDER CREATION ERROR", "No SDCARD");
+        } else {
+            // create directory for saving images
+            directory = createSystemDirs(getActivity()).get(0);
+            Log.e("Directory", "" + directory.getAbsolutePath());
+        }
 
         // retrieve arguments passed to fragment
         if (bundle != null) {
@@ -96,10 +135,23 @@ public class EditProfileFragment extends Fragment {
         editEmail = view.findViewById(R.id.input_email);
         editLocation = view.findViewById(R.id.input_location);
         editDetails = view.findViewById(R.id.input_details);
+        imageViewProfile = view.findViewById(R.id.img_profile_page);
         locationImage = view.findViewById(R.id.location_image_view);
         detailsImage = view.findViewById(R.id.details_image_view);
         emailImage = view.findViewById(R.id.email_image_view);
         submitButton = view.findViewById(R.id.submit_button);
+
+        imageViewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // check camera permission
+                checkPermission(getActivity(), getActivity(), PERMISSION_CAMERA);
+                FragmentManager fm = getFragmentManager();
+                assert fm != null;
+                PictureDialogFragment dialog = PictureDialogFragment.newInstance(directory);
+                dialog.show(fm, SELECT_PICTURE);
+            }
+        });
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,9 +161,9 @@ public class EditProfileFragment extends Fragment {
         });
 
         // set color of editLocation, email and editDetails image views
-        locationImage.getDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        emailImage.getDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        detailsImage.getDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        setImageViewDrawableColor(locationImage.getDrawable(), Color.WHITE);
+        setImageViewDrawableColor(emailImage.getDrawable(), Color.WHITE);
+        setImageViewDrawableColor(detailsImage.getDrawable(), Color.WHITE);
 
         // determine whether to show name and email text fields, only for editing from profile page
         if (showEmailAndNameFields) {
@@ -126,6 +178,7 @@ public class EditProfileFragment extends Fragment {
         editLocation.setText(location);
         phoneInputView.setNumber(myInternationalNumber);
 
+        assert getActivity() != null;
         TelephonyManager tm = (TelephonyManager)
                 getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         assert tm != null;
@@ -160,6 +213,70 @@ public class EditProfileFragment extends Fragment {
             SMSVerifyDialogFragment dialog = SMSVerifyDialogFragment.newInstance(myInternationalNumber);
             assert fm != null;
             dialog.show(fm, VERIFY_SMS);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("image", photo);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            photo = savedInstanceState.getParcelable("image");
+            imageViewProfile.setImageBitmap(photo);
+        }
+    }
+
+    /**
+     * Method retrieves image sent by return intent as small Bitmap in extras with data as key
+     * and displays to ImageView
+     *
+     * @param requestCode request that was received from take picture
+     * @param resultCode  result of operation
+     * @param data        return intent
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        assert getActivity() != null;
+
+        if (resultCode == Activity.RESULT_OK) {
+            try {
+                switch (requestCode) {
+                    case REQUEST_PHOTO:
+                        if (imageForUpload != null) {
+                            photo = recogniseFace(imageForUpload, imageViewProfile, getActivity());
+                            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+                            Uri tempUri = getImageUri(getActivity(), photo);
+                            // CALL THIS METHOD TO GET THE ACTUAL PATH
+                            mCurrentPath = getRealPathFromURI(tempUri, getActivity());
+                            Log.e(TAG, mCurrentPath);
+                        } else {
+                            Toast.makeText(getActivity(), "Error2 while capturing image", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case REQUEST_GALLERY:
+                        if (data != null) {
+                            Uri uri = data.getData();
+
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                                Log.d(TAG, String.valueOf(bitmap));
+                                imageViewProfile.setImageBitmap(bitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                }
+            } catch (Exception ex) {
+                Log.e("BITMAP error", ex.getMessage());
+            }
         }
     }
 }

@@ -8,13 +8,42 @@
     android:background="@color/blackDarker"
     tools:context=".activities.ProfileImageActivity">
 
-    <ImageView
-        android:id="@+id/activity_profile_image_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:contentDescription="@string/profile_image_description"
-        app:layout_anchorGravity="center"
-        app:srcCompat="@mipmap/ic_launcher" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/activity_profile_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/profile_image_description"
+            app:layout_anchorGravity="center"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <Button
+            android:id="@+id/edit_profile_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@color/colorAccent"
+            android:padding="@dimen/general_padding"
+            android:text="@string/picture_dialog_title"
+            android:textAllCaps="false"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorWeb"
+        app:layout_anchor="@id/edit_profile_photo"
+        app:layout_anchorGravity="end"
+        app:srcCompat="@drawable/ic_share" />
 
 </android.support.design.widget.CoordinatorLayout>

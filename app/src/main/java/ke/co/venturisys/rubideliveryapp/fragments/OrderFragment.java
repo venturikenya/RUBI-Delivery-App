@@ -1,15 +1,17 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -34,13 +36,18 @@ import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
 import ke.co.venturisys.rubideliveryapp.others.OrderLinearAdapter;
 
+import static android.app.Activity.RESULT_OK;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_ICON;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_TITLE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.getSpeechInput;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
+import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 
 /**
  * Transition: https://medium.com/@andkulikov/animate-all-the-things-transitions-in-android-914af5477d50
@@ -51,7 +58,8 @@ public class OrderFragment extends GeneralFragment {
     RecyclerView recyclerView;
     OrderLinearAdapter adapter; // adapter to communicate with recycler view
 
-    ImageView backdrop, searchBtn;
+    CoordinatorLayout mainContent;
+    ImageView backdrop, searchBtn, speechBtn;
     TextView backdropTitle, tvFabCart;
     FloatingActionButton fabCartButton;
     ViewGroup transitionsContainer;
@@ -109,6 +117,7 @@ public class OrderFragment extends GeneralFragment {
         recyclerView.setAdapter(adapter);
 
         // initialise widgets
+        mainContent = view.findViewById(R.id.order_coordinator_layout);
         backdrop = view.findViewById(R.id.order_backdrop);
         backdropTitle = view.findViewById(R.id.backdrop_name_title_view);
         transitionsContainer = view.findViewById(R.id.transitions_container);
@@ -117,21 +126,31 @@ public class OrderFragment extends GeneralFragment {
         fabCartButton = view.findViewById(R.id.fabCartBtn);
         tvFabCart = view.findViewById(R.id.fabCartTextView);
         tvFabCart.setVisibility(View.INVISIBLE);
-        inputLayoutSearch = view.findViewById(R.id.order_input_layout_search);
+        inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputLayoutSearch.setHintAnimationEnabled(false);
-        inputSearch = view.findViewById(R.id.order_input_search);
-        searchBtn = view.findViewById(R.id.order_search_image_view);
+        inputSearch = view.findViewById(R.id.input_search);
+        searchBtn = view.findViewById(R.id.search_image_view);
+        speechBtn = view.findViewById(R.id.microphone_image_view);
 
         // let floating fab be visible from Android Marsh mellow
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M)
             transitionsContainer.setVisibility(View.GONE);
 
-        // set color to search button
+        // set color to search and microphone button
         if (getActivity() != null) {
-            searchBtn.getDrawable().setColorFilter(
-                    new PorterDuffColorFilter(ContextCompat.getColor(getActivity(), R.color.colorApp),
-                            PorterDuff.Mode.SRC_IN));
+            setImageViewDrawableColor(searchBtn.getDrawable(), ContextCompat.getColor(getActivity(), R.color.colorApp));
+            setImageViewDrawableColor(speechBtn.getDrawable(), ContextCompat.getColor(getActivity(), R.color.colorApp));
         }
+
+        // when user clicks on mic
+        speechBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkAvailable(getActivity()))
+                    getSpeechInput(getActivity(), OrderFragment.this);
+                else requestInternetAccess(mainContent);
+            }
+        });
 
         // on clicking search button
         searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -227,6 +246,26 @@ public class OrderFragment extends GeneralFragment {
         // retrieve contents on screen before rotation
         if (savedInstanceState != null) {
             mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            // receive data from speech input app
+            case REQUEST_SPEECH:
+                if (resultCode == RESULT_OK && data != null) {
+                    // extract data returned from speech input app
+                    // and assign to array list
+                    ArrayList<String> result = data.getStringArrayListExtra
+                            (RecognizerIntent.EXTRA_RESULTS);
+                    // set text received to search edit text field
+                    inputSearch.setText(result.get(0));
+                }
+
+                break;
         }
     }
 

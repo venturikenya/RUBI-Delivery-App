@@ -1,17 +1,26 @@
 package ke.co.venturisys.rubideliveryapp.others;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 
 import ke.co.venturisys.rubideliveryapp.R;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_CAMERA;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_STORAGE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_CAMERA;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_EXTERNAL_STORAGE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_MOBILE_NETWORK;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 
@@ -23,6 +32,26 @@ import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkA
  */
 
 public class Permissions {
+
+    /**
+     * Check on permissions and redirect user to accept them
+     */
+    public static void checkPermission(Context context, Activity activity, String permission) {
+
+        // permission to write to external storage
+        if (permission.equals(PERMISSION_STORAGE)) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
+            }
+        }
+
+        // permission to call camera
+        if (permission.equals(PERMISSION_CAMERA)) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+            }
+        }
+    }
 
     /**
      * This class extends Dialog Fragment

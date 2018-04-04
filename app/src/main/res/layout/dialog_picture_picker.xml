@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This layout provides an interface
+  for the user to pick preferred network connection -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/internet_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dialog_internet_text_padding"
+        android:text="@string/picture_message"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/dialog_internet_title_text_size" />
+
+
+    <LinearLayout
+        android:id="@+id/internet_linear_layout"
+        style="?android:buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/photo_camera_button"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="@dimen/dialog_internet_button_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/dialog_internet_drawable_spacing"
+            android:drawableTop="@drawable/ic_camera"
+            android:text="@string/camera_option"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dialog_internet_text_size" />
+
+        <Button
+            android:id="@+id/photo_gallery_button"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="@dimen/dialog_internet_button_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/dialog_internet_drawable_spacing"
+            android:drawableTop="@drawable/ic_gallery"
+            android:text="@string/gallery_option"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dialog_internet_text_size" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/photo_close_button"
+        style="?android:buttonBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/colorApp"
+        android:textSize="@dimen/dialog_internet_button_text_size"
+        android:textStyle="bold" />
+
+</LinearLayout>

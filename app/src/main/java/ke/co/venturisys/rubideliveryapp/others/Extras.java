@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -33,6 +36,7 @@ import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,14 +44,20 @@ import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
+import ke.co.venturisys.rubideliveryapp.activities.ProfileImageActivity;
+import ke.co.venturisys.rubideliveryapp.fragments.EditProfileFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.FILE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_GALLERY;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URI;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.galleryAddPic;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.takePicture;
 
 /**
  * Created by victor on 3/17/18.
@@ -67,6 +77,13 @@ public class Extras {
                         ContextCompat.getColor(activity, color), PorterDuff.Mode.SRC_IN));
             }
         }
+    }
+
+    /*
+     * Method used to set filter to drawables of image view
+     */
+    public static void setImageViewDrawableColor(Drawable drawable, int color) {
+        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
     }
 
     /*
@@ -266,5 +283,71 @@ public class Extras {
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    /*
+     * Call speech input app implicitly so as to allow user to search meals using speech
+     * Please, test using real android device, not emulator
+     * Will require intent connectivity, so check if internet is available before running
+     */
+    public static void getSpeechInput(@NonNull Activity activity, @NonNull Fragment fragment) {
+        // use implicit intent to get input of user in form of speech/voice
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        // pass extra values along with intent
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+        // make sure that we have activity present in phone that supports this implicit intent
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            fragment.startActivityForResult(intent, REQUEST_SPEECH);
+        } else {
+            Toast.makeText(activity, "Your device does not support speech input",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /*
+     * Selects image from gallery app(s)
+     */
+    static void galleryIntent(Activity activity, String TAG) {
+        Fragment fragment = ((AppCompatActivity) activity).getSupportFragmentManager().findFragmentByTag(TAG);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Show only images, no videos or anything else
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        // make sure that we have activity present in phone that supports this implicit intent
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            // Always show the chooser (if there are multiple options available)
+            /*
+             * Benefits of this include:
+             * Even if the user has previously selected a default action for this intent, the chooser will still be displayed.
+             * If no applications match, Android displays a system message.
+             * You can specify a title for the chooser dialog.
+             */
+            if (fragment == null)
+                activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.activity_title_image_chooser)), REQUEST_GALLERY);
+            else
+                fragment.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.activity_title_image_chooser)), REQUEST_GALLERY);
+        } else {
+            Toast.makeText(activity, "Your device does not support image selection",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /*
+     * Call camera to take picture
+     */
+    static void cameraIntent(Activity activity, String TAG, @NonNull File directory) {
+        Fragment fragment = ((AppCompatActivity) activity).getSupportFragmentManager().findFragmentByTag(TAG);
+        Toast.makeText(activity, "Smile For The Camera!", Toast.LENGTH_SHORT).show();
+        if (fragment == null)
+            setImageForUpload(takePicture(activity, TAG, directory.getAbsolutePath()), false);
+        else setImageForUpload(takePicture(fragment, TAG, directory.getAbsolutePath()), true);
+        galleryAddPic(activity);
+    }
+
+    private static void setImageForUpload(Uri imageForUpload, boolean fragment) {
+        if (fragment) EditProfileFragment.imageForUpload = imageForUpload;
+        else ProfileImageActivity.imageForUpload = imageForUpload;
     }
 }

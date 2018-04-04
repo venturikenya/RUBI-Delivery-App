@@ -3,13 +3,15 @@ package ke.co.venturisys.rubideliveryapp.others;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
-import android.view.MenuItem;
+import android.widget.ImageView;
 
 import static android.content.Context.MODE_PRIVATE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.PREF_BOOKMARK_NAME;
 
-public class WebUtils {
+public class WebUtilities {
     /*
      * checks whether an url is from same domain or not.
      * Will be useful to launch the browser activity in case of external url
@@ -36,13 +38,13 @@ public class WebUtils {
     /*
      *  This method is to change the bookmark icon color when an url is bookmarked.
      */
-    public static void tintMenuIcon(Context context, MenuItem item, int color) {
-        Drawable drawable = item.getIcon();
+    public static void tintMenuIcon(Context context, ImageView item, int color) {
+        Drawable drawable = item.getDrawable();
         if (drawable != null) {
             // If we don't mutate the drawable, then all drawable's with this id will have a color
             // filter applied to it.
             drawable.mutate();
-            drawable.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_ATOP);
+            drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_IN));
         }
     }
 
@@ -52,7 +54,7 @@ public class WebUtils {
     public static boolean bookmarkUrl(Context context, String url) {
         boolean bookmarked;
         // mode_private means the file can only be accessed using calling application
-        SharedPreferences pref = context.getSharedPreferences("androidhive", MODE_PRIVATE);
+        SharedPreferences pref = context.getSharedPreferences(PREF_BOOKMARK_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         // if url is already bookmarked, un bookmark it
@@ -72,7 +74,7 @@ public class WebUtils {
      * Checks whether url has already been bookmarked
      */
     private static boolean isBookmarked(Context context, String url) {
-        SharedPreferences pref = context.getSharedPreferences("androidhive", 0);
+        SharedPreferences pref = context.getSharedPreferences(PREF_BOOKMARK_NAME, 0);
         return pref.getBoolean(url, false);
     }
 

@@ -18,4 +18,5 @@
     <color name="colorProgressBar">#303F9F</color>
     <color name="colorWeb">#FF4081</color>
     <color name="colorDialogTitle">#FF6F00</color>
+    <color name="colorWebMenu">#EEEEEE</color>
 </resources>

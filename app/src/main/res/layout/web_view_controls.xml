@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWebMenu"
+    android:padding="@dimen/item_offset"
+    tools:context=".activities.BrowserActivity"
+    tools:showIn="@layout/activity_browser">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/web_view_back_description"
+            android:onClick="back"
+            android:src="@drawable/ic_chevron_left_small"
+            android:tint="@color/black" />
+
+        <ImageView
+            android:id="@+id/bookmarkBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/web_view_bookmark_description"
+            android:onClick="bookmark"
+            android:paddingTop="@dimen/general_padding"
+            android:src="@drawable/ic_bookmark"
+            android:tint="@color/black" />
+
+        <ImageView
+            android:id="@+id/forwardBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/web_view_forward_description"
+            android:onClick="forward"
+            android:paddingTop="@dimen/general_padding"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/black" />
+
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.IS_FIRST_TIME_LAUNCH;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.PREF_NAME;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.PREF_WELCOME_NAME;
 
 /**
  * Created by victor on 3/30/18
@@ -20,7 +20,7 @@ public class PreferencesManager {
 
     public PreferencesManager(@NonNull Context context) {
         int PRIVATE_MODE = 0; // ensures only the app can open the shared preference
-        sharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        sharedPreferences = context.getSharedPreferences(PREF_WELCOME_NAME, PRIVATE_MODE);
     }
 
     /*

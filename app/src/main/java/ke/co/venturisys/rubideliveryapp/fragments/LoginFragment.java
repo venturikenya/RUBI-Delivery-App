@@ -1,8 +1,6 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -28,6 +26,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 
 public class LoginFragment extends Fragment {
 
@@ -88,8 +87,7 @@ public class LoginFragment extends Fragment {
         });
 
         // set color to username icon
-        userNameImageView.getDrawable().setColorFilter(new PorterDuffColorFilter
-                (Color.WHITE, PorterDuff.Mode.SRC_IN));
+        setImageViewDrawableColor(userNameImageView.getDrawable(), Color.WHITE);
 
         // set image of city to login page
         HashMap<String, Object> src = new HashMap<>();

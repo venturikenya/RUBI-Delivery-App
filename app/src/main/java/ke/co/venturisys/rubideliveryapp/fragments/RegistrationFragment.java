@@ -2,8 +2,6 @@ package ke.co.venturisys.rubideliveryapp.fragments;
 
 
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -26,6 +24,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmailValid;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,10 +77,8 @@ public class RegistrationFragment extends Fragment {
         });
 
         // set color to username & email icons
-        userNameImageView.getDrawable().setColorFilter(new PorterDuffColorFilter
-                (Color.WHITE, PorterDuff.Mode.SRC_IN));
-        emailAddressImageView.getDrawable().setColorFilter(new PorterDuffColorFilter
-                (Color.WHITE, PorterDuff.Mode.SRC_IN));
+        setImageViewDrawableColor(userNameImageView.getDrawable(), Color.WHITE);
+        setImageViewDrawableColor(emailAddressImageView.getDrawable(), Color.WHITE);
 
         // set image of city to login page
         HashMap<String, Object> src = new HashMap<>();

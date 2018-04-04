@@ -9,6 +9,7 @@ import android.graphics.Color;
 
 public class Constants {
 
+    public static final String TAG = "TAG";
     public static final String TAG_HOME = "home";
     public static final String TAG_PROFILE = "profile";
     public static final String TAG_NOTIFICATIONS = "notifications";
@@ -29,6 +30,7 @@ public class Constants {
     public static final long SPLASH_TIME = 1200;
     public static final String INTERNET_PICKER = "INTERNET_PICKER";
     public static final String VERIFY_SMS = "VERIFY_SMS";
+    public static final String SELECT_PICTURE = "SELECT_PICTURE";
     // arg used to pass data to fragments
     public static final String ARG_TITLE = "title";
     public static final String ARG_ICON = "icon";
@@ -38,13 +40,27 @@ public class Constants {
     public static final String ARG_PHONE_NUMBER = "phone number";
     public static final String ARG_LOCATION = "location";
     public static final String ARG_EMAIL = "email";
+    // intent request codes
+    public static final int REQUEST_PHOTO = 1;
+    public static final int REQUEST_GALLERY = 293;
+    public static final int REQUEST_SPEECH = 10;
+    // permission tags
+    public static final String PERMISSION_STORAGE = "external_storage";
+    public static final String PERMISSION_CAMERA = "camera";
+    public static final String URI = "URI";
+    static final String ARG_PATH = "path";
     static final String FILE = "FILE";
-    static final String URI = "URI";
     static final int BORDER_COLOR = Color.WHITE;
     static final int BORDER_RADIUS = 15;
     static final int REQUEST_MOBILE_NETWORK = 18395;
+    static final int BUFFER = 1024;
     // Shared preferences file name
-    static final String PREF_NAME = "rubi-delivery-welcome";
+    static final String PREF_WELCOME_NAME = "rubi-delivery-welcome";
+    static final String PREF_BOOKMARK_NAME = "rubi-delivery-bookmark";
     static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
+    static final String CAMERA_FACING = "android.intent.extras.CAMERA_FACING";
+    // permission request codes
+    static final int REQUEST_CAMERA = 2782;
+    static final int REQUEST_EXTERNAL_STORAGE = 4;
 
 }

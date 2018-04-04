@@ -52,6 +52,7 @@
     <!-- Titles for separate activities -->
     <string name="activity_title_browser">Browse | Rubi</string>
     <string name="activity_title_order">Meals</string>
+    <string name="activity_title_image_chooser">Select Picture</string>
 
     <!-- Titles for toolbar menu -->
     <string name="action_clear_all">Clear All</string>
@@ -67,6 +68,7 @@
     <string name="profile_image_description">This is the profile image</string>
     <string name="close_menu_description">This closes the sliding menu</string>
     <string name="search_button_description">This is the search button</string>
+    <string name="mic_description">This is the speech to text button for searching</string>
     <string name="edit_order_description">This redirects to option to edit order(s)</string>
     <string name="landing_card_image_description">Image on landing page card view</string>
     <string name="today_s_offer_image_description">Image of today\'s offers</string>
@@ -86,6 +88,9 @@
     <string name="google_plus_description">This is the Google+ &#174; button</string>
     <string name="welcome_image_description">This is an image in the intro slider to the app</string>
     <string name="welcome_indicator_description">This is an indicator for intro slider pages</string>
+    <string name="web_view_back_description">This is the web view back button</string>
+    <string name="web_view_forward_description">This is the web view forward button</string>
+    <string name="web_view_bookmark_description">This is the web view bookmark button</string>
 
     <!-- Hints for edit text(s) -->
     <string name="hint_search">What would you like to eat?</string>
@@ -144,4 +149,11 @@
     <string name="internet_message">Please select an internet connection</string>
     <string name="close_button">Close</string>
     <string name="or">or</string>
+
+    <!-- set up picture chooser dialog -->
+    <string name="picture_message">Please select where to pick picture</string>
+    <string name="picture_dialog_title">Edit Profile Photo</string>
+    <string name="camera_option">Take Photo</string>
+    <string name="gallery_option">Choose from Gallery</string>
+
 </resources>

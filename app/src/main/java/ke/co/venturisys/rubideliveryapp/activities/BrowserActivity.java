@@ -3,28 +3,39 @@ package ke.co.venturisys.rubideliveryapp.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ke.co.venturisys.rubideliveryapp.R;
-import ke.co.venturisys.rubideliveryapp.others.WebUtils;
+import ke.co.venturisys.rubideliveryapp.others.WebUtilities;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.EXTRA_POST_URL;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setUpActionBar;
+import static ke.co.venturisys.rubideliveryapp.others.WebUtilities.bookmarkUrl;
+import static ke.co.venturisys.rubideliveryapp.others.WebUtilities.tintMenuIcon;
 
 public class BrowserActivity extends AppCompatActivity {
 
     String activity_title;
     String postUrl;
     WebView webView;
+    ImageView forwardBtn, backBtn, bookmarkBtn;
     float m_downX;
     ProgressBar progressBar; // shown while web page is being loaded
 
@@ -47,14 +58,49 @@ public class BrowserActivity extends AppCompatActivity {
 
         // initialise widgets
         webView = findViewById(R.id.webView);
+        forwardBtn = findViewById(R.id.forwardBtn);
+        backBtn = findViewById(R.id.backBtn);
+        setImageViewDrawableColor(backBtn.getDrawable(), getResources()
+                .getColor(R.color.black));
+        bookmarkBtn = findViewById(R.id.bookmarkBtn);
         progressBar = findViewById(R.id.progressBar);
-        progressBar.getIndeterminateDrawable().setColorFilter(getResources()
-                .getColor(R.color.colorProgressBar), PorterDuff.Mode.SRC_IN);
+        setImageViewDrawableColor(progressBar.getIndeterminateDrawable(), getResources()
+                .getColor(R.color.colorProgressBar));
+
+        // continuously check if web view can move forward/backwards & change color accordingly
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (webView.canGoBack()) {
+                            backBtn.setEnabled(true);
+                            tintMenuIcon(BrowserActivity.this, backBtn, R.color.colorApp);
+                        } else {
+                            backBtn.setEnabled(false);
+                            tintMenuIcon(BrowserActivity.this, backBtn, R.color.black);
+                        }
+
+                        if (webView.canGoForward()) {
+                            forwardBtn.setEnabled(true);
+                            tintMenuIcon(BrowserActivity.this, forwardBtn, R.color.colorApp);
+                        } else {
+                            forwardBtn.setEnabled(false);
+                            tintMenuIcon(BrowserActivity.this, forwardBtn, R.color.black);
+                        }
+                    }
+                });
+            }
+        };
+        timer.scheduleAtFixedRate(timerTask, 0, 1000);
 
         // set up web view by setting its settings and web client
         initWebView();
         // load url
-        renderPost();
+        renderPost(postUrl);
     }
 
     @SuppressLint({"ClickableViewAccessibility", "SetJavaScriptEnabled"})
@@ -69,15 +115,10 @@ public class BrowserActivity extends AppCompatActivity {
                  * open the url in the same activity as new intent
                  * else pass the url to browser activity
                  * */
-                if (WebUtils.isSameDomain(postUrl, url)) {
-                    Intent intent = BrowserActivity.newIntent(BrowserActivity.this,
-                            url);
-                    intent.putExtra("postUrl", url);
-                    startActivity(intent);
-                } else {
-                    // launch in-app browser i.e BrowserActivity
-                    openInAppBrowser(url);
-                }
+                if (WebUtilities.isSameDomain(postUrl, url))
+                    Log.e(TAG, "Web page of same domain visited");
+                renderPost(url);
+                postUrl = url;
 
                 return true;
             }
@@ -134,18 +175,35 @@ public class BrowserActivity extends AppCompatActivity {
         }
     }
 
-    private void openInAppBrowser(String url) {
-        startActivity(newIntent(this, url));
-    }
-
-    private void renderPost() {
+    private void renderPost(String postUrl) {
         webView.loadUrl(postUrl);
     }
 
     @Override
     public void onBackPressed() {
         exitToTargetActivity(this, MainActivity.class);
-        super.onBackPressed();
+        // super.onBackPressed();
+    }
+
+    public void back(View view) {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            Toast.makeText(BrowserActivity.this, "First page reached",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void forward(View view) {
+        if (webView.canGoForward()) {
+            webView.goForward();
+        }
+    }
+
+    public void bookmark(View view) {
+        boolean bookmark = bookmarkUrl(this, postUrl);
+        if (bookmark) tintMenuIcon(this, bookmarkBtn, R.color.colorApp);
+        else tintMenuIcon(this, bookmarkBtn, R.color.black);
     }
 
     private class MyWebChromeClient extends WebChromeClient {

@@ -21,6 +21,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
@@ -36,6 +39,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTOR
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_PROFILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
@@ -61,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     // flag to load home fragment when user presses back key
     boolean shouldLoadHomeFragOnBackPress = true;
     Handler mHandler;
+    // firebase set up
+    FirebaseAuth auth;
+    FirebaseAuth.AuthStateListener authListener;
 
     // widgets
     LinearLayout headerLayout;
@@ -89,6 +96,23 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        //get firebase auth instance
+        auth = FirebaseAuth.getInstance();
+
+        //get current user
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (user == null) {
+                    // user auth state is changed - user is null
+                    // launch login activity
+                    exitToTargetActivity(MainActivity.this, LoginActivity.class);
+                }
+            }
+        };
 
         mHandler = new Handler();
 
@@ -344,6 +368,8 @@ public class MainActivity extends AppCompatActivity {
                         // redirect to venturi's website
                         startActivity(BrowserActivity.newIntent(MainActivity.this, urlVenturi));
                         drawerLayout.closeDrawers();
+                    case R.id.nav_logout:
+                        signOut();
                     default:
                         navItemIndex = 0;
                 }
@@ -455,5 +481,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
+    }
+
+    //sign out method
+    public void signOut() {
+        Toast.makeText(this, "Come back soon!", Toast.LENGTH_SHORT).show();
+        auth.signOut();
+        exitToTargetActivity(MainActivity.this, LoginActivity.class);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(authListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authListener != null) {
+            auth.removeAuthStateListener(authListener);
+        }
     }
 }

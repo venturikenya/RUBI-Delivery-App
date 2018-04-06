@@ -1,10 +1,6 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -12,14 +8,13 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,115 +24,82 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.SearchActivity;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
-import ke.co.venturisys.rubideliveryapp.others.OrderLinearAdapter;
+import ke.co.venturisys.rubideliveryapp.others.SearchLinearAdapter;
 
 import static android.app.Activity.RESULT_OK;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_ICON;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_TITLE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_SEARCH_QUERY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.getSpeechInput;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.validateSearch;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 
 /**
- * Transition: https://medium.com/@andkulikov/animate-all-the-things-transitions-in-android-914af5477d50
+ * A simple {@link Fragment} subclass.
  */
-public class OrderFragment extends GeneralFragment {
+public class SearchFragment extends Fragment {
 
     LinearLayoutManager layoutManager; // lays out children in a linear format
     RecyclerView recyclerView;
-    OrderLinearAdapter adapter; // adapter to communicate with recycler view
+    SearchLinearAdapter adapter; // adapter to communicate with recycler view
 
+    View view;
     CoordinatorLayout mainContent;
-    ImageView backdrop, searchBtn, speechBtn;
-    TextView backdropTitle, tvFabCart;
-    FloatingActionButton fabCartButton;
-    ViewGroup transitionsContainer;
     TextInputLayout inputLayoutSearch;
     EditText inputSearch;
+    ImageView searchBtn, speechBtn;
+    TextView tvFabCart;
     List<Meal> meals;
-
-    String backdrop_title;
-    int backdrop_icon;
     Parcelable mListState; // used to save state of recycler view across rotation
-    boolean visible = true; // determine visibility of fab text view
-    int rotationAngle;
 
-    public OrderFragment() {
+    public SearchFragment() {
     }
 
-    public static OrderFragment newInstance(int icon, String title) {
+    public static SearchFragment newInstance(String query) {
 
-        // receive arguments and attach them to fragment on creation for future use
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, title);
-        args.putInt(ARG_ICON, icon);
+        args.putString(ARG_SEARCH_QUERY, query);
 
-        OrderFragment fragment = new OrderFragment();
+        SearchFragment fragment = new SearchFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // retrieve fragment arguments sent from home page via order activity
-        if (getArguments() != null) {
-            backdrop_title = getArguments().getString(ARG_TITLE);
-            backdrop_icon = getArguments().getInt(ARG_ICON);
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        // inflate layout
-        view = inflater.inflate(R.layout.fragment_order, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // inflate the layout here
+        view = inflater.inflate(R.layout.fragment_search, container, false);
         meals = new ArrayList<>();
         assert getActivity() != null;
 
         // set up recycler view
-        recyclerView = view.findViewById(R.id.order_card_recycler_view);
-        adapter = new OrderLinearAdapter(getActivity(), meals);
+        recyclerView = view.findViewById(R.id.search_card_recycler_view);
+        adapter = new SearchLinearAdapter(getActivity(), meals);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
         // initialise widgets
-        mainContent = view.findViewById(R.id.order_coordinator_layout);
-        backdrop = view.findViewById(R.id.order_backdrop);
-        backdropTitle = view.findViewById(R.id.backdrop_name_title_view);
-        transitionsContainer = view.findViewById(R.id.transitions_container);
-        transitionsContainer.setClipChildren(false);
-        transitionsContainer.setClipToPadding(false);
-        fabCartButton = view.findViewById(R.id.fabCartBtn);
-        tvFabCart = view.findViewById(R.id.fabCartTextView);
-        tvFabCart.setVisibility(View.INVISIBLE);
+        mainContent = view.findViewById(R.id.search_parent_layout);
         inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputLayoutSearch.setHintAnimationEnabled(false);
         inputSearch = view.findViewById(R.id.input_search);
         searchBtn = view.findViewById(R.id.search_image_view);
         speechBtn = view.findViewById(R.id.microphone_image_view);
+        tvFabCart = view.findViewById(R.id.fabCartTextView);
 
-        // let floating fab be visible from Android Marsh mellow
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M)
-            transitionsContainer.setVisibility(View.GONE);
+        if (getArguments() != null) inputSearch.setText(getArguments().getString(ARG_SEARCH_QUERY));
 
         // set color to search and microphone button
         if (getActivity() != null) {
@@ -150,7 +112,7 @@ public class OrderFragment extends GeneralFragment {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable(getActivity()))
-                    getSpeechInput(getActivity(), OrderFragment.this);
+                    getSpeechInput(getActivity(), SearchFragment.this);
                 else requestInternetAccess(mainContent, getActivity());
             }
         });
@@ -162,37 +124,9 @@ public class OrderFragment extends GeneralFragment {
                 if (validateSearch(inputSearch, inputLayoutSearch, getActivity())) {
                     Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
                     Intent intent = SearchActivity.newIntent(getActivity(), inputSearch.getText().toString().trim());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
-            }
-        });
-
-        /* To set custom size arrow to fab */
-        // get the drawable
-        Drawable fabSrc = getResources().getDrawable(R.drawable.ic_chevron_left);
-        // copy it in a new one
-        assert fabSrc.getConstantState() != null;
-        Drawable willBeWhite = fabSrc.getConstantState().newDrawable();
-        // set the color filter
-        willBeWhite.mutate().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        // set it to your fab button initialized before
-        fabCartButton.setImageDrawable(willBeWhite);
-
-        // carry out some animations
-        fabCartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TransitionManager.beginDelayedTransition(transitionsContainer);
-                // rotate arrow icon by 180 degrees
-                ObjectAnimator anim = ObjectAnimator.ofFloat(v, "rotation",
-                        rotationAngle, rotationAngle + 180);
-                anim.setDuration(500);
-                anim.start();
-                rotationAngle += 180;
-                rotationAngle = rotationAngle % 360;
-                // set visibility of fab text view
-                visible = !visible;
-                tvFabCart.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -205,24 +139,17 @@ public class OrderFragment extends GeneralFragment {
             }
         });
 
-        // load backdrop details
-        backdropTitle.setText(backdrop_title);
-        HashMap<String, Object> src = new HashMap<>();
-        src.put(RES_ID, backdrop_icon);
-        loadPictureToImageView(src, R.drawable.bg_circle, backdrop, false, false,
-                false, false);
-
         getMeals();
 
         return view;
     }
 
     private void getMeals() {
-        Meal meal = new Meal("Chicken Tikka Masala", "Served with homemade naan bread",
+        Meal meal = new Meal(R.drawable.ic_pastries, "Chicken Tikka Masala", "Served with homemade naan bread",
                 "1", "450");
         meals.add(meal);
 
-        meal = new Meal("Mango juice", "Freshly blended and served cold",
+        meal = new Meal(R.drawable.ic_pastries, "Mango juice", "Freshly blended and served cold",
                 "1", "600");
         meals.add(meal);
 

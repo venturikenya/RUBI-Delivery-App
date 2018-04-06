@@ -3,6 +3,7 @@ package ke.co.venturisys.rubideliveryapp.others;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -12,7 +13,11 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -45,17 +50,20 @@ import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
 import ke.co.venturisys.rubideliveryapp.activities.ProfileImageActivity;
+import ke.co.venturisys.rubideliveryapp.activities.SearchActivity;
 import ke.co.venturisys.rubideliveryapp.fragments.EditProfileFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.FILE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.INTERNET_PICKER;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_GALLERY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URI;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
+import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.galleryAddPic;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.takePicture;
 
@@ -229,7 +237,8 @@ public class Extras {
                     activity.getSupportFragmentManager().beginTransaction().remove(fragment).commit();
 
                 changeFragment(HomeFragment.newInstance(), new Handler(), TAG_SRC, activity);
-            } else if (activity instanceof OrderActivity || activity instanceof OrderPagerActivity) {
+            } else if (activity instanceof OrderActivity || activity instanceof OrderPagerActivity
+                    || activity instanceof SearchActivity) {
                 exitToTargetActivity(activity, MainActivity.class);
             }
 
@@ -349,5 +358,50 @@ public class Extras {
     private static void setImageForUpload(Uri imageForUpload, boolean fragment) {
         if (fragment) EditProfileFragment.imageForUpload = imageForUpload;
         else ProfileImageActivity.imageForUpload = imageForUpload;
+    }
+
+    /*
+     * This method creates a snack bar in fragments that require internet
+     * so that providing an interface for the user to enable internet connection
+     */
+    public static void requestInternetAccess(CoordinatorLayout coordinatorLayout, @NonNull final Activity context) {
+        if (!isNetworkAvailable(context)) {
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, context.getString(R.string.internet_access_request), Snackbar.LENGTH_LONG)
+                    .setAction("ENABLE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+                            Permissions.InternetConnectionDialogFragment dialog = new Permissions.InternetConnectionDialogFragment();
+                            assert fm != null;
+                            dialog.show(fm, INTERNET_PICKER);
+                        }
+                    });
+
+            // Changing message text color
+            snackbar.setActionTextColor(context.getResources().getColor(R.color.colorSnackbarActionText));
+
+            // Changing action button text color
+            View sbView = snackbar.getView();
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
+        }
+    }
+
+    // checks if user has entered search query when (s)he has pressed search button
+    // and raises error if not
+    public static boolean validateSearch(EditText inputSearch, TextInputLayout inputLayoutSearch,
+                                         @NonNull Activity activity) {
+
+        if (inputSearch.getText().toString().trim().isEmpty()) {
+            inputLayoutSearch.setError(activity.getString(R.string.err_msg_search));
+            return false;
+        } else {
+            inputLayoutSearch.setErrorEnabled(false);
+        }
+
+        return true;
+
     }
 }

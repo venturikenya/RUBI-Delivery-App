@@ -10,13 +10,16 @@ import android.graphics.Color;
 public class Constants {
 
     public static final String TAG = "TAG";
+    public static final String ERROR = "ERROR";
     public static final String TAG_HOME = "home";
     public static final String TAG_PROFILE = "profile";
     public static final String TAG_NOTIFICATIONS = "notifications";
     public static final String TAG_ORDER_HISTORY = "order_history";
     public static final String TAG_CART = "cart";
     public static final String TAG_REGISTRATION = "registration";
+    public static final String TAG_LOGIN = "login";
     public static final String TAG_EDIT_PROFILE = "EDIT PROFILE";
+    public static final String TAG_RESET_PASSWORD = "RESET PASSWORD";
     public static final String URL = "URL";
     public static final String RES_ID = "RESOURCE ID";
     // extra used to pass data to activities
@@ -24,11 +27,11 @@ public class Constants {
     public static final String EXTRA_USER_MEALS = "ke.co.venturisys.rubideliveryapp.meals";
     public static final String EXTRA_USER_BACKDROP_TITLE = "ke.co.venturisys.rubideliveryapp.category_title";
     public static final String EXTRA_USER_BACKDROP_ICON = "ke.co.venturisys.rubideliveryapp.category_icon";
-    public static final String EXTRA_POST_URL = "ke.co.ke.venturisys.rubideliveryapp.post_url";
+    public static final String EXTRA_POST_URL = "ke.co.venturisys.rubideliveryapp.post_url";
+    public static final String EXTRA_SEARCH_QUERY = "ke.co.venturisys.rubideliveryapp.search_query";
     public static final String LIST_STATE_KEY = "LIST_STATE_KEY";
     // time for splash screen to last in milliseconds
     public static final long SPLASH_TIME = 1200;
-    public static final String INTERNET_PICKER = "INTERNET_PICKER";
     public static final String VERIFY_SMS = "VERIFY_SMS";
     public static final String SELECT_PICTURE = "SELECT_PICTURE";
     // arg used to pass data to fragments
@@ -40,6 +43,7 @@ public class Constants {
     public static final String ARG_PHONE_NUMBER = "phone number";
     public static final String ARG_LOCATION = "location";
     public static final String ARG_EMAIL = "email";
+    public static final String ARG_SEARCH_QUERY = "search_query";
     // intent request codes
     public static final int REQUEST_PHOTO = 1;
     public static final int REQUEST_GALLERY = 293;
@@ -48,6 +52,7 @@ public class Constants {
     public static final String PERMISSION_STORAGE = "external_storage";
     public static final String PERMISSION_CAMERA = "camera";
     public static final String URI = "URI";
+    static final String INTERNET_PICKER = "INTERNET_PICKER";
     static final String ARG_PATH = "path";
     static final String FILE = "FILE";
     static final int BORDER_COLOR = Color.WHITE;

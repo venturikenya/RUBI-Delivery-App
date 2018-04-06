@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/item_offset"
+    android:layout_marginStart="@dimen/item_offset"
+    android:background="@drawable/background_selector">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_order_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_margin"
+        card:cardCornerRadius="0dp">
+
+        <LinearLayout
+            android:id="@+id/card_search_linear_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/food_icon"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_landing_image_height"
+                android:contentDescription="@string/search_card_image_description"
+                android:scaleType="fitXY" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/item_offset"
+                android:layout_marginTop="@dimen/item_offset"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/food_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="@dimen/general_padding"
+                    android:paddingEnd="@dimen/card_notifications_margin"
+                    android:paddingStart="@dimen/card_notifications_margin"
+                    android:paddingTop="@dimen/card_notifications_margin"
+                    android:text="@string/food_name"
+                    android:textColor="@color/colorApp"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/food_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/food_title"
+                    android:layout_margin="@dimen/general_padding"
+                    android:gravity="start"
+                    android:paddingEnd="@dimen/card_notifications_margin"
+                    android:paddingStart="@dimen/card_notifications_margin"
+                    android:text="@string/food_details"
+                    android:textColor="@color/colorApp"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/card_search_linear_layout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/food_details"
+                    android:layout_margin="@dimen/item_offset"
+                    android:layout_marginBottom="2dp"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/card_notifications_margin"
+                    android:paddingEnd="@dimen/card_notifications_margin"
+                    android:paddingStart="@dimen/card_notifications_margin">
+
+                    <TextView
+                        android:id="@+id/food_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:text="@string/food_price"
+                        android:textColor="@color/colorApp"
+                        android:textSize="20sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/order_meal_amount_linear_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_rectangle_edges"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/meal_add_btn"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_toStartOf="@id/meal_edit_amount"
+                            android:contentDescription="@string/add_btn_description"
+                            android:src="@drawable/ic_add" />
+
+                        <EditText
+                            android:id="@+id/meal_edit_amount"
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:hint="@string/hint_edit_meal_amount"
+                            android:inputType="numberDecimal"
+                            android:singleLine="true"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/meal_minus_btn"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_toEndOf="@id/meal_edit_amount"
+                            android:contentDescription="@string/minus_btn_description"
+                            android:src="@drawable/ic_minus" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/add_to_cart_btn"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/card_search_linear_layout2"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/white"
+                    android:padding="@dimen/item_offset"
+                    android:text="@string/buy"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorApp"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.design.widget.CoordinatorLayout>

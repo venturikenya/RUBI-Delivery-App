@@ -10,6 +10,7 @@
     <color name="colorNotificationDetails">#64B5F6</color>
     <color name="black">#111</color>
     <color name="blackDarker">#000</color>
+    <color name="red">#B71C1C</color>
     <color name="colorSnackbarActionText">#F50057</color>
     <color name="colorFab">#AA00FF</color>
     <color name="colorText">#82B1FF</color>

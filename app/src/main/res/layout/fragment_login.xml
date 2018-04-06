@@ -34,7 +34,7 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/login_linear_layout_username"
+                android:id="@+id/login_linear_layout_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/login_app_logo_layout"
@@ -46,7 +46,7 @@
                 android:baselineAligned="false">
 
                 <ImageView
-                    android:id="@+id/username_image_view"
+                    android:id="@+id/email_address_image_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -54,18 +54,18 @@
                     android:layout_marginStart="@dimen/item_offset"
                     android:layout_marginTop="7dp"
                     android:layout_weight="1"
-                    android:contentDescription="@string/username_image_description"
-                    android:src="@drawable/ic_profile" />
+                    android:contentDescription="@string/email_address_image_description"
+                    android:src="@drawable/ic_envelope" />
 
                 <EditText
-                    android:id="@+id/login_username"
+                    android:id="@+id/login_email_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/item_offset"
                     android:layout_weight="9"
                     android:background="@color/colorText"
-                    android:hint="@string/username_placeholder"
-                    android:inputType="textPersonName"
+                    android:hint="@string/email_address_placeholder"
+                    android:inputType="textEmailAddress"
                     android:padding="@dimen/general_padding"
                     android:singleLine="true"
                     android:textSize="18sp" />
@@ -76,7 +76,7 @@
                 android:id="@+id/login_linear_layout_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/login_linear_layout_username"
+                android:layout_below="@id/login_linear_layout_email"
                 android:layout_marginBottom="@dimen/item_offset"
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
@@ -160,33 +160,50 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5" />
-
-                <TextView
-                    android:id="@+id/btnCreateAccount"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/item_offset"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:padding="@dimen/general_padding"
-                    android:text="@string/create_account"
+                    android:text="@string/change_password"
+                    android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textColor="@color/colorApp"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/btnCreateAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_of_extra_details"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/item_offset"
+                android:gravity="center"
+                android:padding="@dimen/general_padding"
+                android:text="@string/create_account"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/colorApp"
+                android:textSize="18sp" />
+
             <ImageView
                 android:id="@+id/city_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout_of_extra_details"
+                android:layout_below="@id/btnCreateAccount"
                 android:contentDescription="@string/city_description"
                 android:src="@drawable/ic_nairobi" />
 
         </RelativeLayout>
 
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

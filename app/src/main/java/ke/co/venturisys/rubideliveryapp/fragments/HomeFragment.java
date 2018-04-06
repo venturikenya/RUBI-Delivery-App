@@ -39,6 +39,7 @@ import java.util.TimerTask;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
+import ke.co.venturisys.rubideliveryapp.activities.SearchActivity;
 import ke.co.venturisys.rubideliveryapp.others.ImagesViewPagerAdapter;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageFood;
 import ke.co.venturisys.rubideliveryapp.others.LandingPageGridAdapter;
@@ -52,7 +53,9 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.backgroundOnClick;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.getSpeechInput;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.validateSearch;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 
 public class HomeFragment extends GeneralFragment {
@@ -125,7 +128,7 @@ public class HomeFragment extends GeneralFragment {
             public void onClick(View v) {
                 if (isNetworkAvailable(getActivity()))
                     getSpeechInput(getActivity(), HomeFragment.this);
-                else requestInternetAccess(mainContent);
+                else requestInternetAccess(mainContent, getActivity());
             }
         });
 
@@ -161,7 +164,7 @@ public class HomeFragment extends GeneralFragment {
             }
         }, 2500, 5000);
 
-        requestInternetAccess(mainContent);
+        requestInternetAccess(mainContent, getActivity());
 
         // set image(s) of today's offers to background
         HashMap<String, Object> src = new HashMap<>();
@@ -173,8 +176,10 @@ public class HomeFragment extends GeneralFragment {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateSearch()) {
+                if (validateSearch(inputSearch, inputLayoutSearch, getActivity())) {
                     Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
+                    Intent intent = SearchActivity.newIntent(getActivity(), inputSearch.getText().toString().trim());
+                    startActivity(intent);
                 }
             }
         });
@@ -190,21 +195,6 @@ public class HomeFragment extends GeneralFragment {
         prepareFoodItems();
 
         return view;
-    }
-
-    // checks if user has entered search query when (s)he has pressed search button
-    // and raises error if not
-    private boolean validateSearch() {
-
-        if (inputSearch.getText().toString().trim().isEmpty()) {
-            inputLayoutSearch.setError(getString(R.string.err_msg_search));
-            return false;
-        } else {
-            inputLayoutSearch.setErrorEnabled(false);
-        }
-
-        return true;
-
     }
 
     private void prepareFoodItems() {

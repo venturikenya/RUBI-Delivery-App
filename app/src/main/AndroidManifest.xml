@@ -66,6 +66,9 @@
         <activity
             android:name=".activities.WelcomeActivity"
             android:theme="@style/SplashScreenTheme" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:parentActivityName=".activities.MainActivity" />
     </application>
 
 </manifest>

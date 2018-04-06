@@ -25,6 +25,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
 
@@ -65,7 +66,7 @@ public class ProfileFragment extends GeneralFragment {
         imageViewEdit = view.findViewById(R.id.btnProfileEdit);
         coordinatorLayoutProfile = view.findViewById(R.id.profile_coordinator_layout);
 
-        requestInternetAccess(coordinatorLayoutProfile);
+        requestInternetAccess(coordinatorLayoutProfile, getActivity());
 
         // redirect to homepage
         imageViewHome.setOnClickListener(new View.OnClickListener() {

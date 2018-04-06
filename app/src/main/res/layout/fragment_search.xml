@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    tools:context=".activities.SearchActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/input_linear_layout_search"
+            layout="@layout/search_layout" />
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/search_coordinator_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/input_linear_layout_search">
+
+            <RelativeLayout
+                android:id="@+id/search_recycler_view_relative_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:layout_editor_absoluteY="441dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/search_card_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:clipToPadding="false" />
+
+            </RelativeLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/fabCartTextView"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/rounded_rectangle_edges"
+        android:drawableEnd="@drawable/right_arrow"
+        android:padding="10dp"
+        android:text="@string/cart"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_anchor="@id/search_coordinator_layout2"
+        app:layout_anchorGravity="bottom|end" />
+
+</android.support.design.widget.CoordinatorLayout>

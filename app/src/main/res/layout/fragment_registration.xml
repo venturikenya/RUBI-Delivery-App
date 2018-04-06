@@ -1,11 +1,11 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/login_parent_layout"
+    android:id="@+id/register_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".fragments.LoginFragment">
+    tools:context=".fragments.RegistrationFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -175,16 +175,37 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/register_button" />
 
+            <TextView
+                android:id="@+id/link_to_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/social_links"
+                android:gravity="center"
+                android:padding="@dimen/general_padding"
+                android:text="@string/link_to_login"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/colorApp"
+                android:textSize="16sp" />
+
             <ImageView
                 android:id="@+id/city_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/social_links"
+                android:layout_below="@id/link_to_login"
                 android:contentDescription="@string/city_description"
                 android:src="@drawable/ic_nairobi" />
 
         </RelativeLayout>
 
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

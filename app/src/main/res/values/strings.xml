@@ -40,6 +40,8 @@
     <string name="nav_log_out">Log Out</string>
     <string name="nav_login">Login</string>
     <string name="nav_submit">Submit</string>
+    <string name="nav_others">Others</string>
+    <string name="nav_delete_account">Delete Account</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">

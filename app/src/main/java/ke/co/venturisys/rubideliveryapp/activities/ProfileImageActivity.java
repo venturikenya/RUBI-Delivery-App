@@ -161,13 +161,11 @@ public class ProfileImageActivity extends AppCompatActivity {
                     case REQUEST_PHOTO:
                         if (imageForUpload != null) {
                             photo = recogniseFace(imageForUpload, profileImageView, this);
-                            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-                            Uri tempUri = getImageUri(this, photo);
                             // CALL THIS METHOD TO GET THE ACTUAL PATH
-                            mCurrentPath = getRealPathFromURI(tempUri, this);
+                            mCurrentPath = getRealPathFromURI(imageForUpload, this);
                             Log.e(TAG, mCurrentPath);
                             HashMap<String, Object> src = new HashMap<>();
-                            src.put(URI, tempUri);
+                            src.put(URI, imageForUpload);
                             loadPictureToImageView(src, R.drawable.avatar, profileImageView,
                                     true, false, false, false);
                         } else {

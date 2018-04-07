@@ -52,7 +52,6 @@ import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.FileUtilities.createSystemDirs;
 import static ke.co.venturisys.rubideliveryapp.others.Permissions.checkPermission;
-import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getImageUri;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getRealPathFromURI;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.recogniseFace;
 
@@ -251,10 +250,8 @@ public class EditProfileFragment extends Fragment {
                     case REQUEST_PHOTO:
                         if (imageForUpload != null) {
                             photo = recogniseFace(imageForUpload, imageViewProfile, getActivity());
-                            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-                            Uri tempUri = getImageUri(getActivity(), photo);
                             // CALL THIS METHOD TO GET THE ACTUAL PATH
-                            mCurrentPath = getRealPathFromURI(tempUri, getActivity());
+                            mCurrentPath = getRealPathFromURI(imageForUpload, getActivity());
                             Log.e(TAG, mCurrentPath);
                         } else {
                             Toast.makeText(getActivity(), "Error2 while capturing image", Toast.LENGTH_SHORT).show();

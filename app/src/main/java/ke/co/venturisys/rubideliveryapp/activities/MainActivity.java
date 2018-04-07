@@ -1,10 +1,12 @@
 package ke.co.venturisys.rubideliveryapp.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +38,7 @@ import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_NOTIFICATIONS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTORY;
@@ -68,8 +74,11 @@ public class MainActivity extends AppCompatActivity {
     // firebase set up
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener authListener;
+    // get current user
+    FirebaseUser user;
 
     // widgets
+    CoordinatorLayout mainContent;
     LinearLayout headerLayout;
     TextView tvMenuLocation, tvNameLocation;
     NavigationView navigationView;
@@ -100,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        //get current user
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -117,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         mHandler = new Handler();
 
         // initialise widgets
+        mainContent = findViewById(R.id.parent_layout);
         navigationView = findViewById(R.id.nav_view);
         drawerLayout = findViewById(R.id.drawer_layout);
         fab = findViewById(R.id.fab);
@@ -292,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         // if user clicks on profile image, blow it up to full scale
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,8 +376,13 @@ public class MainActivity extends AppCompatActivity {
                         // redirect to venturi's website
                         startActivity(BrowserActivity.newIntent(MainActivity.this, urlVenturi));
                         drawerLayout.closeDrawers();
+                        return true;
+                    case R.id.nav_delete_account:
+                        deleteAccount();
+                        return true;
                     case R.id.nav_logout:
                         signOut();
+                        return true;
                     default:
                         navItemIndex = 0;
                 }
@@ -411,6 +424,44 @@ public class MainActivity extends AppCompatActivity {
 
         // calling sync state is necessary for hamburger icon to show up
         actionBarDrawerToggle.syncState();
+    }
+
+    private void deleteAccount() {
+        // confirm if user wants to delete account
+        Snackbar snackbar = Snackbar
+                .make(mainContent, "Are you sure you to delete your account", Snackbar.LENGTH_LONG)
+                .setAction("I AM SURE", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // carry out deletion process
+                        if (user != null) {
+                            user.delete()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(MainActivity.this,
+                                                        "Good bye, we'll miss you", Toast.LENGTH_SHORT).show();
+                                                exitToTargetActivity(MainActivity.this, LoginActivity.class);
+                                            } else {
+                                                Toast.makeText(MainActivity.this,
+                                                        "Failed to delete your account!", Toast.LENGTH_SHORT).show();
+                                                Log.e(ERROR, task.getResult().toString());
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+
+        // Changing message text color
+        snackbar.setActionTextColor(getResources().getColor(R.color.colorSnackbarActionText));
+
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
     }
 
     // show or hide the fab
@@ -487,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
     public void signOut() {
         Toast.makeText(this, "Come back soon!", Toast.LENGTH_SHORT).show();
         auth.signOut();
-        exitToTargetActivity(MainActivity.this, LoginActivity.class);
+        exitToTargetActivity(this, LoginActivity.class);
     }
 
     @Override

@@ -1,0 +1,32 @@
+# For mutation from android
+# define parameters in mutation declaration
+mutation addCustomerMutation (
+
+  $name: String!,
+  $email: String!,
+  $location: String!,
+  $details: String!
+  $phone: String!,
+  $image: String!,
+)
+
+{
+  createCustomer (
+    details: $details
+    email: $email
+    name: $name
+    location: $location
+    image: $image
+    phone: $phone
+  )
+  {
+    # we still get a response like in query
+    details
+    email
+    name
+    location
+    image
+    phone
+    id
+  }
+}

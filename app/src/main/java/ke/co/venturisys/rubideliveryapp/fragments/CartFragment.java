@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,18 +20,29 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.Nonnull;
+
+import ke.co.venturisys.rubideliveryapp.AllMealsQuery;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
 import ke.co.venturisys.rubideliveryapp.others.CartLinearAdapter;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
+import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.goToTargetFragment;
@@ -129,14 +141,46 @@ public class CartFragment extends GeneralFragment {
         }
     }
 
+    /*
+     * This method queries all the meals stored in the GraphQL server using Apollo Client
+     * and passes it into the list that will be passed to recycler view
+     */
     private void reviewCart() {
-        Meal meal = new Meal("Chicken Tikka Masala", "Served with homemade naan bread",
-                "1", "450");
-        meals.add(meal);
+        assert getActivity() != null;
+        MyApolloClient.getMyApolloClient().query(
+                AllMealsQuery.builder().build()
+        ).enqueue(new ApolloCall.Callback<AllMealsQuery.Data>() {
+            @Override
+            // successful query
+            public void onResponse(@Nonnull Response<AllMealsQuery.Data> response) {
 
-        meal = new Meal("Mango juice", "Freshly blended and served cold",
-                "1", "600");
-        meals.add(meal);
+                // should log the first meal's title
+                Log.d(TAG, "onResponse: " + Objects.requireNonNull(response.data()).allMeals().get(0).name());
+                final List<AllMealsQuery.AllMeal> allMeals = Objects.requireNonNull(response.data()).allMeals();
+
+                // run changes on UI thread to show changes
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (AllMealsQuery.AllMeal allMeal : allMeals) {
+                            meals.add(new Meal(allMeal.icon(),
+                                    allMeal.name(),
+                                    allMeal.description(),
+                                    "" + allMeal.amount(),
+                                    allMeal.price(),
+                                    allMeal.category()));
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                // Log error so as to fix it
+                Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
+            }
+        });
 
         adapter.notifyDataSetChanged();
     }

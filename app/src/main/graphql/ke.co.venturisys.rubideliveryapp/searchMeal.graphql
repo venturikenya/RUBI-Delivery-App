@@ -1,0 +1,14 @@
+# search meal using its name
+query SearchMealsQuery(
+  $name: String!
+)
+
+{
+  Meal(name: $name) {
+    icon
+    name
+    description
+    price
+    amount
+  }
+}

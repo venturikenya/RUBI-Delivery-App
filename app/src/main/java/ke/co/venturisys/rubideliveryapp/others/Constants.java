@@ -24,6 +24,7 @@ public class Constants {
     public static final String RES_ID = "RESOURCE ID";
     // extra used to pass data to activities
     public static final String EXTRA_PROFILE_IMAGE_URL = "ke.co.venturisys.rubideliveryapp.profile_image";
+    public static final String EXTRA_PROFILE_EMAIL = "ke.co.venturisys.rubideliveryapp.email";
     public static final String EXTRA_USER_MEALS = "ke.co.venturisys.rubideliveryapp.meals";
     public static final String EXTRA_USER_BACKDROP_TITLE = "ke.co.venturisys.rubideliveryapp.category_title";
     public static final String EXTRA_USER_BACKDROP_ICON = "ke.co.venturisys.rubideliveryapp.category_icon";
@@ -38,6 +39,7 @@ public class Constants {
     public static final String ARG_TITLE = "title";
     public static final String ARG_ICON = "icon";
     public static final String ARG_SHOW_FIELDS = "show_fields";
+    public static final String ARG_PHOTO_URL = "photo_url";
     public static final String ARG_NAME = "name";
     public static final String ARG_DETAILS = "details";
     public static final String ARG_PHONE_NUMBER = "phone number";
@@ -52,6 +54,9 @@ public class Constants {
     public static final String PERMISSION_STORAGE = "external_storage";
     public static final String PERMISSION_CAMERA = "camera";
     public static final String URI = "URI";
+    // tags for POST
+    static final String NAME = "name";
+    static final String PIC = "picture";
     static final String INTERNET_PICKER = "INTERNET_PICKER";
     static final String ARG_PATH = "path";
     static final String FILE = "FILE";

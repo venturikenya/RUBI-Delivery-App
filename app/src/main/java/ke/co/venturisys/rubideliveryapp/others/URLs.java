@@ -7,9 +7,10 @@ package ke.co.venturisys.rubideliveryapp.others;
 
 public class URLs {
 
-    public static final String urlProfileImg = "https://images.pexels.com/photos/904276/pexels-photo-904276.jpeg?auto=compress&cs=tinysrgb&h=650&w=940";
     public static final String urlTermsConditions = "https://api.androidhive.info/webview/index.html";
     public static final String urlAboutUs = "https://www.youtube.com/watch?v=ua2CYbr9wGQ";
     public static final String urlVenturi = "www.venturisys.co.ke";
+    static final String urlPostProfileImage = "http://victormungai.pythonanywhere.com/upload/";
+    static final String GRAPH_QL_BASE_URL = "https://api.graph.cool/simple/v1/cjfovcyha0fj30135agiot5du";
 
 }

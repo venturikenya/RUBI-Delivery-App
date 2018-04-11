@@ -15,7 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-// import android.util.Base64;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -277,20 +277,20 @@ public class PictureUtilities {
         return "";
     }
 
-//    /**
-//     * Function to compress and convert bitmap to string for transmission.
-//     * It uses the Base64 encoding library
-//     *
-//     * @param photo Bitmap to be converted
-//     * @return String conversion of bitmap
-//     */
-//    public static String compressImage(Bitmap photo) {
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        if (photo == null)
-//            return "";
-//        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-//        byte[] byteArrayImage = baos.toByteArray();
-//        // convert byte array to byte string
-//        return Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-//    }
+    /**
+     * Function to compress and convert bitmap to string for transmission.
+     * It uses the Base64 encoding library
+     *
+     * @param photo Bitmap to be converted
+     * @return String conversion of bitmap
+     */
+    static String compressImage(Bitmap photo) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if (photo == null)
+            return "";
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] byteArrayImage = baos.toByteArray();
+        // convert byte array to byte string
+        return Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+    }
 }

@@ -24,19 +24,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
+import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
+import ke.co.venturisys.rubideliveryapp.FindCustomerShortenedQuery;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.fragments.CartFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
+import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
@@ -47,11 +55,11 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setTextViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlAboutUs;
-import static ke.co.venturisys.rubideliveryapp.others.URLs.urlProfileImg;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlTermsConditions;
 import static ke.co.venturisys.rubideliveryapp.others.URLs.urlVenturi;
 
@@ -88,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Fragment fragment;
+    String photo_url;
 
     public static void setNavItemIndex(int navItemIndex) {
         MainActivity.navItemIndex = navItemIndex;
@@ -287,11 +296,43 @@ public class MainActivity extends AppCompatActivity {
         tvNameLocation.setText(getString(R.string.name_placeholder));
         tvMenuLocation.setText(getString(R.string.location_placeholder));
 
-        // load profile image
-        HashMap<String, Object> src = new HashMap<>();
-        src.put(URL, urlProfileImg);
-        loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false,
-                false, false);
+        // carry out a GraphQL query to get the user's name, location and profile image
+        // please ensure that the user is signed in first and there is internet connection
+        if (user != null) {
+            if (isNetworkAvailable(this)) {
+                MyApolloClient.getMyApolloClient().query(
+                        FindCustomerShortenedQuery.builder().email(Objects.requireNonNull(user.getEmail())).build()
+                ).enqueue(new ApolloCall.Callback<FindCustomerShortenedQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull final Response<FindCustomerShortenedQuery.Data> response) {
+                        // update UI on the activity's UI thread to reflect query
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // update text views
+                                tvNameLocation.setText(Objects.requireNonNull(Objects.requireNonNull
+                                        (response.data()).Customer()).name());
+                                tvMenuLocation.setText(Objects.requireNonNull(Objects.requireNonNull
+                                        (response.data()).Customer()).location());
+
+                                // load profile image
+                                photo_url = Objects.requireNonNull(Objects.requireNonNull(response.data()).Customer()).image();
+                                HashMap<String, Object> src = new HashMap<>();
+                                src.put(URL, photo_url);
+                                loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false,
+                                        false, false);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+                        // Log error so as to fix it
+                        Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
+                    }
+                });
+            } else requestInternetAccess(mainContent, this);
+        }
 
         // if nav header is selected
         headerLayout.setOnClickListener(new View.OnClickListener() {
@@ -305,7 +346,8 @@ public class MainActivity extends AppCompatActivity {
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProfileImageActivity.newIntent(MainActivity.this, urlProfileImg);
+                String email = user.getEmail(); // necessary for updating profile image
+                Intent intent = ProfileImageActivity.newIntent(MainActivity.this, photo_url, email);
                 startActivity(intent);
             }
         });

@@ -20,30 +20,43 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
+import ke.co.venturisys.rubideliveryapp.AllMealsQuery;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.SearchActivity;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
+import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 import ke.co.venturisys.rubideliveryapp.others.OrderLinearAdapter;
 
 import static android.app.Activity.RESULT_OK;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_ICON;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_TITLE;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.getSpeechInput;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
@@ -68,10 +81,11 @@ public class OrderFragment extends GeneralFragment {
     ViewGroup transitionsContainer;
     TextInputLayout inputLayoutSearch;
     EditText inputSearch;
+    ProgressBar progressBar; // shown while meals are being loaded
     List<Meal> meals;
 
     String backdrop_title;
-    int backdrop_icon;
+    String backdrop_icon;
     Parcelable mListState; // used to save state of recycler view across rotation
     boolean visible = true; // determine visibility of fab text view
     int rotationAngle;
@@ -79,12 +93,12 @@ public class OrderFragment extends GeneralFragment {
     public OrderFragment() {
     }
 
-    public static OrderFragment newInstance(int icon, String title) {
+    public static OrderFragment newInstance(String icon, String title) {
 
         // receive arguments and attach them to fragment on creation for future use
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, title);
-        args.putInt(ARG_ICON, icon);
+        args.putString(ARG_ICON, icon);
 
         OrderFragment fragment = new OrderFragment();
         fragment.setArguments(args);
@@ -98,7 +112,7 @@ public class OrderFragment extends GeneralFragment {
         // retrieve fragment arguments sent from home page via order activity
         if (getArguments() != null) {
             backdrop_title = getArguments().getString(ARG_TITLE);
-            backdrop_icon = getArguments().getInt(ARG_ICON);
+            backdrop_icon = getArguments().getString(ARG_ICON);
         }
     }
 
@@ -134,6 +148,9 @@ public class OrderFragment extends GeneralFragment {
         inputSearch = view.findViewById(R.id.input_search);
         searchBtn = view.findViewById(R.id.search_image_view);
         speechBtn = view.findViewById(R.id.microphone_image_view);
+        progressBar = view.findViewById(R.id.progressBar);
+        setImageViewDrawableColor(progressBar.getIndeterminateDrawable(), getResources()
+                .getColor(R.color.colorProgressBar));
 
         // let floating fab be visible from Android Marsh mellow
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M)
@@ -208,7 +225,7 @@ public class OrderFragment extends GeneralFragment {
         // load backdrop details
         backdropTitle.setText(backdrop_title);
         HashMap<String, Object> src = new HashMap<>();
-        src.put(RES_ID, backdrop_icon);
+        src.put(URL, backdrop_icon);
         loadPictureToImageView(src, R.drawable.bg_circle, backdrop, false, false,
                 false, false);
 
@@ -217,14 +234,49 @@ public class OrderFragment extends GeneralFragment {
         return view;
     }
 
+    /*
+     * This method queries all the meals stored in the GraphQL server using Apollo Client
+     * and passes it into the list that will be passed to recycler view
+     */
     private void getMeals() {
-        Meal meal = new Meal("Chicken Tikka Masala", "Served with homemade naan bread",
-                "1", "450");
-        meals.add(meal);
+        assert getActivity() != null;
+        MyApolloClient.getMyApolloClient().query(
+                AllMealsQuery.builder().build()
+        ).enqueue(new ApolloCall.Callback<AllMealsQuery.Data>() {
+            @Override
+            // successful query
+            public void onResponse(@Nonnull Response<AllMealsQuery.Data> response) {
 
-        meal = new Meal("Mango juice", "Freshly blended and served cold",
-                "1", "600");
-        meals.add(meal);
+                // should log the first meal's title
+                Log.d(TAG, "onResponse: " + Objects.requireNonNull(response.data()).allMeals().get(0).name());
+                final List<AllMealsQuery.AllMeal> allMeals = Objects.requireNonNull(response.data()).allMeals();
+
+                // run changes on UI thread to show changes
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        for (AllMealsQuery.AllMeal allMeal : allMeals) {
+                            if (allMeal.category().equals(backdrop_title)) {
+                                meals.add(new Meal(allMeal.icon(),
+                                        allMeal.name(),
+                                        allMeal.description(),
+                                        "" + allMeal.amount(),
+                                        allMeal.price(),
+                                        allMeal.category()));
+                            }
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                // Log error so as to fix it
+                Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
+            }
+        });
 
         adapter.notifyDataSetChanged();
     }

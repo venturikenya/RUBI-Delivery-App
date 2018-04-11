@@ -8,10 +8,10 @@ package ke.co.venturisys.rubideliveryapp.others;
 public class LandingPageFood {
 
     private String name;
-    private int icon;
+    private String icon;
     private int id;
 
-    LandingPageFood(String name, int icon, int id) {
+    LandingPageFood(String name, String icon, int id) {
         this.name = name;
         this.icon = icon;
         this.id = id;
@@ -21,7 +21,7 @@ public class LandingPageFood {
         return name;
     }
 
-    public int getIcon() {
+    public String getIcon() {
         return icon;
     }
 

@@ -1,0 +1,19 @@
+# Here, we shall update the user's profile picture
+
+mutation updateCustomerMutation (
+  $id: ID!,
+  $image: String!
+)
+
+{
+  updateCustomer(
+    id: $id
+    image: $image
+  )
+
+  {
+    id
+    image
+    name
+  }
+}

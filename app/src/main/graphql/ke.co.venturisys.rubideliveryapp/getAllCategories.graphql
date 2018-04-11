@@ -1,0 +1,6 @@
+query allCategoriesQuery{
+  allCategories {
+    icon
+    name
+  }
+}

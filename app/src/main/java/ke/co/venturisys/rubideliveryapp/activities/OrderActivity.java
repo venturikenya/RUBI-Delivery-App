@@ -17,7 +17,7 @@ public class OrderActivity extends SingleFragmentActivity {
      * Called in Home Fragment to create Intent containing extra info as needed.
      * Helps to hide OrderActivity's needed extras
      */
-    public static Intent newIntent(Context context, int icon, String title) {
+    public static Intent newIntent(Context context, String icon, String title) {
         Intent intent = new Intent(context, OrderActivity.class);
         intent.putExtra(EXTRA_USER_BACKDROP_TITLE, title);
         intent.putExtra(EXTRA_USER_BACKDROP_ICON, icon);
@@ -33,7 +33,7 @@ public class OrderActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
         setTitle(getString(R.string.activity_title_order));
         String title = getIntent().getStringExtra(EXTRA_USER_BACKDROP_TITLE);
-        int icon = getIntent().getIntExtra(EXTRA_USER_BACKDROP_ICON, R.drawable.ruby_small);
+        String icon = getIntent().getStringExtra(EXTRA_USER_BACKDROP_ICON);
         return OrderFragment.newInstance(icon, title);
     }
 

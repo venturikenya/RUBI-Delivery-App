@@ -17,15 +17,28 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
+import ke.co.venturisys.rubideliveryapp.FindCustomerIDQuery;
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.UpdateCustomerMutation;
+import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 import ke.co.venturisys.rubideliveryapp.others.Permissions;
 import ke.co.venturisys.rubideliveryapp.others.PictureDialogFragment;
 
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.EXTRA_PROFILE_EMAIL;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.EXTRA_PROFILE_IMAGE_URL;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_CAMERA;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_STORAGE;
@@ -37,6 +50,8 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.URI;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.postProfileImage;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.FileUtilities.createSystemDirs;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getImageUri;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getRealPathFromURI;
@@ -46,18 +61,20 @@ public class ProfileImageActivity extends AppCompatActivity {
 
     public static Uri imageForUpload;
     ImageView profileImageView;
-    Button editProfilePhoto;
+    Button editProfilePhoto, updateProfilePhoto;
     FloatingActionButton share;
+    ProgressBar progressBar; // shown while profile picture is being updated
     File directory;
     Bitmap photo = null;
-    String mCurrentPath;
+    String mCurrentPath, email, photo_url;
 
     /*
      * Creates intent configured with extra to receive user's profile image
      */
-    public static Intent newIntent(Context packageContext, String imgProfile) {
+    public static Intent newIntent(Context packageContext, String imgProfile, String email) {
         Intent intent = new Intent(packageContext, ProfileImageActivity.class);
         intent.putExtra(EXTRA_PROFILE_IMAGE_URL, imgProfile);
+        intent.putExtra(EXTRA_PROFILE_EMAIL, email);
         return intent;
     }
 
@@ -65,8 +82,9 @@ public class ProfileImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_image);
-        // receive profile image url from extra
+        // receive profile image url and email from extra
         String imgProfile = getIntent().getStringExtra(EXTRA_PROFILE_IMAGE_URL);
+        email = getIntent().getStringExtra(EXTRA_PROFILE_EMAIL);
 
         // request writing permission
         Permissions.checkPermission(this, this, PERMISSION_STORAGE);
@@ -90,7 +108,13 @@ public class ProfileImageActivity extends AppCompatActivity {
         // initialise widgets
         profileImageView = findViewById(R.id.activity_profile_image_view);
         editProfilePhoto = findViewById(R.id.edit_profile_photo);
+        updateProfilePhoto = findViewById(R.id.update_profile_photo);
         share = findViewById(R.id.share_button);
+        progressBar = findViewById(R.id.progressBar);
+        setImageViewDrawableColor(progressBar.getIndeterminateDrawable(), getResources()
+                .getColor(R.color.colorAccent));
+        // set initially invisible
+        progressBar.setVisibility(View.GONE);
         // set profile image to image view
         HashMap<String, Object> src = new HashMap<>();
         src.put(URL, imgProfile);
@@ -107,6 +131,58 @@ public class ProfileImageActivity extends AppCompatActivity {
                 assert fm != null;
                 PictureDialogFragment dialog = PictureDialogFragment.newInstance(directory);
                 dialog.show(fm, SELECT_PICTURE);
+            }
+        });
+
+        // save changed profile photo to server
+        updateProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // show progress bar
+                progressBar.setVisibility(View.VISIBLE);
+                MyApolloClient.getMyApolloClient().query(
+                        FindCustomerIDQuery.builder().email(email).build()
+                ).enqueue(new ApolloCall.Callback<FindCustomerIDQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull Response<FindCustomerIDQuery.Data> response) {
+                        // update profile image using received id and name
+                        String id = Objects.requireNonNull(Objects.requireNonNull
+                                (response.data()).Customer()).id(),
+                                name = Objects.requireNonNull(Objects.requireNonNull
+                                        (response.data()).Customer()).name();
+                        photo_url = postProfileImage(profileImageView, name, ProfileImageActivity.this);
+                        MyApolloClient.getMyApolloClient().mutate(
+                                UpdateCustomerMutation.builder().id(id).image(photo_url).build()
+                        ).enqueue(new ApolloCall.Callback<UpdateCustomerMutation.Data>() {
+                            @Override
+                            public void onResponse(@Nonnull Response<UpdateCustomerMutation.Data> response) {
+                                // Toast successful update and exit on activity's UI thread
+                                ProfileImageActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // hide progress bar
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(ProfileImageActivity.this, "Successful update",
+                                                Toast.LENGTH_SHORT).show();
+                                        exitToTargetActivity(ProfileImageActivity.this, MainActivity.class);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(@Nonnull ApolloException e) {
+                                // Log error so as to fix it
+                                Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+                        // Log error so as to fix it
+                        Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
+                    }
+                });
             }
         });
 
@@ -156,6 +232,7 @@ public class ProfileImageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
+            updateProfilePhoto.setVisibility(View.VISIBLE);
             try {
                 switch (requestCode) {
                     case REQUEST_PHOTO:

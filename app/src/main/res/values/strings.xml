@@ -171,5 +171,6 @@
     <string name="picture_dialog_title">Edit Profile Photo</string>
     <string name="camera_option">Take Photo</string>
     <string name="gallery_option">Choose from Gallery</string>
+    <string name="update_changes">Update Changes</string>
 
 </resources>

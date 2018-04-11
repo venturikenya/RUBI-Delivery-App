@@ -22,7 +22,7 @@ import java.util.Locale;
 
 import ke.co.venturisys.rubideliveryapp.R;
 
-import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
 public class SearchLinearAdapter extends RecyclerViewAdapter {
@@ -60,8 +60,8 @@ public class SearchLinearAdapter extends RecyclerViewAdapter {
         myHolder.mealNumber.setText(meal.getAmount());
         myHolder.mealTitle.setText(meal.getTitle());
         HashMap<String, Object> src = new HashMap<>();
-        src.put(RES_ID, meal.getIcon());
-        loadPictureToImageView(src, R.drawable.ic_pastries, myHolder.mealIcon,
+        src.put(URL, meal.getIcon());
+        loadPictureToImageView(src, R.drawable.ruby_small, myHolder.mealIcon,
                 false, true, false, false);
 
         // detect change in number of meals typed and show change in price accordingly

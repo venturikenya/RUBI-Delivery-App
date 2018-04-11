@@ -40,6 +40,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_LOCATION;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_NAME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_PHONE_NUMBER;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_SHOW_FIELDS;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_CAMERA;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_STORAGE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_GALLERY;
@@ -49,6 +50,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.VERIFY_SMS;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmailValid;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.postProfileImage;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.FileUtilities.createSystemDirs;
 import static ke.co.venturisys.rubideliveryapp.others.Permissions.checkPermission;
@@ -68,7 +70,7 @@ public class EditProfileFragment extends Fragment {
     String myInternationalNumber = "";
     boolean showEmailAndNameFields;
     File directory;
-    String name, details, location, email, mCurrentPath;
+    String name, details, location, email, mCurrentPath, photo_url;
     Bitmap photo = null;
 
     public static EditProfileFragment newInstance(boolean showEmailAndNameFields,
@@ -195,6 +197,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void submitRegistrationForm() {
+        assert getActivity() != null;
         if (showEmailAndNameFields && isEmpty(editName)) editName.setError("Name required");
         else if (showEmailAndNameFields && isEmpty(editEmail))
             editEmail.setError("Email address required");
@@ -203,15 +206,33 @@ public class EditProfileFragment extends Fragment {
         else if (isEmpty(editLocation)) editLocation.setError("Location required");
         else if (myInternationalNumber.length() == 0 || myInternationalNumber.equals(""))
             Toast.makeText(getActivity(), "Phone number required", Toast.LENGTH_SHORT).show();
-        else if (isEmpty(editDetails)) editDetails.setError("Say something about yourself");
         else if (myInternationalNumber.length() != 13 || !phoneInputView.isValid())
             Toast.makeText(getActivity(), "Invalid phone number", Toast.LENGTH_SHORT).show();
-            // if every thing is correct, open dialog for user to confirm number to receive SMS code
+        else if (isEmpty(editDetails)) editDetails.setError("Say something about yourself");
         else {
-            FragmentManager fm = getFragmentManager();
-            SMSVerifyDialogFragment dialog = SMSVerifyDialogFragment.newInstance(myInternationalNumber);
-            assert fm != null;
-            dialog.show(fm, VERIFY_SMS);
+            // create message, post it to server and react based on received response or error
+            try {
+                photo_url = postProfileImage(imageViewProfile, name, getActivity());
+
+                name = editName.getText().toString().trim();
+                email = editEmail.getText().toString().trim();
+                myInternationalNumber = phoneInputView.getNumber();
+                location = editLocation.getText().toString().trim();
+                details = editDetails.getText().toString().trim();
+
+                // if every thing is correct, open dialog for user to confirm number to receive SMS code
+                FragmentManager fm = getFragmentManager();
+                SMSVerifyDialogFragment dialog = SMSVerifyDialogFragment
+                        .newInstance(myInternationalNumber,
+                                name, email, location, photo_url, details);
+                assert fm != null;
+                dialog.show(fm, VERIFY_SMS);
+
+            } catch (Exception ex) {
+                Log.e(ERROR, "Something went wrong");
+                ex.printStackTrace();
+                Toast.makeText(getActivity(), "Updating profile failed", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

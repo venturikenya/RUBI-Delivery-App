@@ -7,26 +7,20 @@ package ke.co.venturisys.rubideliveryapp.others;
 
 public class Meal {
 
-    private int icon;
+    private String icon;
     private String title;
     private String details;
     private String amount;
     private String price;
+    private String category;
 
-    public Meal(String title, String details, String amount, String price) {
-        this.icon = 0;
-        this.title = title;
-        this.details = details;
-        this.amount = amount;
-        this.price = price;
-    }
-
-    public Meal(int icon, String title, String details, String amount, String price) {
+    public Meal(String icon, String title, String details, String amount, String price, String category) {
         this.icon = icon;
         this.title = title;
         this.details = details;
         this.amount = amount;
         this.price = price;
+        this.category = category;
     }
 
     public String getTitle() {
@@ -45,7 +39,11 @@ public class Meal {
         return price;
     }
 
-    public int getIcon() {
+    public String getIcon() {
         return icon;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }

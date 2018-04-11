@@ -14,7 +14,7 @@ import java.util.List;
 
 import ke.co.venturisys.rubideliveryapp.R;
 
-import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 
 /**
@@ -57,7 +57,7 @@ public class LandingPageGridAdapter extends RecyclerViewAdapter {
 
         myHolder.tvLandingPage.setText(food.getName());
         HashMap<String, Object> src = new HashMap<>();
-        src.put(RES_ID, food.getIcon());
+        src.put(URL, food.getIcon());
         loadPictureToImageView(src, R.mipmap.ic_box, myHolder.imLandingPage, true, true,
                 true, false);
     }
@@ -82,10 +82,6 @@ public class LandingPageGridAdapter extends RecyclerViewAdapter {
             super(itemView);
             imLandingPage = itemView.findViewById(R.id.landing_page_card_view_image);
             tvLandingPage = itemView.findViewById(R.id.landing_page_card_view_text);
-        }
-
-        public TextView getTvLandingPage() {
-            return tvLandingPage;
         }
     }
 }

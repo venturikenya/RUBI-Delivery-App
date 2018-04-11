@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class HomeFragment extends GeneralFragment {
     EditText inputSearch;
     List<LandingPageFood> foods;
     CoordinatorLayout mainContent;
+    ProgressBar progressBar; // shown while user info is being loaded
     Parcelable mListState; // used to save state of recycler view across rotation
 
     public HomeFragment() {
@@ -84,6 +86,10 @@ public class HomeFragment extends GeneralFragment {
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
     }
 
     @Override
@@ -114,6 +120,9 @@ public class HomeFragment extends GeneralFragment {
         inputLayoutSearch = view.findViewById(R.id.input_layout_search);
         inputSearch = view.findViewById(R.id.input_search);
         mainContent = view.findViewById(R.id.main_content);
+        progressBar = view.findViewById(R.id.progressBar);
+        setImageViewDrawableColor(progressBar.getIndeterminateDrawable(), getResources()
+                .getColor(R.color.colorProgressBar));
 
         // set colors to overflow, microphone and search buttons
         if (getActivity() != null) {
@@ -168,7 +177,7 @@ public class HomeFragment extends GeneralFragment {
 
         // set image(s) of today's offers to background
         HashMap<String, Object> src = new HashMap<>();
-        src.put(RES_ID, R.drawable.ic_beef_specials);
+        src.put(RES_ID, R.drawable.ruby_small);
         loadPictureToImageView(src, R.drawable.bg_circle, landingBg, false, false,
                 false, false);
 
@@ -200,6 +209,8 @@ public class HomeFragment extends GeneralFragment {
     private void prepareFoodItems() {
         OrderLab orderLab = OrderLab.get(getActivity());
         foods = orderLab.getFoods();
+
+        if (foods.size() > 0) progressBar.setVisibility(View.GONE);
 
         adapter = new LandingPageGridAdapter(getActivity(), foods);
         recyclerView.setAdapter(adapter);

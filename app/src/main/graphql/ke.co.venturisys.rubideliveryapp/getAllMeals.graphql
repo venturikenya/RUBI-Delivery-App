@@ -1,0 +1,10 @@
+query allMealsQuery{
+  allMeals {
+    amount
+    category
+    description
+    icon
+    name
+    price
+  }
+}

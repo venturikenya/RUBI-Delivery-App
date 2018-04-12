@@ -154,8 +154,10 @@
     <string name="reset_password">Reset Password</string>
     <string name="forgot_password_msg">Please enter your registered email address to receive your
         password reset instructions.</string>
+    <string name="change_password_msg">Please enter your new password.</string>
     <string name="reset_successful">We have sent you instructions to reset your password!</string>
-    <string name="reset_fail">Failed to send reset email!</string>
+    <string name="reset_success">Successful password change</string>
+    <string name="reset_fail">Failed to send reset password!</string>
 
     <!-- set up internet chooser dialog -->
     <string name="internet_access_request">This app needs internet access</string>

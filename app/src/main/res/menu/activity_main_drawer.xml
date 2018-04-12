@@ -42,6 +42,10 @@
 
         <menu>
             <item
+                android:id="@+id/nav_change_password"
+                android:title="@string/change_password" />
+
+            <item
                 android:id="@+id/nav_delete_account"
                 android:title="@string/nav_delete_account" />
 

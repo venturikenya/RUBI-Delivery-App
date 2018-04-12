@@ -40,6 +40,7 @@ import javax.annotation.Nonnull;
 import ke.co.venturisys.rubideliveryapp.FindCustomerShortenedQuery;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.fragments.CartFragment;
+import ke.co.venturisys.rubideliveryapp.fragments.ChangePasswordFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.NotificationsFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.OrderHistoryFragment;
@@ -47,6 +48,7 @@ import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
 import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CHANGE_PASSWORD;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_NOTIFICATIONS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_ORDER_HISTORY;
@@ -417,6 +419,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_creator_link:
                         // redirect to venturi's website
                         startActivity(BrowserActivity.newIntent(MainActivity.this, urlVenturi));
+                        drawerLayout.closeDrawers();
+                        return true;
+                    case R.id.nav_change_password:
+                        changeFragment(new ChangePasswordFragment(), new Handler(), TAG_CHANGE_PASSWORD,
+                                MainActivity.this);
                         drawerLayout.closeDrawers();
                         return true;
                     case R.id.nav_delete_account:

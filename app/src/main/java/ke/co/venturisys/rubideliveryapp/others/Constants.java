@@ -20,6 +20,7 @@ public class Constants {
     public static final String TAG_LOGIN = "login";
     public static final String TAG_EDIT_PROFILE = "EDIT PROFILE";
     public static final String TAG_RESET_PASSWORD = "RESET PASSWORD";
+    public static final String TAG_CHANGE_PASSWORD = "CHANGE PASSWORD";
     public static final String URL = "URL";
     public static final String RES_ID = "RESOURCE ID";
     // extra used to pass data to activities

@@ -97,9 +97,6 @@ public class LoginFragment extends Fragment {
         facebookBtn = view.findViewById(R.id.facebook_btn);
         progressBar = view.findViewById(R.id.progressBar);
 
-        // Get Fire-base auth instance a second time(Why?)
-        auth = FirebaseAuth.getInstance();
-
         // enter app if successful and show warning if not
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

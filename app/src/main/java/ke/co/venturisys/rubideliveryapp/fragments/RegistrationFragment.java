@@ -1,6 +1,8 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.database.helpers.SignBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.CartDbSchema.CartTable;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
@@ -34,6 +38,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_EDIT_PROFILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_LOGIN;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.getContentValues;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmailValid;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
@@ -55,6 +60,7 @@ public class RegistrationFragment extends Fragment {
     TextView loginLink;
     ProgressBar progressBar;
     FirebaseAuth auth;
+    SQLiteDatabase mDatabase;
 
     public RegistrationFragment() {
     }
@@ -92,6 +98,7 @@ public class RegistrationFragment extends Fragment {
         facebookBtn = view.findViewById(R.id.facebook_btn);
         progressBar = view.findViewById(R.id.progressBar);
         loginLink = view.findViewById(R.id.link_to_login);
+        mDatabase = new SignBaseHelper(getActivity()).getWritableDatabase();
 
         // redirect to edit profile page if successful and show warning if not
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +160,9 @@ public class RegistrationFragment extends Fragment {
                                             Toast.LENGTH_SHORT).show();
                                     Log.e(ERROR, "Error message" + task.getException());
                                 } else {
+                                    // save user's details to SQLite database
+                                    ContentValues values = getContentValues(email, name);
+                                    mDatabase.insert(CartTable.NAME, null, values);
                                     changeFragment(EditProfileFragment.newInstance(false,
                                             name, "", email, "", ""),
                                             new Handler(),

@@ -252,22 +252,26 @@ public class OrderFragment extends GeneralFragment {
                 final List<AllMealsQuery.AllMeal> allMeals = Objects.requireNonNull(response.data()).allMeals();
 
                 // run changes on UI thread to show changes
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                        for (AllMealsQuery.AllMeal allMeal : allMeals) {
-                            if (allMeal.category().equals(backdrop_title)) {
-                                meals.add(new Meal(allMeal.icon(),
-                                        allMeal.name(),
-                                        allMeal.description(),
-                                        "" + allMeal.amount(),
-                                        allMeal.price(),
-                                        allMeal.category()));
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            for (AllMealsQuery.AllMeal allMeal : allMeals) {
+                                if (allMeal.category().equals(backdrop_title)) {
+                                    meals.add(new Meal(allMeal.icon(),
+                                            allMeal.name(),
+                                            allMeal.description(),
+                                            "" + allMeal.amount(),
+                                            allMeal.price(),
+                                            allMeal.category()));
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
             }
 

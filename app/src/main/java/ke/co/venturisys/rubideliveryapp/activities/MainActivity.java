@@ -1,6 +1,10 @@
 package ke.co.venturisys.rubideliveryapp.activities;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -32,13 +36,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ke.co.venturisys.rubideliveryapp.FindCustomerShortenedQuery;
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.database.helpers.SignBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.SignInDbSchema.SignInTable;
+import ke.co.venturisys.rubideliveryapp.database.wrappers.SignInCursorWrapper;
 import ke.co.venturisys.rubideliveryapp.fragments.CartFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.ChangePasswordFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
@@ -48,6 +57,7 @@ import ke.co.venturisys.rubideliveryapp.fragments.ProfileFragment;
 import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CHANGE_PASSWORD;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_NOTIFICATIONS;
@@ -56,6 +66,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_PROFILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.getContentValues;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setBadgeCount;
@@ -99,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle actionBarDrawerToggle;
     Fragment fragment;
     String photo_url;
+    SQLiteDatabase mDatabase; // used to save user's credentials
 
     public static void setNavItemIndex(int navItemIndex) {
         MainActivity.navItemIndex = navItemIndex;
@@ -161,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         headerLayout = navHeader.findViewById(R.id.navHeaderLayout);
         imgProfile = navHeader.findViewById(R.id.img_profile);
         imgCloseMenu = navHeader.findViewById(R.id.img_close_menu);
+        mDatabase = new SignBaseHelper(this).getWritableDatabase();
 
         imgCloseMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,13 +310,14 @@ public class MainActivity extends AppCompatActivity {
     private void loadNavHeader() {
         tvNameLocation.setText(getString(R.string.name_placeholder));
         tvMenuLocation.setText(getString(R.string.location_placeholder));
+        final String email = Objects.requireNonNull(user.getEmail());
 
         // carry out a GraphQL query to get the user's name, location and profile image
         // please ensure that the user is signed in first and there is internet connection
         if (user != null) {
             if (isNetworkAvailable(this)) {
                 MyApolloClient.getMyApolloClient().query(
-                        FindCustomerShortenedQuery.builder().email(Objects.requireNonNull(user.getEmail())).build()
+                        FindCustomerShortenedQuery.builder().email(email).build()
                 ).enqueue(new ApolloCall.Callback<FindCustomerShortenedQuery.Data>() {
                     @Override
                     public void onResponse(@Nonnull final Response<FindCustomerShortenedQuery.Data> response) {
@@ -311,11 +325,20 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                String name = Objects.requireNonNull(Objects.requireNonNull
+                                        (response.data()).Customer()).name();
                                 // update text views
-                                tvNameLocation.setText(Objects.requireNonNull(Objects.requireNonNull
-                                        (response.data()).Customer()).name());
+                                tvNameLocation.setText(name);
                                 tvMenuLocation.setText(Objects.requireNonNull(Objects.requireNonNull
                                         (response.data()).Customer()).location());
+
+                                // save user's details to SQLite database if not previously saved
+                                List<String> emails = getEmails();
+                                if (!emails.contains(email)) {
+                                    ContentValues values = getContentValues(email, name);
+                                    mDatabase.insert(SignInTable.NAME, null, values);
+                                    Log.e(TAG, values.toString());
+                                }
 
                                 // load profile image
                                 photo_url = Objects.requireNonNull(Objects.requireNonNull(response.data()).Customer()).image();
@@ -364,6 +387,51 @@ public class MainActivity extends AppCompatActivity {
         // showing dot next to notifications label if notifications present
         //noinspection ConstantConditions
         if (notifications > 0) navigationView.getMenu().getItem(2).setActionView(R.layout.menu_dot);
+    }
+
+    /**
+     * Gets list of emails for auto completion from database
+     *
+     * @return list of email
+     */
+    private ArrayList<String> getEmails() {
+        // create array list to hold saved emails
+        ArrayList<String> emails = new ArrayList<>();
+        // create wrapper for cursor
+        SignInCursorWrapper cursor = queryEmail();
+
+        // get received emails and add to array list
+        //noinspection TryFinallyCanBeTryWithResources
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                emails.add(cursor.getEmail());
+                cursor.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+        }
+        return emails;
+    }
+
+    /**
+     * Creates the query for retrieving registration numbers
+     *
+     * @return instance of cursor wrapper
+     */
+    private SignInCursorWrapper queryEmail() {
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
+                SignInTable.NAME, // Table
+                new String[]{SignInTable.Cols.EMAIL}, // Columns - null selects all columns
+                null, // WHERE
+                null, // Conditions to be met
+                null, // groupBy
+                null, // having
+                null // orderBy
+        );
+        return new SignInCursorWrapper(cursor);
     }
 
     private void selectNavMenu() {

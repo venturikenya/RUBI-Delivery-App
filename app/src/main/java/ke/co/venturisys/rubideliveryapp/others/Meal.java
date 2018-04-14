@@ -35,7 +35,7 @@ public class Meal {
         return amount;
     }
 
-    String getPrice() {
+    public String getPrice() {
         return price;
     }
 

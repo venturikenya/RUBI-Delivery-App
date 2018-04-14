@@ -1,5 +1,10 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -20,33 +25,32 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.annotation.Nonnull;
-
-import ke.co.venturisys.rubideliveryapp.AllMealsQuery;
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
+import ke.co.venturisys.rubideliveryapp.database.helpers.CartBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.helpers.OrderBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.CartDbSchema;
+import ke.co.venturisys.rubideliveryapp.database.schemas.OrderDbSchema;
+import ke.co.venturisys.rubideliveryapp.database.wrappers.CartCursorWrapper;
 import ke.co.venturisys.rubideliveryapp.others.CartLinearAdapter;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
-import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
 
-import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_HOME;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.getCartCount;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.getContentValues;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.goToTargetFragment;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.inflateCartMenu;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getFileName;
 
 public class CartFragment extends GeneralFragment {
 
@@ -61,6 +65,7 @@ public class CartFragment extends GeneralFragment {
     Button btnProceedCheckout;
     Timer timer;
     Parcelable mListState; // used to save state of recycler view across rotation
+    SQLiteDatabase mDatabase;
 
     public CartFragment() {
     }
@@ -102,6 +107,27 @@ public class CartFragment extends GeneralFragment {
         cartAmount = view.findViewById(R.id.cart_page_number_tv);
         cartPrice = view.findViewById(R.id.cart_page_price_tv);
         btnProceedCheckout = view.findViewById(R.id.btnProceedToCheckout);
+        // get writable database as we want to write data
+        mDatabase = new CartBaseHelper(getActivity()).getWritableDatabase();
+        final SQLiteDatabase db = new OrderBaseHelper(getActivity()).getWritableDatabase();
+
+        btnProceedCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reviewCart();
+                for (Meal meal : meals) {
+                    ContentValues values = getContentValues(meal, getFileName("yyyy-MM-dd hh:mm:ss.SSSSS"));
+                    db.insert(OrderDbSchema.OrderTable.NAME, null, values);
+                }
+                if (DatabaseUtils.queryNumEntries(db, OrderDbSchema.OrderTable.NAME) == getCartCount(getActivity())) {
+                    boolean checkedOut = getActivity().deleteDatabase(new OrderBaseHelper(getActivity()).getDatabaseName());
+                    if (checkedOut) {
+                        Toast.makeText(getActivity(), "Cart cleared", Toast.LENGTH_SHORT).show();
+                        exitToTargetActivity((AppCompatActivity) getActivity(), MainActivity.class);
+                    }
+                }
+            }
+        });
 
         reviewCart();
 
@@ -113,7 +139,10 @@ public class CartFragment extends GeneralFragment {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (isAdded()) updateTextViews(adapter.getMeals());
+                        if (isAdded()) {
+                            reviewCart();
+                            updateTextViews(adapter.getMeals());
+                        }
                     }
                 });
             }
@@ -128,9 +157,20 @@ public class CartFragment extends GeneralFragment {
         cartAmount.setText("".concat(number + " " + getString(R.string.item)));
         if (number > 1) cartAmount.setText(cartAmount.getText().toString().concat("s"));
 
+        Double total = 0.00;
+        try {
+            for (Meal meal : meals) {
+                total += Double.parseDouble(meal.getPrice());
+            }
+        } catch (Exception ex) {
+            Log.e("ERROR", "An error occurred");
+            ex.printStackTrace();
+            total = 0.00;
+        }
+
         // set total price of order to text view
         String price_prefix = getString(R.string.total_price).split(" ")[0]; // get currency of amount
-        cartPrice.setText(price_prefix.concat(" ".concat("" + String.format(Locale.US, "%1$.2f", 1050.00))));
+        cartPrice.setText(price_prefix.concat(" ".concat("" + String.format(Locale.US, "%1$.2f", total))));
 
         // what if there are no orders
         if (number <= 0) {
@@ -146,43 +186,52 @@ public class CartFragment extends GeneralFragment {
      * and passes it into the list that will be passed to recycler view
      */
     private void reviewCart() {
-        assert getActivity() != null;
-        MyApolloClient.getMyApolloClient().query(
-                AllMealsQuery.builder().build()
-        ).enqueue(new ApolloCall.Callback<AllMealsQuery.Data>() {
-            @Override
-            // successful query
-            public void onResponse(@Nonnull Response<AllMealsQuery.Data> response) {
-
-                // should log the first meal's title
-                Log.d(TAG, "onResponse: " + Objects.requireNonNull(response.data()).allMeals().get(0).name());
-                final List<AllMealsQuery.AllMeal> allMeals = Objects.requireNonNull(response.data()).allMeals();
-
-                // run changes on UI thread to show changes
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (AllMealsQuery.AllMeal allMeal : allMeals) {
-                            meals.add(new Meal(allMeal.icon(),
-                                    allMeal.name(),
-                                    allMeal.description(),
-                                    "" + allMeal.amount(),
-                                    allMeal.price(),
-                                    allMeal.category()));
-                        }
-                    }
-                });
-
-            }
-
-            @Override
-            public void onFailure(@Nonnull ApolloException e) {
-                // Log error so as to fix it
-                Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
-            }
-        });
+        meals = getTitles();
 
         adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Gets list of meal titles for auto completion from database
+     *
+     * @return list of titles
+     */
+    private ArrayList<Meal> getTitles() {
+        // create array list to hold saved registration numbers
+        ArrayList<Meal> meals = new ArrayList<>();
+        // create wrapper for cursor
+        CartCursorWrapper cursor = queryMeal();
+
+        // get received emails and add to array list
+        //noinspection TryFinallyCanBeTryWithResources
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                meals.add(cursor.getMeal());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return meals;
+    }
+
+    /**
+     * Creates the query for retrieving meals
+     *
+     * @return instance of cursor wrapper
+     */
+    private CartCursorWrapper queryMeal() {
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
+                CartDbSchema.CartTable.NAME, // Table
+                null, // Columns - null selects all columns
+                null, // WHERE
+                null, // Conditions to be met
+                null, // groupBy
+                null, // having
+                null // orderBy
+        );
+        return new CartCursorWrapper(cursor);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package ke.co.venturisys.rubideliveryapp.fragments;
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,11 +29,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
+import ke.co.venturisys.rubideliveryapp.database.helpers.SignBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.SignInDbSchema.SignInTable;
+import ke.co.venturisys.rubideliveryapp.database.wrappers.SignInCursorWrapper;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
@@ -47,16 +56,15 @@ public class LoginFragment extends Fragment {
 
     View view;
     CoordinatorLayout coordinatorLayout;
-    EditText emailAddress, passWord;
+    EditText passWord;
+    AutoCompleteTextView emailAddress;
     ImageView cityImageView, emailAddressImageView, passwordImageView,
             googleBtn, facebookBtn;
     Button loginButton;
     TextView createAccount, forgotPassword;
     FirebaseAuth auth;
     ProgressBar progressBar;
-
-    public LoginFragment() {
-    }
+    SQLiteDatabase mDatabase; // retrieve user's credentials from there
 
     public static LoginFragment newInstance() {
 
@@ -96,6 +104,12 @@ public class LoginFragment extends Fragment {
         googleBtn = view.findViewById(R.id.google_plus_btn);
         facebookBtn = view.findViewById(R.id.facebook_btn);
         progressBar = view.findViewById(R.id.progressBar);
+        mDatabase = new SignBaseHelper(getActivity()).getWritableDatabase();
+
+        // set up edit text to get list of previous user's credentials
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, getEmails());
+        emailAddress.setAdapter(adapter);
 
         // enter app if successful and show warning if not
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +152,7 @@ public class LoginFragment extends Fragment {
     private void submitLoginForm() {
         assert getActivity() != null;
         if (isNetworkAvailable(getActivity())) {
-            String password = passWord.getText().toString().trim(),
+            final String password = passWord.getText().toString().trim(),
                     email = emailAddress.getText().toString().trim();
             if (isEmpty(emailAddress)) emailAddress.setError("Email address required");
             else if (!isEmailValid(emailAddress.getText().toString()))
@@ -184,6 +198,51 @@ public class LoginFragment extends Fragment {
                         });
             }
         } else requestInternetAccess(coordinatorLayout, getActivity());
+    }
+
+    /**
+     * Gets list of emails for auto completion from database
+     *
+     * @return list of email
+     */
+    private ArrayList<String> getEmails() {
+        // create array list to hold saved emails
+        ArrayList<String> emails = new ArrayList<>();
+        // create wrapper for cursor
+        SignInCursorWrapper cursor = queryEmail();
+
+        // get received emails and add to array list
+        //noinspection TryFinallyCanBeTryWithResources
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                emails.add(cursor.getEmail());
+                cursor.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+        }
+        return emails;
+    }
+
+    /**
+     * Creates the query for retrieving registration numbers
+     *
+     * @return instance of cursor wrapper
+     */
+    private SignInCursorWrapper queryEmail() {
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
+                SignInTable.NAME, // Table
+                new String[]{SignInTable.Cols.EMAIL}, // Columns - null selects all columns
+                null, // WHERE
+                null, // Conditions to be met
+                null, // groupBy
+                null, // having
+                null // orderBy
+        );
+        return new SignInCursorWrapper(cursor);
     }
 
     @Override

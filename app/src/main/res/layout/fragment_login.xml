@@ -57,7 +57,7 @@
                     android:contentDescription="@string/email_address_image_description"
                     android:src="@drawable/ic_envelope" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/login_email_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

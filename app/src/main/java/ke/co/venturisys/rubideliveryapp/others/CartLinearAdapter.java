@@ -1,6 +1,8 @@
 package ke.co.venturisys.rubideliveryapp.others;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -20,6 +22,10 @@ import java.util.List;
 import java.util.Locale;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.database.helpers.CartBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.CartDbSchema;
+
+import static ke.co.venturisys.rubideliveryapp.others.Extras.updateMeal;
 
 /**
  * Created by victor on 3/22/18.
@@ -143,6 +149,7 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
             @Override
             public void onClick(View v) {
                 // remove meal at given position
+                deleteMeal(meal, activity);
                 removeAt(myHolder.getAdapterPosition());
             }
         });
@@ -151,6 +158,10 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
             @Override
             public void onClick(View v) {
                 // save changes to amount of meal
+                String amount = myHolder.mealNumber.getText().toString().trim(),
+                        price = myHolder.mealPrice.getText().toString().trim();
+                SQLiteDatabase mDatabase = new CartBaseHelper(activity).getWritableDatabase();
+                updateMeal(meal, amount, price, mDatabase);
                 Toast.makeText(activity, "Changes saved", Toast.LENGTH_SHORT).show();
             }
         });
@@ -169,6 +180,13 @@ public class CartLinearAdapter extends RecyclerViewAdapter {
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, meals.size());
         notifyDataSetChanged();
+    }
+
+    private void deleteMeal(Meal meal, Context context) {
+        SQLiteDatabase db = new CartBaseHelper(context).getWritableDatabase();
+        db.delete(CartDbSchema.CartTable.NAME, CartDbSchema.CartTable.Cols.TITLE + " = ?",
+                new String[]{String.valueOf(meal.getTitle())});
+        db.close();
     }
 
     /*

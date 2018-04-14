@@ -1,6 +1,9 @@
 package ke.co.venturisys.rubideliveryapp.others;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,10 +18,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import ke.co.venturisys.rubideliveryapp.R;
+import ke.co.venturisys.rubideliveryapp.database.helpers.CartBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.CartDbSchema;
+import ke.co.venturisys.rubideliveryapp.database.wrappers.CartCursorWrapper;
+
+import static ke.co.venturisys.rubideliveryapp.others.Extras.addMeal;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.updateMeal;
 
 /**
  * Created by victor on 3/25/18.
@@ -29,10 +39,13 @@ public class OrderLinearAdapter extends RecyclerViewAdapter {
 
     private Activity activity;
     private List<Meal> meals;
+    private SQLiteDatabase mDatabase;
 
     public OrderLinearAdapter(Activity activity, List<Meal> meals) {
         this.activity = activity;
         this.meals = meals;
+        // this serves to save meal into and retrieve from SQLite db
+        this.mDatabase = new CartBaseHelper(activity).getWritableDatabase();
     }
 
     /*
@@ -137,10 +150,60 @@ public class OrderLinearAdapter extends RecyclerViewAdapter {
         myHolder.mealAddCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // add meal to cart
+                String amount = myHolder.mealNumber.getText().toString().trim(),
+                        price = myHolder.mealPrice.getText().toString().trim(),
+                        title = myHolder.mealTitle.getText().toString().trim();
+                List<String> titles = getTitles();
+
+                // add meal if meal not added to cart, else update
+                if (titles.contains(title)) addMeal(meal, amount, price, mDatabase);
+                else updateMeal(meal, amount, price, mDatabase);
                 Toast.makeText(activity, "Added to cart", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Gets list of meal titles for auto completion from database
+     *
+     * @return list of titles
+     */
+    private ArrayList<String> getTitles() {
+        // create array list to hold saved registration numbers
+        ArrayList<String> titles = new ArrayList<>();
+        // create wrapper for cursor
+        CartCursorWrapper cursor = queryTitle();
+
+        // get received emails and add to array list
+        //noinspection TryFinallyCanBeTryWithResources
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                titles.add(cursor.getTitle());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return titles;
+    }
+
+    /**
+     * Creates the query for retrieving registration numbers
+     *
+     * @return instance of cursor wrapper
+     */
+    private CartCursorWrapper queryTitle() {
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
+                CartDbSchema.CartTable.NAME, // Table
+                new String[]{CartDbSchema.CartTable.Cols.TITLE}, // Columns - null selects all columns
+                null, // WHERE
+                null, // Conditions to be met
+                null, // groupBy
+                null, // having
+                null // orderBy
+        );
+        return new CartCursorWrapper(cursor);
     }
 
     /*

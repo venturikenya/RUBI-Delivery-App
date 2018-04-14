@@ -1,8 +1,11 @@
 package ke.co.venturisys.rubideliveryapp.others;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -56,6 +59,10 @@ import ke.co.venturisys.rubideliveryapp.activities.OrderActivity;
 import ke.co.venturisys.rubideliveryapp.activities.OrderPagerActivity;
 import ke.co.venturisys.rubideliveryapp.activities.ProfileImageActivity;
 import ke.co.venturisys.rubideliveryapp.activities.SearchActivity;
+import ke.co.venturisys.rubideliveryapp.database.helpers.CartBaseHelper;
+import ke.co.venturisys.rubideliveryapp.database.schemas.CartDbSchema.CartTable;
+import ke.co.venturisys.rubideliveryapp.database.schemas.OrderDbSchema.OrderTable;
+import ke.co.venturisys.rubideliveryapp.database.schemas.SignInDbSchema.SignInTable;
 import ke.co.venturisys.rubideliveryapp.fragments.EditProfileFragment;
 import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 
@@ -261,6 +268,14 @@ public class Extras {
         return false;
     }
 
+    public static long getCartCount(Context context) {
+        SQLiteDatabase db = new CartBaseHelper(context).getReadableDatabase();
+        long count = DatabaseUtils.queryNumEntries(db, CartTable.NAME);
+        db.close();
+        Log.e(TAG, "Items in cart: " + count);
+        return count;
+    }
+
     public static View inflateCartMenu(MenuInflater inflater, Menu menu, Activity activity) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.main, menu);
@@ -271,7 +286,7 @@ public class Extras {
         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_menu_bag, 0, 0, 0);
         // add badge showing no. of orders
         LayerDrawable icon = (LayerDrawable) textView.getCompoundDrawables()[0];
-        setBadgeCount(activity, icon, String.valueOf(2), R.id.ic_shopping_badge);
+        setBadgeCount(activity, icon, String.valueOf(getCartCount(activity)), R.id.ic_shopping_badge);
         // set colour of shopping bag
         setTextViewDrawableColor(textView, R.color.colorApp, activity);
         return view;
@@ -446,5 +461,65 @@ public class Extras {
         } else photo_url = "";
 
         return photo_url;
+    }
+
+    /*
+     * This method adds meal to cart
+     */
+    static void addMeal(Meal meal, String amount, String price, SQLiteDatabase mDatabase) {
+        ContentValues values = getContentValues(meal, amount, price);
+
+        mDatabase.insert(CartTable.NAME, null, values);
+    }
+
+    /*
+     * This method updates existing meals in cart
+     */
+    static void updateMeal(Meal meal, String amount, String price, SQLiteDatabase mDatabase) {
+        String title = meal.getTitle();
+        ContentValues values = getContentValues(meal, amount, price);
+
+        mDatabase.update(CartTable.NAME, values, CartTable.Cols.TITLE + " = ?", new String[]{title});
+    }
+
+    /*
+     * This method converts a meal to ContentValues instance (similar to HashMap)
+     * which in turn will assist with writes and updates to SQLite db
+     */
+    private static ContentValues getContentValues(Meal meal, String amount, String price) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CartTable.Cols.ICON, meal.getIcon());
+        contentValues.put(CartTable.Cols.TITLE, meal.getTitle());
+        contentValues.put(CartTable.Cols.DETAILS, meal.getDetails());
+        contentValues.put(CartTable.Cols.CATEGORY, meal.getCategory());
+        contentValues.put(CartTable.Cols.AMOUNT, amount);
+        contentValues.put(CartTable.Cols.PRICE, price);
+        contentValues.put(CartTable.Cols.ORDER_NUMBER, "");
+
+        return contentValues;
+    }
+
+    /*
+     * This one simplifies the signing in process
+     */
+    public static ContentValues getContentValues(String email, String name) {
+        ContentValues values = new ContentValues();
+        values.put(SignInTable.Cols.EMAIL, email);
+        values.put(SignInTable.Cols.NAME, name);
+
+        return values;
+    }
+
+    /*
+     * This one helps to save ordered meals
+     */
+    public static ContentValues getContentValues(Meal meal, String order_id) {
+        ContentValues values = new ContentValues();
+        values.put(OrderTable.Cols.ORDER_ID, order_id);
+        values.put(OrderTable.Cols.NAME, meal.getTitle());
+        values.put(OrderTable.Cols.AMOUNT, meal.getAmount());
+        values.put(OrderTable.Cols.PRICE, meal.getPrice());
+
+        return values;
     }
 }

@@ -183,9 +183,9 @@ public class PictureUtilities {
     /**
      * Method returns current time in specified format
      */
-    public static String getFileName() {
+    public static String getFileName(String pattern) {
         // get current time and set as file name
-        DateFormat df = new SimpleDateFormat("ddMMyyyy_hhmmssSSS", Locale.ROOT);
+        DateFormat df = new SimpleDateFormat(pattern, Locale.ROOT);
         Calendar calendar = Calendar.getInstance();
         return df.format(calendar.getTime());
     }
@@ -197,7 +197,7 @@ public class PictureUtilities {
      */
     private static String getPhotoFilename() {
 
-        return "IMG_" + getFileName() + ".jpg";
+        return "IMG_" + getFileName("ddMMyyyy_hhmmssSSS") + ".jpg";
     }
 
     /**

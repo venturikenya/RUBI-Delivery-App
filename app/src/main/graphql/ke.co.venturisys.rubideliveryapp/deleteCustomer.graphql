@@ -1,0 +1,20 @@
+# Here we delete the user's account from the database
+mutation DeleteCustomerMutation(
+  $email: String!
+)
+
+{
+  deleteCustomer(
+    input: {
+      email: $email
+    }
+  )
+
+  {
+    customerNode{
+      lastName
+      firstName
+      email
+    }
+  }
+}

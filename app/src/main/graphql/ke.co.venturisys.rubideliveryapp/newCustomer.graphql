@@ -1,32 +1,38 @@
 # For mutation from android
 # define parameters in mutation declaration
-mutation addCustomerMutation (
-
-  $name: String!,
+# Here we create a new user to save in database
+mutation NewCustomerMutation(
+  $last_name: String!,
+  $first_name: String!,
   $email: String!,
   $location: String!,
-  $details: String!
   $phone: String!,
-  $image: String!,
+  $profile_picture: String!,
+  $description: String!,
+  $url: String!
 )
 
 {
-  createCustomer (
-    details: $details
-    email: $email
-    name: $name
-    location: $location
-    image: $image
-    phone: $phone
+  newCustomer(
+    input: {
+      lastName: $last_name,
+      firstName: $first_name,
+      email: $email,
+      location: $location,
+      mobileContact: $phone,
+      profilePicture: $profile_picture,
+      description: $description,
+      url:$url
+    }
   )
+
   {
-    # we still get a response like in query
-    details
-    email
-    name
-    location
-    image
-    phone
-    id
+    customerNode{
+      regNo
+      email
+      firstName
+      lastName
+      profilePicture
+    }
   }
 }

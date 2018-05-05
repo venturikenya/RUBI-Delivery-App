@@ -61,11 +61,23 @@
                     android:textColor="@color/colorApp"
                     android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/food_quantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/food_details"
+                    android:layout_margin="@dimen/general_padding"
+                    android:paddingEnd="@dimen/card_notifications_margin"
+                    android:paddingStart="@dimen/card_notifications_margin"
+                    android:text="@string/food_quantity"
+                    android:textColor="@color/colorApp"
+                    android:textSize="20sp" />
+
                 <LinearLayout
                     android:id="@+id/card_search_linear_layout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/food_details"
+                    android:layout_below="@id/food_quantity"
                     android:layout_margin="@dimen/item_offset"
                     android:layout_marginBottom="2dp"
                     android:orientation="horizontal"

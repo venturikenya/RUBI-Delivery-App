@@ -59,6 +59,7 @@ public class SearchLinearAdapter extends RecyclerViewAdapter {
         myHolder.mealDetails.setText(meal.getDetails());
         myHolder.mealNumber.setText(meal.getAmount());
         myHolder.mealTitle.setText(meal.getTitle());
+        myHolder.mealQuantity.setText(activity.getString(R.string.amount_left).concat(" " + meal.getQuantity()));
         HashMap<String, Object> src = new HashMap<>();
         src.put(URL, meal.getIcon());
         loadPictureToImageView(src, R.drawable.ruby_small, myHolder.mealIcon,
@@ -73,8 +74,15 @@ public class SearchLinearAdapter extends RecyclerViewAdapter {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
-                    int amount = Integer.parseInt(myHolder.mealNumber.getText().toString());
+                    int amount = Integer.parseInt(myHolder.mealNumber.getText().toString()),
+                            quantity = Integer.parseInt(meal.getQuantity());
                     if (amount > 0) { // ensure meal is greater than 0 before adjusting amount and price
+                        myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
+                                .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
+                                        Double.parseDouble(meal.getPrice()) * amount))));
+                    } else if (Integer.parseInt(s.toString()) > quantity) { // ensure meal is less than quantity available
+                        // before adjusting amount and price
+                        myHolder.mealNumber.setText(quantity);
                         myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
                                 .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
                                         Double.parseDouble(meal.getPrice()) * amount))));
@@ -100,12 +108,15 @@ public class SearchLinearAdapter extends RecyclerViewAdapter {
             public void onClick(View v) {
                 try {
                     // increment meal amount and price
-                    int amount = Integer.parseInt(myHolder.mealNumber.getText().toString());
-                    myHolder.mealNumber.setText(String.valueOf(
-                            amount + 1));
-                    myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
-                            .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
-                                    Double.parseDouble(meal.getPrice()) * (amount + 1)))));
+                    int amount = Integer.parseInt(myHolder.mealNumber.getText().toString()),
+                            quantity = Integer.parseInt(meal.getQuantity());
+                    if (amount < quantity) { // ensure meal is less than quantity available before adjusting amount and price
+                        myHolder.mealNumber.setText(String.valueOf(
+                                amount + 1));
+                        myHolder.mealPrice.setText(activity.getString(R.string.kenyan_currency)
+                                .concat(" ".concat("" + String.format(Locale.US, "%1$.2f",
+                                        Double.parseDouble(meal.getPrice()) * (amount + 1)))));
+                    }
                 } catch (Exception ex) {
                     Log.e("ERROR", "An error occurred");
                     ex.printStackTrace();
@@ -152,7 +163,7 @@ public class SearchLinearAdapter extends RecyclerViewAdapter {
     public class Holder extends RecycleViewHolder {
 
         ImageView mealIcon;
-        TextView mealTitle, mealDetails, mealPrice;
+        TextView mealTitle, mealDetails, mealPrice, mealQuantity;
         ImageButton mealAddBtn, mealMinusBtn;
         EditText mealNumber;
         Button mealAddCart;
@@ -163,6 +174,7 @@ public class SearchLinearAdapter extends RecyclerViewAdapter {
             mealTitle = itemView.findViewById(R.id.food_title);
             mealPrice = itemView.findViewById(R.id.food_price);
             mealDetails = itemView.findViewById(R.id.food_details);
+            mealQuantity = itemView.findViewById(R.id.food_quantity);
             mealAddBtn = itemView.findViewById(R.id.meal_add_btn);
             mealMinusBtn = itemView.findViewById(R.id.meal_minus_btn);
             mealNumber = itemView.findViewById(R.id.meal_edit_amount);

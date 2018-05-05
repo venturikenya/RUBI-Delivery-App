@@ -245,31 +245,36 @@ public class OrderFragment extends GeneralFragment {
         ).enqueue(new ApolloCall.Callback<AllMealsQuery.Data>() {
             @Override
             // successful query
-            public void onResponse(@Nonnull Response<AllMealsQuery.Data> response) {
-
-                // should log the first meal's title
-                Log.d(TAG, "onResponse: " + Objects.requireNonNull(response.data()).allMeals().get(0).name());
-                final List<AllMealsQuery.AllMeal> allMeals = Objects.requireNonNull(response.data()).allMeals();
+            public void onResponse(@Nonnull final Response<AllMealsQuery.Data> response) {
 
                 // run changes on UI thread to show changes
                 try {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            List<AllMealsQuery.Edge> allMeals =
+                                    Objects.requireNonNull(Objects.requireNonNull(response.data())
+                                            .allFoods()).edges();
                             progressBar.setVisibility(View.GONE);
-                            for (AllMealsQuery.AllMeal allMeal : allMeals) {
-                                if (allMeal.category().equals(backdrop_title)) {
-                                    meals.add(new Meal(allMeal.icon(),
-                                            allMeal.name(),
-                                            allMeal.description(),
-                                            "" + allMeal.amount(),
-                                            allMeal.price(),
-                                            allMeal.category()));
+                            for (AllMealsQuery.Edge allMeal : allMeals) {
+                                AllMealsQuery.Node node = allMeal.node();
+                                if (node != null && node.belongsTo().categoryName().equals(backdrop_title)) {
+                                    meals.add(new Meal(node.foodImage(),
+                                            node.foodName(),
+                                            node.foodDescription(),
+                                            "1",
+                                            String.valueOf(node.unitValue()),
+                                            node.belongsTo().categoryName(),
+                                            "" + node.quantityAvailable()));
+                                    // should log the first meal's title
+                                    Log.d(TAG, "onResponse: " + node.foodName());
                                 }
                             }
+                            adapter.notifyDataSetChanged();
                         }
                     });
                 } catch (Exception ex) {
+                    Log.e(ERROR, "Something went wrong, " + ex.getMessage());
                     ex.printStackTrace();
                 }
 

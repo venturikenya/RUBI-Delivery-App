@@ -40,13 +40,14 @@ public class Constants {
     public static final String ARG_TITLE = "title";
     public static final String ARG_ICON = "icon";
     public static final String ARG_SHOW_FIELDS = "show_fields";
-    public static final String ARG_PHOTO_URL = "photo_url";
-    public static final String ARG_NAME = "name";
+    public static final String ARG_FIRST_NAME = "first_name";
+    public static final String ARG_LAST_NAME = "last_name";
     public static final String ARG_DETAILS = "details";
     public static final String ARG_PHONE_NUMBER = "phone number";
     public static final String ARG_LOCATION = "location";
     public static final String ARG_EMAIL = "email";
     public static final String ARG_SEARCH_QUERY = "search_query";
+    public static final String ARG_PHOTO_URL = "photo_url";
     // intent request codes
     public static final int REQUEST_PHOTO = 1;
     public static final int REQUEST_GALLERY = 293;
@@ -55,9 +56,8 @@ public class Constants {
     public static final String PERMISSION_STORAGE = "external_storage";
     public static final String PERMISSION_CAMERA = "camera";
     public static final String URI = "URI";
-    // tags for POST
-    static final String NAME = "name";
-    static final String PIC = "picture";
+    static final String ARG_NAME = "name";
+    // other constants
     static final String INTERNET_PICKER = "INTERNET_PICKER";
     static final String ARG_PATH = "path";
     static final String FILE = "FILE";

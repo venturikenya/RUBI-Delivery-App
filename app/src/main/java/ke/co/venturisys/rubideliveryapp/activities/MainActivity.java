@@ -19,6 +19,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +44,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ke.co.venturisys.rubideliveryapp.FindCustomerShortenedQuery;
+import ke.co.venturisys.rubideliveryapp.DeleteCustomerMutation;
+import ke.co.venturisys.rubideliveryapp.FindCustomerShortenedMutationQuery;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.database.helpers.SignBaseHelper;
 import ke.co.venturisys.rubideliveryapp.database.schemas.SignInDbSchema.SignInTable;
@@ -317,37 +319,46 @@ public class MainActivity extends AppCompatActivity {
         if (user != null) {
             if (isNetworkAvailable(this)) {
                 MyApolloClient.getMyApolloClient().query(
-                        FindCustomerShortenedQuery.builder().email(email).build()
-                ).enqueue(new ApolloCall.Callback<FindCustomerShortenedQuery.Data>() {
+                        FindCustomerShortenedMutationQuery.builder().email(email).build()
+                ).enqueue(new ApolloCall.Callback<FindCustomerShortenedMutationQuery.Data>() {
                     @Override
-                    public void onResponse(@Nonnull final Response<FindCustomerShortenedQuery.Data> response) {
-                        // update UI on the activity's UI thread to reflect query
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String name = Objects.requireNonNull(Objects.requireNonNull
-                                        (response.data()).Customer()).name();
-                                // update text views
-                                tvNameLocation.setText(name);
-                                tvMenuLocation.setText(Objects.requireNonNull(Objects.requireNonNull
-                                        (response.data()).Customer()).location());
+                    public void onResponse(@Nonnull final Response<FindCustomerShortenedMutationQuery
+                            .Data> response) {
+                        try {
+                            // update UI on the activity's UI thread to reflect query
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    FindCustomerShortenedMutationQuery.Node node =
+                                            Objects.requireNonNull(Objects.requireNonNull(
+                                                    response.data()).allCustomers()).edges().get(0).node();
+                                    if (node != null) {
+                                        String name = node.firstName() + node.lastName();
+                                        // update text views
+                                        tvNameLocation.setText(name);
+                                        tvMenuLocation.setText(node.location());
 
-                                // save user's details to SQLite database if not previously saved
-                                List<String> emails = getEmails();
-                                if (!emails.contains(email)) {
-                                    ContentValues values = getContentValues(email, name);
-                                    mDatabase.insert(SignInTable.NAME, null, values);
-                                    Log.e(TAG, values.toString());
+                                        // save user's details to SQLite database if not previously saved
+                                        List<String> emails = getEmails();
+                                        if (!emails.contains(email)) {
+                                            ContentValues values = getContentValues(email, name);
+                                            mDatabase.insert(SignInTable.NAME, null, values);
+                                            Log.e(TAG, values.toString());
+                                        }
+
+                                        // load profile image
+                                        photo_url = node.profilePicture();
+                                        HashMap<String, Object> src = new HashMap<>();
+                                        src.put(URL, photo_url);
+                                        loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false,
+                                                false, false);
+                                    }
                                 }
-
-                                // load profile image
-                                photo_url = Objects.requireNonNull(Objects.requireNonNull(response.data()).Customer()).image();
-                                HashMap<String, Object> src = new HashMap<>();
-                                src.put(URL, photo_url);
-                                loadPictureToImageView(src, R.mipmap.ic_box, imgProfile, true, false,
-                                        false, false);
-                            }
-                        });
+                            });
+                        } catch (Exception ex) {
+                            Log.e(ERROR, "Something went wrong, " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -552,21 +563,61 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         // carry out deletion process
                         if (user != null) {
-                            user.delete()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(MainActivity.this,
-                                                        "Good bye, we'll miss you", Toast.LENGTH_SHORT).show();
-                                                exitToTargetActivity(MainActivity.this, LoginActivity.class);
-                                            } else {
-                                                Toast.makeText(MainActivity.this,
-                                                        "Failed to delete your account!", Toast.LENGTH_SHORT).show();
-                                                Log.e(ERROR, task.getResult().toString());
+                            final String email = user.getEmail();
+                            if (email != null && !TextUtils.isEmpty(email)) {
+                                user.delete()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    MyApolloClient.getMyApolloClient().mutate(
+                                                            DeleteCustomerMutation.builder().email(email).build()
+                                                    ).enqueue(new ApolloCall.Callback<DeleteCustomerMutation.Data>() {
+                                                        @Override
+                                                        public void onResponse(@Nonnull Response<DeleteCustomerMutation.Data> response) {
+                                                            // run on activity's UI thread
+                                                            try {
+                                                                MainActivity.this.runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Toast.makeText(MainActivity.this,
+                                                                                "Good bye, we'll miss you", Toast.LENGTH_SHORT).show();
+                                                                        exitToTargetActivity(MainActivity.this, LoginActivity.class);
+                                                                    }
+                                                                });
+                                                            } catch (Exception ex) {
+                                                                Log.e(ERROR, "Something went wrong, " + ex.getMessage());
+                                                                ex.printStackTrace();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(@Nonnull ApolloException e) {
+                                                            // Log error so as to fix it
+                                                            Log.e(ERROR, "onFailure: Something went wrong. " + e.getMessage());
+                                                        }
+                                                    });
+                                                } else {
+                                                    try {
+                                                        if (Objects.requireNonNull(task.getException()).toString().contains("RecentLoginRequiredException")) {
+                                                            Toast.makeText(MainActivity.this, "This operation is sensitive and requires recent authentication. " +
+                                                                            "Log in again before retrying this request.",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                            auth.signOut();
+                                                            exitToTargetActivity(MainActivity.this, LoginActivity.class);
+                                                        } else {
+                                                            Toast.makeText(MainActivity.this,
+                                                                    "Failed to delete your account!", Toast.LENGTH_SHORT).show();
+                                                            Log.e(ERROR, task.getResult().toString());
+                                                        }
+                                                    } catch (Exception ex) {
+                                                        ex.printStackTrace();
+                                                    }
+                                                    Log.e(ERROR, "Error message" + task.getException());
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                            }
                         }
                     }
                 });

@@ -37,6 +37,7 @@ import javax.annotation.Nonnull;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.SearchMealsQuery;
+import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 import ke.co.venturisys.rubideliveryapp.activities.SearchActivity;
 import ke.co.venturisys.rubideliveryapp.others.Meal;
 import ke.co.venturisys.rubideliveryapp.others.MyApolloClient;
@@ -47,13 +48,16 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_SEARCH_QUERY
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.LIST_STATE_KEY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG_CART;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.changeFragment;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.getSpeechInput;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.validateSearch;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
+import static ke.co.venturisys.rubideliveryapp.others.URLs.MEDIA_URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -166,35 +170,53 @@ public class SearchFragment extends Fragment {
      */
     private void getMeals() {
         assert getActivity() != null;
-        final String category = inputSearch.getText().toString().trim();
+        final String search_text = inputSearch.getText().toString().trim();
         MyApolloClient.getMyApolloClient().query(
-                SearchMealsQuery.builder().name(category).build()
+                SearchMealsQuery.builder().name(search_text).build()
         ).enqueue(new ApolloCall.Callback<SearchMealsQuery.Data>() {
             @Override
             // successful query
             public void onResponse(@Nonnull final Response<SearchMealsQuery.Data> response) {
 
-                // run changes on UI thread to show changes
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // hide progress bar
-                        progressBar.setVisibility(View.GONE);
+                try {
+                    // run changes on UI thread to show changes
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<SearchMealsQuery.Edge> allMeals = Objects.requireNonNull(
+                                    Objects.requireNonNull(response.data()).allFoods())
+                                    .edges();
 
-                        if (response.data() != null) {
-                            SearchMealsQuery.Meal allMeals = Objects.requireNonNull(response.data()).Meal();
-                            if (allMeals != null) {
-                                meals.add(new Meal(Objects.requireNonNull(allMeals).icon(),
-                                        allMeals.name(), allMeals.description(),
-                                        String.valueOf(allMeals.amount()), allMeals.price(), category));
+                            if (allMeals.size() > 0) {
+                                Log.e(TAG, "Meals, " + allMeals.toString());
+                                for (SearchMealsQuery.Edge edge : allMeals) {
+                                    SearchMealsQuery.Node allMeal = edge.node();
+
+                                    if (allMeal != null) {
+                                        meals.add(new Meal(MEDIA_URL + allMeal.foodImage(),
+                                                allMeal.foodName(),
+                                                allMeal.foodDescription(),
+                                                "1",
+                                                String.valueOf(allMeal.unitValue()),
+                                                allMeal.belongsTo().categoryName(),
+                                                String.valueOf(allMeal.quantityAvailable())));
+                                    } else {
+                                        Toast.makeText(getActivity(), "Meal not found", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             } else {
                                 Toast.makeText(getActivity(), "Meal not found", Toast.LENGTH_SHORT).show();
+                                exitToTargetActivity((AppCompatActivity) getActivity(), MainActivity.class);
+                                Log.e(TAG, allMeals.toString());
                             }
-                        } else {
-                            Toast.makeText(getActivity(), "Meal not found", Toast.LENGTH_SHORT).show();
+                            // hide progress bar
+                            progressBar.setVisibility(View.GONE);
                         }
-                    }
-                });
+                    });
+                } catch (Exception ex) {
+                    Log.e(ERROR, "Something went wrong, " + ex.getMessage());
+                    ex.printStackTrace();
+                }
 
             }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,6 +30,7 @@ import net.rimoto.intlphoneinput.IntlPhoneInput;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.others.PictureDialogFragment;
@@ -36,9 +38,11 @@ import ke.co.venturisys.rubideliveryapp.others.SMSVerifyDialogFragment;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_DETAILS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_EMAIL;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_FIRST_NAME;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_LAST_NAME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_LOCATION;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_NAME;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_PHONE_NUMBER;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_PHOTO_URL;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ARG_SHOW_FIELDS;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.PERMISSION_CAMERA;
@@ -47,13 +51,15 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_GALLERY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_PHOTO;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.SELECT_PICTURE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
+import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.VERIFY_SMS;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmailValid;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.isEmpty;
-import static ke.co.venturisys.rubideliveryapp.others.Extras.postProfileImage;
+import static ke.co.venturisys.rubideliveryapp.others.Extras.loadPictureToImageView;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.setImageViewDrawableColor;
 import static ke.co.venturisys.rubideliveryapp.others.FileUtilities.createSystemDirs;
 import static ke.co.venturisys.rubideliveryapp.others.Permissions.checkPermission;
+import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.compressImage;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.getRealPathFromURI;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.recogniseFace;
 
@@ -61,29 +67,33 @@ public class EditProfileFragment extends Fragment {
 
     public static Uri imageForUpload;
     View view;
-    RelativeLayout nameLayout, emailLayout;
+    RelativeLayout firstNameLayout, lastNameLayout, emailLayout;
     TextInputLayout phoneInputLayout;
     IntlPhoneInput phoneInputView;
-    EditText editLocation, editDetails, editName, editEmail;
+    EditText editLocation, editDetails, editFirstName, editLastName, editEmail;
     ImageView imageViewProfile, locationImage, detailsImage, emailImage;
     Button submitButton;
     String myInternationalNumber = "";
     boolean showEmailAndNameFields;
     File directory;
-    String name, details, location, email, mCurrentPath, photo_url;
+    String first_name, last_name, details, location, email, mCurrentPath, photo_url;
     Bitmap photo = null;
 
     public static EditProfileFragment newInstance(boolean showEmailAndNameFields,
-                                                  String name, String details, String email,
-                                                  String myInternationalNumber, String location) {
+                                                  String first_name, String last_name,
+                                                  String details, String email,
+                                                  String myInternationalNumber, String location,
+                                                  String photo_url) {
 
         Bundle args = new Bundle();
         args.putBoolean(ARG_SHOW_FIELDS, showEmailAndNameFields);
-        args.putString(ARG_NAME, name);
+        args.putString(ARG_FIRST_NAME, first_name);
+        args.putString(ARG_LAST_NAME, last_name);
         args.putString(ARG_DETAILS, details);
         args.putString(ARG_EMAIL, email);
         args.putString(ARG_PHONE_NUMBER, myInternationalNumber);
         args.putString(ARG_LOCATION, location);
+        args.putString(ARG_PHOTO_URL, photo_url);
 
         EditProfileFragment fragment = new EditProfileFragment();
         fragment.setArguments(args);
@@ -112,11 +122,13 @@ public class EditProfileFragment extends Fragment {
         // retrieve arguments passed to fragment
         if (bundle != null) {
             showEmailAndNameFields = bundle.getBoolean(ARG_SHOW_FIELDS, false);
-            name = bundle.getString(ARG_NAME);
+            first_name = bundle.getString(ARG_FIRST_NAME);
+            last_name = bundle.getString(ARG_LAST_NAME);
             details = bundle.getString(ARG_DETAILS);
             email = bundle.getString(ARG_EMAIL);
             myInternationalNumber = bundle.getString(ARG_PHONE_NUMBER);
             location = bundle.getString(ARG_LOCATION);
+            photo_url = bundle.getString(ARG_PHOTO_URL);
         }
     }
 
@@ -128,11 +140,13 @@ public class EditProfileFragment extends Fragment {
         assert getActivity() != null;
 
         // initialise widgets
-        nameLayout = view.findViewById(R.id.name_relative_layout);
+        firstNameLayout = view.findViewById(R.id.first_name_relative_layout);
+        lastNameLayout = view.findViewById(R.id.last_name_relative_layout);
         emailLayout = view.findViewById(R.id.email_relative_layout);
         phoneInputView = view.findViewById(R.id.input_phone_number);
         phoneInputLayout = view.findViewById(R.id.input_layout_phone_number);
-        editName = view.findViewById(R.id.input_name);
+        editFirstName = view.findViewById(R.id.input_first_name);
+        editLastName = view.findViewById(R.id.input_last_name);
         editEmail = view.findViewById(R.id.input_email);
         editLocation = view.findViewById(R.id.input_location);
         editDetails = view.findViewById(R.id.input_details);
@@ -141,6 +155,12 @@ public class EditProfileFragment extends Fragment {
         detailsImage = view.findViewById(R.id.details_image_view);
         emailImage = view.findViewById(R.id.email_image_view);
         submitButton = view.findViewById(R.id.submit_button);
+
+        // set profile image to image view
+        HashMap<String, Object> src = new HashMap<>();
+        src.put(URL, photo_url);
+        loadPictureToImageView(src, R.drawable.avatar, imageViewProfile, false, true,
+                false, false);
 
         imageViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,12 +188,14 @@ public class EditProfileFragment extends Fragment {
 
         // determine whether to show name and email text fields, only for editing from profile page
         if (showEmailAndNameFields) {
-            nameLayout.setVisibility(View.VISIBLE);
+            firstNameLayout.setVisibility(View.VISIBLE);
+            lastNameLayout.setVisibility(View.VISIBLE);
             emailLayout.setVisibility(View.VISIBLE);
         }
 
         // set values to edit text if there are any
-        editName.setText(name);
+        editFirstName.setText(first_name);
+        editLastName.setText(last_name);
         editEmail.setText(email);
         editDetails.setText(details);
         editLocation.setText(location);
@@ -198,7 +220,10 @@ public class EditProfileFragment extends Fragment {
 
     private void submitRegistrationForm() {
         assert getActivity() != null;
-        if (showEmailAndNameFields && isEmpty(editName)) editName.setError("Name required");
+        if (showEmailAndNameFields && isEmpty(editFirstName))
+            editFirstName.setError("First name required");
+        else if (showEmailAndNameFields && isEmpty(editLastName))
+            editLastName.setError("Last name required");
         else if (showEmailAndNameFields && isEmpty(editEmail))
             editEmail.setError("Email address required");
         else if (showEmailAndNameFields && !isEmailValid(editEmail.getText().toString()))
@@ -212,9 +237,10 @@ public class EditProfileFragment extends Fragment {
         else {
             // create message, post it to server and react based on received response or error
             try {
-                photo_url = postProfileImage(imageViewProfile, name, getActivity());
+                photo_url = compressImage(((BitmapDrawable) imageViewProfile.getDrawable()).getBitmap());
 
-                name = editName.getText().toString().trim();
+                String name = editFirstName.getText().toString().trim() + " " +
+                        editLastName.getText().toString().trim();
                 email = editEmail.getText().toString().trim();
                 myInternationalNumber = phoneInputView.getNumber();
                 location = editLocation.getText().toString().trim();

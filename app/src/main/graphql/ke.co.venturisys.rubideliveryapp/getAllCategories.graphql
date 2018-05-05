@@ -1,6 +1,11 @@
+# get names and icons of meal categories
 query allCategoriesQuery{
   allCategories {
-    icon
-    name
+    edges{
+      node{
+        categoryName
+        categoryImage
+      }
+    }
   }
 }

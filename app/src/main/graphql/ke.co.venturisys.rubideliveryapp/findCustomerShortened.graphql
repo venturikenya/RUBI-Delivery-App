@@ -1,13 +1,17 @@
-# Here, we will query customer table
-# using email
-query FindCustomerShortened(
+# Here, we will query few details from customer table using email
+query FindCustomerShortenedMutation(
   $email: String!
 )
 
 {
-  Customer(email: $email) {
-    name
-    location
-    image
+  allCustomers(email: $email) {
+    edges{
+      node{
+        firstName
+        lastName
+        location
+        profilePicture
+      }
+    }
   }
 }

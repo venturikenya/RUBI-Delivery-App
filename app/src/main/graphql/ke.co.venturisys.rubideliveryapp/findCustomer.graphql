@@ -1,16 +1,21 @@
-# Here, we will query customer table
-# using email
-query FindCustomer(
+# Here, we will query all fields from customer table using email
+query FindCustomerQuery(
   $email: String!
 )
 
 {
-  Customer(email: $email) {
-    name
-    phone
-    location
-    email
-    image
-    details
+  allCustomers(email: $email) {
+    edges{
+      node{
+        regNo
+        firstName
+        lastName
+        mobileContact
+        location
+        email
+        profilePicture
+        description
+      }
+    }
   }
 }

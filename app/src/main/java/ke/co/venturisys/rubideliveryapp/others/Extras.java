@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -44,9 +42,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
@@ -68,23 +63,17 @@ import ke.co.venturisys.rubideliveryapp.fragments.HomeFragment;
 
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setCurrentTag;
 import static ke.co.venturisys.rubideliveryapp.activities.MainActivity.setNavItemIndex;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.FILE;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.INTERNET_PICKER;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.NAME;
-import static ke.co.venturisys.rubideliveryapp.others.Constants.PIC;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_GALLERY;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.REQUEST_SPEECH;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.RES_ID;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URI;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.URL;
-import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.POST;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
-import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.compressImage;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.galleryAddPic;
 import static ke.co.venturisys.rubideliveryapp.others.PictureUtilities.takePicture;
-import static ke.co.venturisys.rubideliveryapp.others.URLs.urlPostProfileImage;
 
 /**
  * Created by victor on 3/17/18.
@@ -431,36 +420,6 @@ public class Extras {
 
         return true;
 
-    }
-
-    // This method uploads the profile image in a string encoded format
-    // and then returns the url of the posted image from the server for GraphQL mutation
-    public static String postProfileImage(ImageView imageView, String name, Activity activity) {
-        String photo_url = "";
-        /* compress profile image */
-        Bitmap photo = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        if (photo != null) {
-            String image = compressImage(photo);
-            HashMap<String, Object> args = new HashMap<>();
-            args.put(NAME, name);
-            args.put(PIC, image);
-            Message message = new Message(args);
-            JSONObject response = POST(urlPostProfileImage, message);
-            Log.e(TAG, "" + response);
-            try {
-                if (Integer.parseInt(response.getString("status")) == 0) {
-                    photo_url = response.getString("url");
-                } else {
-                    Toast.makeText(activity, "Image update failed. Set to default", Toast.LENGTH_SHORT).show();
-                    photo_url = "";
-                }
-            } catch (JSONException e) {
-                Log.e(ERROR, "Something went wrong");
-                e.printStackTrace();
-            }
-        } else photo_url = "";
-
-        return photo_url;
     }
 
     /*

@@ -17,6 +17,7 @@ import ke.co.venturisys.rubideliveryapp.AllCategoriesQuery;
 
 import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Constants.TAG;
+import static ke.co.venturisys.rubideliveryapp.others.URLs.MEDIA_URL;
 
 /**
  * Created by victor on 3/26/18.
@@ -41,21 +42,29 @@ public class OrderLab {
             @Override
             // successful query
             public void onResponse(@Nonnull Response<AllCategoriesQuery.Data> response) {
+                try {
+                    final List<AllCategoriesQuery.Edge> allCategories = Objects.requireNonNull(
+                            Objects.requireNonNull(response.data()).allCategories()).edges();
 
-                // should log the first category's title
-                Log.d(TAG, "onResponse: " + Objects.requireNonNull(response.data()).allCategories().get(0).name());
-                final List<AllCategoriesQuery.AllCategory> allCategories = Objects.requireNonNull(response.data()).allCategories();
-
-                // run changes on UI thread to show changes
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < allCategories.size(); i++) {
-                            AllCategoriesQuery.AllCategory allCategory = allCategories.get(i);
-                            foods.add(new LandingPageFood(allCategory.name(), allCategory.icon(), i));
+                    // run changes on UI thread to show changes
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i = 0; i < allCategories.size(); i++) {
+                                AllCategoriesQuery.Node allCategory = allCategories.get(i).node();
+                                if (allCategory != null) {
+                                    // should log the first category's title
+                                    Log.d(TAG, "onResponse: " + allCategory.categoryName() + "at " + i);
+                                    foods.add(new LandingPageFood(allCategory.categoryName(),
+                                            MEDIA_URL + allCategory.categoryImage(), i));
+                                }
+                            }
                         }
-                    }
-                });
+                    });
+                } catch (Exception ex) {
+                    Log.e(ERROR, "Something went wrong, " + ex.getMessage());
+                    ex.printStackTrace();
+                }
 
             }
 

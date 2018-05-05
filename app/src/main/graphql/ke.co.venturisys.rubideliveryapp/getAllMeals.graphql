@@ -1,10 +1,17 @@
+# Here we get all the meals saved in database
 query allMealsQuery{
-  allMeals {
-    amount
-    category
-    description
-    icon
-    name
-    price
+  allFoods {
+    edges{
+      node{
+        foodName
+        foodDescription
+        quantityAvailable
+        belongsTo {
+          categoryName
+        }
+        foodImage
+        unitValue
+      }
+    }
   }
 }

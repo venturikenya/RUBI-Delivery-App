@@ -210,11 +210,10 @@ public class HomeFragment extends GeneralFragment {
         OrderLab orderLab = OrderLab.get(getActivity());
         foods = orderLab.getFoods();
 
-        if (foods.size() > 0) progressBar.setVisibility(View.GONE);
-
         adapter = new LandingPageGridAdapter(getActivity(), foods);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        if (foods.size() > 0) progressBar.setVisibility(View.GONE);
 
         // redirect to order page
         adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {

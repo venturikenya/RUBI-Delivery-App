@@ -4,11 +4,19 @@ query SearchMealsQuery(
 )
 
 {
-  Meal(name: $name) {
-    icon
-    name
-    description
-    price
-    amount
+  allFoods(foodName_Icontains: $name) {
+    edges{
+      node{
+        foodName
+        foodDescription
+        quantityAvailable
+        unitValue
+        unitValueCurrency
+        foodImage
+        belongsTo{
+          categoryName
+        }
+      }
+    }
   }
 }

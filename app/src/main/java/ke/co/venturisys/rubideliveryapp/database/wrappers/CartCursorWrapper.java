@@ -20,7 +20,7 @@ public class CartCursorWrapper extends CursorWrapper {
         String price = getString(getColumnIndex(CartTable.Cols.PRICE));
         String category = getString(getColumnIndex(CartTable.Cols.CATEGORY));
 
-        return new Meal(icon, title, details, amount, price, category);
+        return new Meal(icon, title, details, amount, price, category, "");
     }
 
     public String getTitle() {

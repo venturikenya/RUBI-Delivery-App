@@ -53,8 +53,8 @@ public class RegistrationFragment extends Fragment {
 
     View view;
     CoordinatorLayout coordinatorLayout;
-    EditText userName, passWord, emailAddress;
-    ImageView cityImageView, userNameImageView, passwordImageView, emailAddressImageView,
+    EditText firstName, lastName, passWord, emailAddress;
+    ImageView cityImageView, firstNameImageView, lastNameImageView, passwordImageView, emailAddressImageView,
             googleBtn, facebookBtn;
     Button registerButton;
     TextView loginLink;
@@ -86,11 +86,13 @@ public class RegistrationFragment extends Fragment {
 
         // initialise widgets
         coordinatorLayout = view.findViewById(R.id.register_parent_layout);
-        userName = view.findViewById(R.id.register_username);
+        firstName = view.findViewById(R.id.register_first_name);
+        lastName = view.findViewById(R.id.register_last_name);
         passWord = view.findViewById(R.id.register_password);
         emailAddress = view.findViewById(R.id.register_email_address);
         cityImageView = view.findViewById(R.id.city_image_view);
-        userNameImageView = view.findViewById(R.id.username_image_view);
+        firstNameImageView = view.findViewById(R.id.first_name_image_view);
+        lastNameImageView = view.findViewById(R.id.last_name_image_view);
         emailAddressImageView = view.findViewById(R.id.email_address_image_view);
         passwordImageView = view.findViewById(R.id.password_image_view);
         registerButton = view.findViewById(R.id.register_button);
@@ -118,7 +120,8 @@ public class RegistrationFragment extends Fragment {
         });
 
         // set color to username, email & progress bar icons
-        setImageViewDrawableColor(userNameImageView.getDrawable(), Color.WHITE);
+        setImageViewDrawableColor(firstNameImageView.getDrawable(), Color.WHITE);
+        setImageViewDrawableColor(lastNameImageView.getDrawable(), Color.WHITE);
         setImageViewDrawableColor(emailAddressImageView.getDrawable(), Color.WHITE);
 
         // set image of city to login page
@@ -134,7 +137,8 @@ public class RegistrationFragment extends Fragment {
         assert getActivity() != null;
         if (isNetworkAvailable(getActivity())) {
             String password = passWord.getText().toString().trim();
-            if (isEmpty(userName)) userName.setError("User name required");
+            if (isEmpty(firstName)) firstName.setError("First name required");
+            else if (isEmpty(lastName)) lastName.setError("Last name required");
             else if (isEmpty(emailAddress)) emailAddress.setError("Email address required");
             else if (!isEmailValid(emailAddress.getText().toString()))
                 emailAddress.setError("Invalid email entered");
@@ -142,7 +146,9 @@ public class RegistrationFragment extends Fragment {
             else if (password.length() < 8)
                 passWord.setError(getString(R.string.minimum_password));
             else {
-                final String name = userName.getText().toString().trim();
+                final String first_name = firstName.getText().toString().trim(),
+                        last_name = lastName.getText().toString().trim();
+                final String name = first_name + " " + last_name;
                 final String email = emailAddress.getText().toString().trim();
                 progressBar.setVisibility(View.VISIBLE);
                 // create user
@@ -164,7 +170,8 @@ public class RegistrationFragment extends Fragment {
                                     ContentValues values = getContentValues(email, name);
                                     mDatabase.insert(CartTable.NAME, null, values);
                                     changeFragment(EditProfileFragment.newInstance(false,
-                                            name, "", email, "", ""),
+                                            first_name, last_name, "", email, "",
+                                            "", ""),
                                             new Handler(),
                                             TAG_EDIT_PROFILE, (AppCompatActivity) getActivity());
                                 }

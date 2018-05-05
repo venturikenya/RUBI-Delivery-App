@@ -284,7 +284,7 @@ public class PictureUtilities {
      * @param photo Bitmap to be converted
      * @return String conversion of bitmap
      */
-    static String compressImage(Bitmap photo) {
+    public static String compressImage(Bitmap photo) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (photo == null)
             return "";

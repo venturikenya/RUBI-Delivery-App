@@ -103,7 +103,8 @@
 
     <!-- Placeholders -->
     <string name="edit_profile_placeholder">Edit Profile</string>
-    <string name="username_placeholder">Username</string>
+    <string name="first_name_placeholder">First Name</string>
+    <string name="last_name_placeholder">Last Name</string>
     <string name="password_placeholder">Password</string>
     <string name="email_address_placeholder">Email Address</string>
     <string name="name_placeholder">Your Name</string>
@@ -142,6 +143,8 @@
     <string name="food_name">Food Name</string>
     <string name="food_price">Food Price</string>
     <string name="food_details">Food Details</string>
+    <string name="food_quantity">Food quantity</string>
+    <string name="amount_left">Amount left: </string>
     <string name="forgot_password">Forgot password?</string>
     <string name="change_password">Change password</string>
     <string name="link_to_login">Already registered? Login Now!</string>

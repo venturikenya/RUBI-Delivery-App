@@ -16,7 +16,7 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import javax.annotation.Nonnull;
 
-import ke.co.venturisys.rubideliveryapp.AddCustomerMutation;
+import ke.co.venturisys.rubideliveryapp.NewCustomerMutation;
 import ke.co.venturisys.rubideliveryapp.R;
 import ke.co.venturisys.rubideliveryapp.activities.MainActivity;
 
@@ -30,6 +30,7 @@ import static ke.co.venturisys.rubideliveryapp.others.Constants.ERROR;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.exitToTargetActivity;
 import static ke.co.venturisys.rubideliveryapp.others.Extras.requestInternetAccess;
 import static ke.co.venturisys.rubideliveryapp.others.NetworkingClass.isNetworkAvailable;
+import static ke.co.venturisys.rubideliveryapp.others.URLs.BASE_URL;
 
 /**
  * Created by victor on 3/31/18.
@@ -98,27 +99,35 @@ public class SMSVerifyDialogFragment extends GeneralDialogFragment {
             public void onClick(View v) {
                 if (isNetworkAvailable(getActivity())) {
                     // register user by mutating(post) user's info to GraphQL server
+                    String[] names = name.split(" ");
                     MyApolloClient.getMyApolloClient().mutate(
-                            AddCustomerMutation.builder()
-                                    .name(name)
+                            NewCustomerMutation.builder()
+                                    .last_name(names[1])
+                                    .first_name(names[0])
                                     .email(email)
                                     .phone(phoneNumber)
-                                    .details(details)
+                                    .description(details)
                                     .location(location)
-                                    .image(photo_url)
+                                    .profile_picture(photo_url)
+                                    .url(BASE_URL)
                                     .build()
-                    ).enqueue(new ApolloCall.Callback<AddCustomerMutation.Data>() {
+                    ).enqueue(new ApolloCall.Callback<NewCustomerMutation.Data>() {
                         @Override
-                        public void onResponse(@Nonnull Response<AddCustomerMutation.Data> response) {
-                            // run on UI thread to update data instantaneously
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), "Profile created/edited successfully", Toast.LENGTH_SHORT).show();
-                                    // redirect user to main activity
-                                    exitToTargetActivity((AppCompatActivity) getActivity(), MainActivity.class);
-                                }
-                            });
+                        public void onResponse(@Nonnull Response<NewCustomerMutation.Data> response) {
+                            try {
+                                // run on UI thread to update data instantaneously
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Profile created/edited successfully", Toast.LENGTH_SHORT).show();
+                                        // redirect user to main activity
+                                        exitToTargetActivity((AppCompatActivity) getActivity(), MainActivity.class);
+                                    }
+                                });
+                            } catch (Exception ex) {
+                                Log.e(ERROR, "Something went wrong, " + ex.getMessage());
+                                ex.printStackTrace();
+                            }
                         }
 
                         @Override

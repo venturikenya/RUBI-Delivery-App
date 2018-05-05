@@ -52,6 +52,7 @@ public class ProfileFragment extends GeneralFragment {
     ProgressBar progressBar; // shown while user info is being loaded
     FirebaseAuth auth;
     FirebaseUser user;
+    String first_name, last_name;
 
     String photo_url;
 
@@ -112,9 +113,9 @@ public class ProfileFragment extends GeneralFragment {
             @Override
             public void onClick(View v) {
                 changeFragment(EditProfileFragment.newInstance(true,
-                        textViewName.getText().toString(), textViewDetails.getText().toString(),
+                        first_name, last_name, textViewDetails.getText().toString(),
                         textViewEmail.getText().toString(), textViewPhone.getText().toString(),
-                        textViewLocation.getText().toString()),
+                        textViewLocation.getText().toString(), photo_url),
                         new Handler(),
                         TAG_EDIT_PROFILE, (AppCompatActivity) getActivity());
             }
@@ -160,34 +161,42 @@ public class ProfileFragment extends GeneralFragment {
             ).enqueue(new ApolloCall.Callback<FindCustomerQuery.Data>() {
                 @Override
                 public void onResponse(@Nonnull final Response<FindCustomerQuery.Data> response) {
-                    // update UI on activity's thread
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    try {
+                        // update UI on activity's thread
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 
-                            // hide progress bar
-                            progressBar.setVisibility(View.GONE);
+                                // hide progress bar
+                                progressBar.setVisibility(View.GONE);
 
-                            // update text views
-                            textViewName.setText(Objects.requireNonNull(
-                                    Objects.requireNonNull(response.data()).Customer()).name());
-                            textViewDetails.setText(Objects.requireNonNull(
-                                    Objects.requireNonNull(response.data()).Customer()).details());
-                            textViewLocation.setText(Objects.requireNonNull(
-                                    Objects.requireNonNull(response.data()).Customer()).location());
-                            textViewPhone.setText(Objects.requireNonNull(
-                                    Objects.requireNonNull(response.data()).Customer()).phone());
-                            textViewEmail.setText(Objects.requireNonNull(
-                                    Objects.requireNonNull(response.data()).Customer()).email());
+                                FindCustomerQuery.Node node = Objects.requireNonNull(
+                                        Objects.requireNonNull(response.data()).allCustomers()).
+                                        edges().get(0).node();
 
-                            // load profile image
-                            photo_url = Objects.requireNonNull(Objects.requireNonNull(response.data()).Customer()).image();
-                            HashMap<String, Object> src = new HashMap<>();
-                            src.put(URL, photo_url);
-                            loadPictureToImageView(src, R.mipmap.ic_box, imageViewProfile, true, false,
-                                    false, true);
-                        }
-                    });
+                                if (node != null) {
+                                    // update text views
+                                    first_name = node.firstName();
+                                    last_name = node.lastName();
+                                    textViewName.setText(first_name.concat(" " + last_name));
+                                    textViewDetails.setText(node.description());
+                                    textViewLocation.setText(node.location());
+                                    textViewPhone.setText(node.mobileContact());
+                                    textViewEmail.setText(node.email());
+
+                                    // load profile image
+                                    photo_url = node.profilePicture();
+                                    HashMap<String, Object> src = new HashMap<>();
+                                    src.put(URL, photo_url);
+                                    loadPictureToImageView(src, R.mipmap.ic_box, imageViewProfile, true, false,
+                                            false, true);
+                                }
+                            }
+                        });
+                    } catch (Exception ex) {
+                        Log.e(ERROR, "Something went wrong, " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
                 }
 
                 @Override

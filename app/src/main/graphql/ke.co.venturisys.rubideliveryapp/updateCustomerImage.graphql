@@ -1,19 +1,27 @@
 # Here, we shall update the user's profile picture
 
 mutation updateCustomerMutation (
-  $id: ID!,
-  $image: String!
+  $email: String!,
+  $image: String!,
+  $url: String!
 )
 
 {
-  updateCustomer(
-    id: $id
-    image: $image
+  updateCustomerPicture(
+    input: {
+      email: $email,
+      profilePicture: $image,
+      url: $url
+    }
   )
 
   {
-    id
-    image
-    name
+    customerNode{
+      id
+      regNo
+      firstName
+      lastName
+      profilePicture
+    }
   }
 }

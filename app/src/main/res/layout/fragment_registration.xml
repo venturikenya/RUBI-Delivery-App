@@ -34,7 +34,7 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/register_linear_layout_username"
+                android:id="@+id/register_linear_layout_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/register_app_logo_layout"
@@ -46,7 +46,7 @@
                 android:baselineAligned="false">
 
                 <ImageView
-                    android:id="@+id/username_image_view"
+                    android:id="@+id/first_name_image_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -58,13 +58,52 @@
                     android:src="@drawable/ic_profile" />
 
                 <EditText
-                    android:id="@+id/register_username"
+                    android:id="@+id/register_first_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/item_offset"
                     android:layout_weight="9"
                     android:background="@color/colorText"
-                    android:hint="@string/username_placeholder"
+                    android:hint="@string/first_name_placeholder"
+                    android:inputType="textPersonName"
+                    android:padding="@dimen/general_padding"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/register_linear_layout_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register_linear_layout_first_name"
+                android:layout_marginBottom="@dimen/item_offset"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="@dimen/item_offset"
+                android:background="@color/colorText"
+                android:baselineAligned="false">
+
+                <ImageView
+                    android:id="@+id/last_name_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="@dimen/item_offset"
+                    android:layout_marginTop="7dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/username_image_description"
+                    android:src="@drawable/ic_profile" />
+
+                <EditText
+                    android:id="@+id/register_last_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/item_offset"
+                    android:layout_weight="9"
+                    android:background="@color/colorText"
+                    android:hint="@string/last_name_placeholder"
                     android:inputType="textPersonName"
                     android:padding="@dimen/general_padding"
                     android:singleLine="true"
@@ -76,7 +115,7 @@
                 android:id="@+id/register_linear_layout_email_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/register_linear_layout_username"
+                android:layout_below="@id/register_linear_layout_last_name"
                 android:layout_marginBottom="@dimen/item_offset"
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
